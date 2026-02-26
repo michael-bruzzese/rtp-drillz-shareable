@@ -79,6 +79,22 @@
       font-size: 14px;
     }
 
+    .layout-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #202020;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .layout-wrap label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
     .timer-pause-btn {
       width: 100%;
       padding: 8px 10px;
@@ -467,6 +483,106 @@
       opacity: 0.95;
     }
 
+    body.layout-compact .app {
+      padding: 12px 14px 14px;
+      gap: 8px;
+    }
+
+    body.layout-compact .topbar {
+      gap: 8px;
+    }
+
+    body.layout-compact .title {
+      font-size: clamp(26px, 3.9vw, 42px);
+    }
+
+    body.layout-compact .table {
+      padding: 16px 10px 10px;
+      min-height: 330px;
+    }
+
+    body.layout-compact .countdown {
+      font-size: clamp(18px, 2.4vw, 28px);
+    }
+
+    body.layout-compact .board-title {
+      font-size: clamp(20px, 3vw, 30px);
+      margin-top: 4px;
+    }
+
+    body.layout-compact .status {
+      font-size: clamp(14px, 1.8vw, 18px);
+      min-height: 20px;
+      margin-top: 4px;
+    }
+
+    body.layout-compact .cards {
+      gap: 8px;
+      min-height: 132px;
+      padding: 2px 4px;
+    }
+
+    body.layout-compact .hero-wrap {
+      padding: 10px 12px 12px;
+    }
+
+    body.layout-compact .hero-layout {
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    body.layout-compact .cam-panel {
+      width: min(290px, 100%);
+      min-width: 220px;
+      padding: 8px;
+      gap: 6px;
+      position: sticky;
+      top: 8px;
+      align-self: flex-start;
+    }
+
+    body.layout-compact .cam-video-shell {
+      aspect-ratio: 4 / 3;
+    }
+
+    body.layout-compact .rec-hint {
+      min-height: 0;
+      display: none;
+    }
+
+    body.layout-compact .rec-controls {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    body.layout-compact .rec-controls button {
+      width: 100%;
+      min-width: 0;
+      font-size: 11px;
+      padding: 7px 6px;
+    }
+
+    body.layout-compact .playback-wrap.show {
+      max-height: 170px;
+      overflow: auto;
+    }
+
+    body.layout-compact .playback-video {
+      max-height: 140px;
+      object-fit: contain;
+    }
+
+    body.layout-compact .card {
+      height: 120px;
+    }
+
+    body.layout-compact .card-fallback {
+      height: 120px;
+      width: 84px;
+      font-size: 22px;
+    }
+
     @media (max-width: 900px) {
       .app {
         padding: 14px 12px 16px;
@@ -484,6 +600,10 @@
       .hero-hand-panel {
         width: 100%;
         min-width: 0;
+      }
+
+      body.layout-compact .cam-panel {
+        position: static;
       }
 
       .card {
@@ -516,6 +636,13 @@
           </select>
         </div>
         <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
+      </div>
+      <div class="layout-wrap">
+        <label for="layoutSelect">Layout</label>
+        <select id="layoutSelect">
+          <option value="standard">Standard</option>
+          <option value="compact">Compact</option>
+        </select>
       </div>
     </header>
 
@@ -581,6 +708,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     const RANKS = "23456789TJQKA".split("");
     const SUITS = "shdc".split("");
     const TIMER_KEY = "rtpDrillzTimerChoice";
+    const LAYOUT_KEY = "rtpDrillzLayoutMode";
     const TIMER_MAP = {
       None: 0,
       "10s": 10,
@@ -635,6 +763,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       board: [],
       deck: [],
       timerChoice: "None",
+      layoutMode: "standard",
       timeLeft: 0,
       timerId: null,
       timerPausedByUser: false,
@@ -660,6 +789,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     const els = {
       timerSelect: document.getElementById("timerSelect"),
       timerPauseBtn: document.getElementById("timerPauseBtn"),
+      layoutSelect: document.getElementById("layoutSelect"),
       table: document.getElementById("table"),
       countdown: document.getElementById("countdown"),
       timeOverlay: document.getElementById("timeOverlay"),
@@ -689,7 +819,15 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       if (savedTimer && Object.prototype.hasOwnProperty.call(TIMER_MAP, savedTimer)) {
         state.timerChoice = savedTimer;
       }
+      const savedLayout = localStorage.getItem(LAYOUT_KEY);
+      if (savedLayout === "compact" || savedLayout === "standard") {
+        state.layoutMode = savedLayout;
+      } else if (window.innerHeight < 900) {
+        state.layoutMode = "compact";
+      }
       els.timerSelect.value = state.timerChoice;
+      els.layoutSelect.value = state.layoutMode;
+      applyLayoutMode(state.layoutMode);
 
       els.timerSelect.addEventListener("change", () => {
         ensureAudioContext();
@@ -704,6 +842,12 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         updateTimerPauseButton();
       });
       els.timerPauseBtn.addEventListener("click", toggleTimerPause);
+      els.layoutSelect.addEventListener("change", () => {
+        const mode = els.layoutSelect.value === "compact" ? "compact" : "standard";
+        state.layoutMode = mode;
+        localStorage.setItem(LAYOUT_KEY, mode);
+        applyLayoutMode(mode);
+      });
 
       els.recStartBtn.addEventListener("click", () => {
         ensureAudioContext();
@@ -718,6 +862,10 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       void initWebcamPreview();
       updateRecordingUi();
       refreshScene();
+    }
+
+    function applyLayoutMode(mode) {
+      document.body.classList.toggle("layout-compact", mode === "compact");
     }
 
     function buildFullDeck() {
