@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Python syntax checks
+        run: |
+          python -m py_compile rtp_drillz.py build_embedded_rtp_drillz.py
+
+      - name: Web template JS syntax check
+        run: |
+          awk '/<script>/{flag=1;next}/<\/script>/{flag=0}flag' rtp_drillz_web.html > /tmp/rtp_drillz_web.js
+          node --check /tmp/rtp_drillz_web.js
+
+      - name: Embedded build smoke test
+        run: |
+          python - <<'PY'
+          import base64
+          import os
+          import pathlib
+          import subprocess
+          import tempfile
+
+          one_px_png = base64.b64decode(
+              "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO7+2S8AAAAASUVORK5CYII="
+          )
+
+          ranks = "A23456789TJQK"
+          suits = "shdc"
+
+          with tempfile.TemporaryDirectory() as td:
+              cards_dir = pathlib.Path(td) / "cards"
+              cards_dir.mkdir(parents=True, exist_ok=True)
+
+              for r in ranks:
+                  for s in suits:
+                      (cards_dir / f"{r}{s}.png").write_bytes(one_px_png)
+
+              out_html = pathlib.Path(td) / "embedded.html"
+              subprocess.run(
+                  [
+                      "python",
+                      "build_embedded_rtp_drillz.py",
+                      "--cards-dir",
+                      str(cards_dir),
+                      "--template",
+                      "rtp_drillz_web.html",
+                      "--output",
+                      str(out_html),
+                  ],
+                  check=True,
+              )
+
+              content = out_html.read_text(encoding="utf-8")
+              assert "__RTP_EMBEDDED_CARDS__" in content
+              assert "data:image/png;base64," in content
+              print("Embedded build smoke test passed.")
+          PY
+
+      - name: Basic deploy file checks
+        run: |
+          grep -q "__RTP_EMBEDDED_CARDS__" rtp_drillz_web_embedded.html
+          grep -q "rtp_drillz_web_embedded.html" index.html

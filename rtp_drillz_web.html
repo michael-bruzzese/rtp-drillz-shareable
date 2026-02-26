@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RTP Drillz</title>
+  <style>
+    :root {
+      --bg-dark: #1a1a1a;
+      --bg-darker: #0f0f0f;
+      --felt: #004d00;
+      --text: #e0e0e0;
+      --white: #ffffff;
+      --orange: #c85f00;
+      --orange-hover: #d66d12;
+      --danger: #ff3300;
+      --panel: #232323;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1000px 500px at 50% -10%, #2b2b2b 0%, var(--bg-dark) 45%, var(--bg-darker) 100%);
+    }
+
+    .app {
+      width: min(1200px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      margin: 0;
+      font-size: clamp(30px, 4.8vw, 52px);
+      color: var(--orange);
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
+
+    .timer-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #202020;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .timer-wrap label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    select {
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      color: var(--white);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 2px rgba(200, 95, 0, 0.22);
+    }
+
+    .table {
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid var(--orange);
+      border-radius: 16px;
+      padding: 24px 14px 14px;
+      background:
+        radial-gradient(120% 100% at 50% 20%, #0b6b0b 0%, var(--felt) 45%, #003200 100%);
+      overflow: hidden;
+      transition: background 120ms ease;
+    }
+
+    .table.flash {
+      background: var(--danger);
+    }
+
+    .countdown {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      color: var(--white);
+      font-size: clamp(20px, 3vw, 34px);
+      font-weight: 800;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+    }
+
+    .time-overlay {
+      position: absolute;
+      inset: 0;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      font-size: clamp(56px, 11vw, 140px);
+      font-weight: 900;
+      color: var(--orange);
+      background: rgba(0, 0, 0, 0.25);
+      text-shadow: 0 0 20px rgba(255, 149, 0, 0.45);
+      letter-spacing: 2px;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    .time-overlay.show {
+      display: flex;
+      animation: pulse 0.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.7; }
+      to { opacity: 1; }
+    }
+
+    .start-splash {
+      margin: 0;
+      font-size: clamp(56px, 9vw, 128px);
+      color: var(--orange);
+      font-weight: 900;
+      letter-spacing: 2px;
+      user-select: none;
+      pointer-events: none;
+      text-align: center;
+      transform: translateY(10px);
+    }
+
+    .board-title {
+      margin: 8px 0 0;
+      font-size: clamp(24px, 3.5vw, 38px);
+      color: var(--white);
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .status {
+      min-height: 24px;
+      margin: 8px 0 0;
+      font-size: clamp(16px, 2.2vw, 22px);
+      color: var(--text);
+      text-align: center;
+      font-weight: 500;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .cards {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 162px;
+      padding: 4px 6px;
+    }
+
+    .hero-wrap {
+      border-radius: 14px;
+      background: linear-gradient(180deg, #242424 0%, #181818 100%);
+      border: 1px solid #333;
+      padding: 14px 16px 16px;
+    }
+
+    .hero-title {
+      margin: 2px 0 10px;
+      text-align: center;
+      color: var(--white);
+      font-size: clamp(22px, 3.2vw, 34px);
+      font-weight: 800;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      min-height: 60px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--white);
+      background: #2b2b2b;
+      cursor: pointer;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+
+    button:hover {
+      background: #3a3a3a;
+      transform: translateY(-1px);
+    }
+
+    button.primary {
+      color: #151515;
+      background: var(--orange);
+      font-size: 18px;
+      padding: 14px 24px;
+    }
+
+    button.primary:hover {
+      background: var(--orange-hover);
+    }
+
+    .card-shell {
+      background: var(--orange);
+      border-radius: 8px;
+      padding: 2px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    }
+
+    .card {
+      display: block;
+      height: 145px;
+      width: auto;
+      background: #fff;
+      border-radius: 6px;
+    }
+
+    .card-fallback {
+      display: none;
+      width: 102px;
+      height: 145px;
+      border-radius: 6px;
+      background: #fff;
+      color: #111;
+      font-weight: 800;
+      font-size: 28px;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      user-select: none;
+    }
+
+    .empty-board {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        padding: 14px 12px 16px;
+      }
+
+      .table {
+        padding: 20px 10px 12px;
+      }
+
+      .card {
+        height: 126px;
+      }
+
+      .card-fallback {
+        height: 126px;
+        width: 89px;
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <h1 class="title">RTP Drillz</h1>
+      <div class="timer-wrap">
+        <label for="timerSelect">Timer / street</label>
+        <select id="timerSelect">
+          <option>None</option>
+          <option>10s</option>
+          <option>15s</option>
+          <option>30s</option>
+          <option>45s</option>
+          <option>60s</option>
+          <option>90s</option>
+        </select>
+      </div>
+    </header>
+
+    <section id="table" class="table">
+      <div id="countdown" class="countdown">Time left: --:--</div>
+      <div id="timeOverlay" class="time-overlay">TIME!</div>
+      <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
+
+      <h3 class="board-title">Board</h3>
+      <div id="boardCards" class="cards"></div>
+      <p id="status" class="status">Pick a timer and deal a hand.</p>
+    </section>
+
+    <section class="hero-wrap">
+      <h3 class="hero-title">Hero Hand</h3>
+      <div id="handCards" class="cards"></div>
+    </section>
+
+    <nav id="controls" class="controls"></nav>
+  </main>
+
+  <script>
+    "use strict";
+
+    const RANKS = "23456789TJQKA".split("");
+    const SUITS = "shdc".split("");
+    const TIMER_KEY = "rtpDrillzTimerChoice";
+    const TIMER_MAP = {
+      None: 0,
+      "10s": 10,
+      "15s": 15,
+      "30s": 30,
+      "45s": 45,
+      "60s": 60,
+      "90s": 90
+    };
+
+    const CARD_PREFIXES = [
+      "",
+      "cards/",
+      "png-card-1.3/",
+      "PNG-card-1.3/",
+      "PNG-cards-1.3/",
+      "deck/",
+      "images/",
+      "img/"
+    ];
+    const RANK_WORD = {
+      A: "ace",
+      K: "king",
+      Q: "queen",
+      J: "jack",
+      T: "10",
+      "9": "9",
+      "8": "8",
+      "7": "7",
+      "6": "6",
+      "5": "5",
+      "4": "4",
+      "3": "3",
+      "2": "2"
+    };
+    const SUIT_WORD = {
+      s: "spades",
+      h: "hearts",
+      d: "diamonds",
+      c: "clubs"
+    };
+    const EMBEDDED_CARDS =
+      window.__RTP_EMBEDDED_CARDS__ && typeof window.__RTP_EMBEDDED_CARDS__ === "object"
+        ? window.__RTP_EMBEDDED_CARDS__
+        : {};
+    const GENERATED_BACK_DATA_URI = buildGeneratedBackDataUri();
+
+    const state = {
+      stage: "start",
+      hand: [],
+      board: [],
+      deck: [],
+      timerChoice: "None",
+      timeLeft: 0,
+      timerId: null,
+      flashId: null
+    };
+    let audioContext = null;
+
+    const els = {
+      timerSelect: document.getElementById("timerSelect"),
+      table: document.getElementById("table"),
+      countdown: document.getElementById("countdown"),
+      timeOverlay: document.getElementById("timeOverlay"),
+      startSplash: document.getElementById("startSplash"),
+      boardCards: document.getElementById("boardCards"),
+      handCards: document.getElementById("handCards"),
+      controls: document.getElementById("controls"),
+      status: document.getElementById("status")
+    };
+
+    function init() {
+      const savedTimer = localStorage.getItem(TIMER_KEY);
+      if (savedTimer && Object.prototype.hasOwnProperty.call(TIMER_MAP, savedTimer)) {
+        state.timerChoice = savedTimer;
+      }
+      els.timerSelect.value = state.timerChoice;
+
+      els.timerSelect.addEventListener("change", () => {
+        ensureAudioContext();
+        state.timerChoice = els.timerSelect.value;
+        localStorage.setItem(TIMER_KEY, state.timerChoice);
+
+        if (["flop", "turn", "river"].includes(state.stage)) {
+          startTimerForStreet();
+        } else if (state.timerChoice === "None") {
+          setCountdownIdle();
+        }
+      });
+
+      refreshScene();
+    }
+
+    function buildFullDeck() {
+      const deck = [];
+      for (const rank of RANKS) {
+        for (const suit of SUITS) {
+          deck.push(`${rank}${suit}`);
+        }
+      }
+      return deck;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+    }
+
+    function resetDeck(excluded = []) {
+      const blocked = new Set(excluded);
+      state.deck = buildFullDeck().filter((c) => !blocked.has(c));
+      shuffle(state.deck);
+    }
+
+    function dealCard() {
+      if (!state.deck.length) {
+        resetDeck([...state.hand, ...state.board]);
+      }
+      return state.deck.pop();
+    }
+
+    function rankValue(rank) {
+      return RANKS.indexOf(rank.toUpperCase()) + 2;
+    }
+
+    function isPlayableHand(c1, c2) {
+      const r1 = c1[0];
+      const s1 = c1[1];
+      const r2 = c2[0];
+      const s2 = c2[1];
+      const v1 = rankValue(r1);
+      const v2 = rankValue(r2);
+
+      if (v1 === v2) {
+        return true;
+      }
+
+      if (s1 === s2) {
+        return true;
+      }
+
+      const high = Math.max(v1, v2);
+      const low = Math.min(v1, v2);
+      const gap = high - low - 1;
+
+      if (high >= 12 && low >= 10) return true;
+      if (high === 14 && low >= 7) return true;
+      if (high === 13 && low >= 9) return true;
+      if (high === 12 && low >= 9) return true;
+      if (high === 11 && low >= 9) return true;
+      if (high >= 10 && low >= 7 && gap <= 2) return true;
+      if ((high === 9 && low === 8) || (high === 8 && low === 7)) return true;
+
+      return false;
+    }
+
+    function generatePlayableHand() {
+      const deck = buildFullDeck();
+      while (true) {
+        const idx1 = Math.floor(Math.random() * deck.length);
+        let idx2 = Math.floor(Math.random() * deck.length);
+        while (idx2 === idx1) {
+          idx2 = Math.floor(Math.random() * deck.length);
+        }
+
+        const c1 = deck[idx1];
+        const c2 = deck[idx2];
+        if (isPlayableHand(c1, c2)) {
+          return [c1, c2].sort((a, b) => rankValue(b[0]) - rankValue(a[0]));
+        }
+      }
+    }
+
+    function dealHand() {
+      stopTimer(true);
+      hideTimeOverlay();
+      stopTableFlash();
+
+      state.hand = generatePlayableHand();
+      state.board = [];
+      state.stage = "hand";
+      refreshScene();
+    }
+
+    function startOver() {
+      stopTimer(true);
+      hideTimeOverlay();
+      stopTableFlash();
+      state.hand = [];
+      state.board = [];
+      state.deck = [];
+      state.stage = "start";
+      refreshScene();
+    }
+
+    function enterFlop() {
+      if (state.hand.length !== 2) return;
+      resetDeck(state.hand);
+      state.board = [dealCard(), dealCard(), dealCard()];
+      state.stage = "flop";
+      refreshScene();
+      startTimerForStreet();
+    }
+
+    function enterTurn() {
+      if (state.board.length < 3) return;
+      const flop = state.board.slice(0, 3);
+      resetDeck([...state.hand, ...flop]);
+      state.board = [...flop, dealCard()];
+      state.stage = "turn";
+      refreshScene();
+      startTimerForStreet();
+    }
+
+    function enterRiver() {
+      if (state.board.length < 4) return;
+      const four = state.board.slice(0, 4);
+      resetDeck([...state.hand, ...four]);
+      state.board = [...four, dealCard()];
+      state.stage = "river";
+      refreshScene();
+      startTimerForStreet();
+    }
+
+    function keepRiver() {
+      state.stage = "done";
+      stopTimer(true);
+      hideTimeOverlay();
+      stopTableFlash();
+      refreshScene();
+    }
+
+    function setCountdownIdle() {
+      els.countdown.textContent = "Time left: --:--";
+    }
+
+    function ensureAudioContext() {
+      if (audioContext) {
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+        return;
+      }
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      try {
+        audioContext = new Ctx();
+        if (audioContext.state === "suspended") {
+          audioContext.resume().catch(() => {});
+        }
+      } catch (_err) {
+        audioContext = null;
+      }
+    }
+
+    function playTickSound() {
+      if (!audioContext) return;
+      const t = audioContext.currentTime;
+      const osc = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+
+      osc.type = "square";
+      osc.frequency.setValueAtTime(920, t);
+
+      gain.gain.setValueAtTime(0.0001, t);
+      gain.gain.linearRampToValueAtTime(0.09, t + 0.005);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+
+      osc.connect(gain);
+      gain.connect(audioContext.destination);
+      osc.start(t);
+      osc.stop(t + 0.07);
+    }
+
+    function updateCountdown() {
+      const safe = Math.max(0, state.timeLeft);
+      const mm = String(Math.floor(safe / 60)).padStart(2, "0");
+      const ss = String(safe % 60).padStart(2, "0");
+      els.countdown.textContent = `Time left: ${mm}:${ss}`;
+    }
+
+    function stopTimer(resetDisplay) {
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+      }
+      if (resetDisplay) {
+        setCountdownIdle();
+      }
+    }
+
+    function startTimerForStreet() {
+      hideTimeOverlay();
+      stopTableFlash();
+      stopTimer(false);
+
+      const seconds = TIMER_MAP[state.timerChoice] || 0;
+      if (!seconds) {
+        setCountdownIdle();
+        return;
+      }
+
+      state.timeLeft = seconds;
+      updateCountdown();
+
+      state.timerId = window.setInterval(() => {
+        state.timeLeft -= 1;
+        updateCountdown();
+
+        if (state.timeLeft > 0 && state.timeLeft <= 5) {
+          playTickSound();
+        }
+
+        if (state.timeLeft <= 0) {
+          stopTimer(false);
+          onTimeUp();
+        }
+      }, 1000);
+    }
+
+    function showTimeOverlay() {
+      els.timeOverlay.classList.add("show");
+    }
+
+    function hideTimeOverlay() {
+      els.timeOverlay.classList.remove("show");
+    }
+
+    function stopTableFlash() {
+      if (state.flashId) {
+        clearInterval(state.flashId);
+        state.flashId = null;
+      }
+      els.table.classList.remove("flash");
+    }
+
+    function flashTable() {
+      stopTableFlash();
+      let count = 0;
+      state.flashId = window.setInterval(() => {
+        els.table.classList.toggle("flash");
+        count += 1;
+        if (count >= 6) {
+          stopTableFlash();
+        }
+      }, 140);
+    }
+
+    function onTimeUp() {
+      showTimeOverlay();
+      flashTable();
+    }
+
+    function formatCard(code) {
+      if (!code || code.length < 2) return "??";
+      return `${code[0].toUpperCase()}${code[1].toLowerCase()}`;
+    }
+
+    function cardImageCandidates(code) {
+      const rank = code[0].toUpperCase();
+      const suit = code[1].toLowerCase();
+      const rankVariants = [rank, rank.toLowerCase()];
+      const suitVariants = [suit, suit.toUpperCase()];
+      if (rank === "T") rankVariants.push("10");
+
+      const out = [];
+      for (const prefix of CARD_PREFIXES) {
+        for (const r of rankVariants) {
+          for (const s of suitVariants) {
+            out.push(`${prefix}${r}${s}.png`);
+            out.push(`${prefix}${r}_${s}.png`);
+          }
+        }
+
+        const rankWord = RANK_WORD[rank];
+        const suitWord = SUIT_WORD[suit];
+        if (rankWord && suitWord) {
+          out.push(`${prefix}${rankWord}_of_${suitWord}.png`);
+          out.push(`${prefix}${rankWord}_of_${suitWord}2.png`);
+        }
+      }
+      return [...new Set(out)];
+    }
+
+    function backImageCandidates() {
+      const names = ["back.png", "card_back.png", "cardback.png", "red_back.png", "blue_back.png", "backside.png"];
+      const out = [];
+      for (const prefix of CARD_PREFIXES) {
+        for (const n of names) {
+          out.push(`${prefix}${n}`);
+        }
+      }
+      return out;
+    }
+
+    function buildGeneratedBackDataUri() {
+      const width = 140;
+      const height = 200;
+      const cell = 20;
+      let grid = "";
+
+      for (let y = 0; y < height; y += cell) {
+        for (let x = 0; x < width; x += cell) {
+          const isOrange = ((x / cell) + (y / cell)) % 2 === 0;
+          const fill = isOrange ? "#c85f00" : "#ffffff";
+          grid += `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="${fill}"/>`;
+        }
+      }
+
+      const svg =
+        `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
+        `<rect x="0" y="0" width="${width}" height="${height}" fill="#ffffff"/>` +
+        grid +
+        `<rect x="2" y="2" width="${width - 4}" height="${height - 4}" fill="none" stroke="#000000" stroke-width="4"/>` +
+        `</svg>`;
+
+      return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+    }
+
+    function attachImageWithFallback(img, fallbackEl, candidates) {
+      let idx = 0;
+
+      function tryNext() {
+        if (idx >= candidates.length) {
+          img.style.display = "none";
+          fallbackEl.style.display = "flex";
+          return;
+        }
+        img.src = candidates[idx];
+        idx += 1;
+      }
+
+      img.addEventListener("load", () => {
+        fallbackEl.style.display = "none";
+        img.style.display = "block";
+      });
+
+      img.addEventListener("error", tryNext);
+      tryNext();
+    }
+
+    function createCardElement(cardCode, isBack) {
+      const shell = document.createElement("div");
+      shell.className = "card-shell";
+
+      const img = document.createElement("img");
+      img.className = "card";
+      img.alt = isBack ? "Card back" : `Card ${formatCard(cardCode)}`;
+
+      const fallback = document.createElement("div");
+      fallback.className = "card-fallback";
+      fallback.textContent = isBack ? "BACK" : formatCard(cardCode);
+
+      shell.appendChild(img);
+      shell.appendChild(fallback);
+
+      if (isBack && EMBEDDED_CARDS.back) {
+        img.src = EMBEDDED_CARDS.back;
+        fallback.style.display = "none";
+        return shell;
+      }
+
+      if (isBack) {
+        img.src = GENERATED_BACK_DATA_URI;
+        fallback.style.display = "none";
+        return shell;
+      }
+
+      if (!isBack && cardCode) {
+        const key = formatCard(cardCode);
+        if (EMBEDDED_CARDS[key]) {
+          img.src = EMBEDDED_CARDS[key];
+          fallback.style.display = "none";
+          return shell;
+        }
+      }
+
+      const candidates = isBack ? backImageCandidates() : cardImageCandidates(cardCode);
+      attachImageWithFallback(img, fallback, candidates);
+      return shell;
+    }
+
+    function renderBoard() {
+      els.boardCards.innerHTML = "";
+      if (!state.board.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty-board";
+        empty.textContent = "No board yet";
+        els.boardCards.appendChild(empty);
+        return;
+      }
+
+      state.board.forEach((card) => {
+        els.boardCards.appendChild(createCardElement(card, false));
+      });
+    }
+
+    function renderHand() {
+      els.handCards.innerHTML = "";
+      if (!state.hand.length) {
+        els.handCards.appendChild(createCardElement(null, true));
+        els.handCards.appendChild(createCardElement(null, true));
+        return;
+      }
+
+      state.hand.forEach((card) => {
+        els.handCards.appendChild(createCardElement(card, false));
+      });
+    }
+
+    function setControls(buttons) {
+      els.controls.innerHTML = "";
+      buttons.forEach(({ text, primary, onClick }) => {
+        const btn = document.createElement("button");
+        btn.textContent = text;
+        if (primary) btn.classList.add("primary");
+        btn.addEventListener("click", () => {
+          ensureAudioContext();
+          onClick();
+        });
+        els.controls.appendChild(btn);
+      });
+
+      if (state.stage !== "start") {
+        const resetBtn = document.createElement("button");
+        resetBtn.textContent = "Start Over";
+        resetBtn.addEventListener("click", startOver);
+        els.controls.appendChild(resetBtn);
+      }
+    }
+
+    function refreshScene() {
+      renderBoard();
+      renderHand();
+
+      if (state.stage === "start") {
+        els.startSplash.style.display = "block";
+        els.status.textContent = "Pick a timer and deal a hand.";
+        setControls([{ text: "Deal Hand", primary: true, onClick: dealHand }]);
+        return;
+      }
+
+      els.startSplash.style.display = "none";
+
+      if (state.stage === "hand") {
+        els.status.textContent = "Keep this hand or reroll.";
+        setControls([
+          { text: "Keep Hand", primary: true, onClick: enterFlop },
+          { text: "New Hand", primary: false, onClick: dealHand }
+        ]);
+        return;
+      }
+
+      if (state.stage === "flop") {
+        els.status.textContent = "Flop dealt. Make your decision.";
+        setControls([
+          { text: "Keep Flop \u2192 Turn", primary: true, onClick: enterTurn },
+          { text: "New Flop", primary: false, onClick: enterFlop }
+        ]);
+        return;
+      }
+
+      if (state.stage === "turn") {
+        els.status.textContent = "Turn dealt. Decide and continue.";
+        setControls([
+          { text: "Keep Turn \u2192 River", primary: true, onClick: enterRiver },
+          { text: "New Turn", primary: false, onClick: enterTurn }
+        ]);
+        return;
+      }
+
+      if (state.stage === "river") {
+        els.status.textContent = "River dealt. Final decision spot.";
+        setControls([
+          { text: "Keep River", primary: true, onClick: keepRiver },
+          { text: "New River", primary: false, onClick: enterRiver }
+        ]);
+        return;
+      }
+
+      if (state.stage === "done") {
+        els.status.textContent = "Drill complete. Final board locked.";
+        setControls([
+          { text: "Deal Hand", primary: true, onClick: dealHand },
+          { text: "New River", primary: false, onClick: enterRiver }
+        ]);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
