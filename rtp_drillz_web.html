@@ -192,6 +192,171 @@
       padding: 14px 16px 16px;
     }
 
+    .hero-layout {
+      display: flex;
+      gap: 14px;
+      align-items: stretch;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cam-panel {
+      width: min(340px, 100%);
+      min-width: 280px;
+      border: 1px solid #3a3a3a;
+      border-radius: 12px;
+      background: #1f1f1f;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .cam-title {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 0.2px;
+    }
+
+    .cam-video-shell {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border: 2px solid var(--orange);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #101010;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cam-video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      background: #101010;
+    }
+
+    .cam-placeholder {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      color: #d7d7d7;
+      background: rgba(0, 0, 0, 0.45);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .rec-status-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #191919;
+      border: 1px solid #313131;
+      border-radius: 8px;
+      padding: 8px 9px;
+      min-height: 38px;
+    }
+
+    .rec-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: #666;
+      flex: 0 0 11px;
+    }
+
+    .rec-dot.recording {
+      background: #ff3b30;
+      animation: recPulse 1s infinite;
+    }
+
+    .rec-dot.paused {
+      background: #f5a623;
+      animation: none;
+    }
+
+    .rec-dot.idle {
+      background: #666;
+    }
+
+    @keyframes recPulse {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.92); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    .rec-state-text {
+      flex: 1;
+      font-size: 12px;
+      color: #f0f0f0;
+      font-weight: 700;
+    }
+
+    .rec-elapsed {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 13px;
+      color: #ffe6cc;
+      font-weight: 700;
+    }
+
+    .rec-hint {
+      font-size: 12px;
+      color: #cfcfcf;
+      line-height: 1.32;
+      min-height: 30px;
+    }
+
+    .rec-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .rec-controls button {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 11px;
+      border-radius: 8px;
+      min-width: 70px;
+    }
+
+    .rec-controls button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .playback-wrap {
+      display: none;
+      margin-top: 2px;
+      border: 1px solid #3a3a3a;
+      border-radius: 10px;
+      background: #101010;
+      padding: 8px;
+    }
+
+    .playback-wrap.show {
+      display: block;
+    }
+
+    .playback-video {
+      width: 100%;
+      border-radius: 8px;
+      background: #000;
+      display: block;
+    }
+
+    .hero-hand-panel {
+      flex: 1;
+      min-width: 300px;
+    }
+
     .hero-title {
       margin: 2px 0 10px;
       text-align: center;
@@ -281,6 +446,16 @@
         padding: 20px 10px 12px;
       }
 
+      .hero-layout {
+        flex-direction: column;
+      }
+
+      .cam-panel,
+      .hero-hand-panel {
+        width: 100%;
+        min-width: 0;
+      }
+
       .card {
         height: 126px;
       }
@@ -322,8 +497,43 @@
     </section>
 
     <section class="hero-wrap">
-      <h3 class="hero-title">Hero Hand</h3>
-      <div id="handCards" class="cards"></div>
+      <div class="hero-layout">
+        <aside class="cam-panel">
+          <div class="cam-title">Think Out Loud Capture</div>
+          <div class="cam-video-shell">
+            <video id="webcamPreview" class="cam-video" autoplay muted playsinline></video>
+            <div id="webcamPlaceholder" class="cam-placeholder">Camera preview unavailable</div>
+          </div>
+
+          <div class="rec-status-row">
+            <div id="recDot" class="rec-dot idle"></div>
+            <div id="recStateText" class="rec-state-text">Recorder idle</div>
+            <div id="recElapsed" class="rec-elapsed">00:00</div>
+          </div>
+
+          <div id="recHint" class="rec-hint">
+            Recording auto-starts on first flop. Share this browser tab for full drill capture.
+          </div>
+
+          <div class="rec-controls">
+            <button id="recStartBtn" type="button">Start</button>
+            <button id="recPauseBtn" type="button" disabled>Pause</button>
+            <button id="recResumeBtn" type="button" disabled>Resume</button>
+            <button id="recStopBtn" type="button" disabled>Stop</button>
+            <button id="recPlaybackBtn" type="button" disabled>Playback</button>
+            <button id="recDownloadBtn" type="button" disabled>Download</button>
+          </div>
+
+          <div id="playbackWrap" class="playback-wrap">
+            <video id="reviewPlayback" class="playback-video" controls playsinline></video>
+          </div>
+        </aside>
+
+        <div class="hero-hand-panel">
+          <h3 class="hero-title">Hero Hand</h3>
+          <div id="handCards" class="cards"></div>
+        </div>
+      </div>
     </section>
 
     <nav id="controls" class="controls"></nav>
@@ -344,6 +554,7 @@
       "60s": 60,
       "90s": 90
     };
+    const MAX_RECORDING_MS = 10 * 60 * 1000;
 
     const CARD_PREFIXES = [
       "",
@@ -393,6 +604,21 @@
       flashId: null
     };
     let audioContext = null;
+    let timerPausedByRecording = false;
+    const recording = {
+      mode: "idle", // idle, recording, paused, stopping
+      autoStartArmed: true,
+      mediaRecorder: null,
+      displayStream: null,
+      micStream: null,
+      chunks: [],
+      blob: null,
+      blobUrl: "",
+      mimeType: "video/webm",
+      elapsedMs: 0,
+      elapsedIntervalId: null,
+      stopReason: "manual"
+    };
 
     const els = {
       timerSelect: document.getElementById("timerSelect"),
@@ -403,7 +629,21 @@
       boardCards: document.getElementById("boardCards"),
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
-      status: document.getElementById("status")
+      status: document.getElementById("status"),
+      webcamPreview: document.getElementById("webcamPreview"),
+      webcamPlaceholder: document.getElementById("webcamPlaceholder"),
+      recDot: document.getElementById("recDot"),
+      recStateText: document.getElementById("recStateText"),
+      recElapsed: document.getElementById("recElapsed"),
+      recHint: document.getElementById("recHint"),
+      recStartBtn: document.getElementById("recStartBtn"),
+      recPauseBtn: document.getElementById("recPauseBtn"),
+      recResumeBtn: document.getElementById("recResumeBtn"),
+      recStopBtn: document.getElementById("recStopBtn"),
+      recPlaybackBtn: document.getElementById("recPlaybackBtn"),
+      recDownloadBtn: document.getElementById("recDownloadBtn"),
+      playbackWrap: document.getElementById("playbackWrap"),
+      reviewPlayback: document.getElementById("reviewPlayback")
     };
 
     function init() {
@@ -425,6 +665,18 @@
         }
       });
 
+      els.recStartBtn.addEventListener("click", () => {
+        ensureAudioContext();
+        void startRecording({ auto: false });
+      });
+      els.recPauseBtn.addEventListener("click", pauseRecording);
+      els.recResumeBtn.addEventListener("click", resumeRecording);
+      els.recStopBtn.addEventListener("click", () => stopRecording({ reason: "manual" }));
+      els.recPlaybackBtn.addEventListener("click", togglePlayback);
+      els.recDownloadBtn.addEventListener("click", downloadRecording);
+
+      void initWebcamPreview();
+      updateRecordingUi();
       refreshScene();
     }
 
@@ -539,6 +791,11 @@
       state.stage = "flop";
       refreshScene();
       startTimerForStreet();
+
+      if (recording.autoStartArmed && recording.mode === "idle") {
+        recording.autoStartArmed = false;
+        void startRecording({ auto: true });
+      }
     }
 
     function enterTurn() {
@@ -571,6 +828,312 @@
 
     function setCountdownIdle() {
       els.countdown.textContent = "Time left: --:--";
+    }
+
+    function setRecHint(text) {
+      els.recHint.textContent = text;
+    }
+
+    function formatElapsed(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const mm = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
+      const ss = String(totalSeconds % 60).padStart(2, "0");
+      return `${mm}:${ss}`;
+    }
+
+    function stopStreamTracks(stream) {
+      if (!stream) return;
+      stream.getTracks().forEach((track) => track.stop());
+    }
+
+    function updateRecordingUi() {
+      const isRecording = recording.mode === "recording";
+      const isPaused = recording.mode === "paused";
+
+      els.recElapsed.textContent = formatElapsed(recording.elapsedMs);
+      els.recDot.classList.remove("idle", "recording", "paused");
+      els.recDot.classList.add(isRecording ? "recording" : isPaused ? "paused" : "idle");
+
+      if (isRecording) {
+        els.recStateText.textContent = "Recording live";
+      } else if (isPaused) {
+        els.recStateText.textContent = "Recording paused";
+      } else if (recording.mode === "stopping") {
+        els.recStateText.textContent = "Finalizing video...";
+      } else {
+        els.recStateText.textContent = recording.blob ? "Recording ready" : "Recorder idle";
+      }
+
+      const canStart = recording.mode === "idle";
+      const canPause = recording.mode === "recording";
+      const canResume = recording.mode === "paused";
+      const canStop = recording.mode === "recording" || recording.mode === "paused";
+      const hasClip = Boolean(recording.blob);
+
+      els.recStartBtn.disabled = !canStart;
+      els.recPauseBtn.disabled = !canPause;
+      els.recResumeBtn.disabled = !canResume;
+      els.recStopBtn.disabled = !canStop;
+      els.recPlaybackBtn.disabled = !hasClip;
+      els.recDownloadBtn.disabled = !hasClip;
+    }
+
+    async function initWebcamPreview() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setRecHint("Camera preview unavailable in this browser.");
+        return;
+      }
+
+      try {
+        const camStream = await navigator.mediaDevices.getUserMedia({
+          video: { width: { ideal: 640 }, height: { ideal: 400 } },
+          audio: false
+        });
+        els.webcamPreview.srcObject = camStream;
+        els.webcamPlaceholder.style.display = "none";
+      } catch (_err) {
+        els.webcamPlaceholder.style.display = "grid";
+        setRecHint("Camera permission denied. Recording can still run (screen + mic if available).");
+      }
+    }
+
+    function getRecorderMimeType() {
+      const candidates = [
+        "video/webm;codecs=vp9,opus",
+        "video/webm;codecs=vp8,opus",
+        "video/webm"
+      ];
+      if (!window.MediaRecorder) return "";
+      for (const candidate of candidates) {
+        if (MediaRecorder.isTypeSupported(candidate)) return candidate;
+      }
+      return "";
+    }
+
+    function startRecordingClock() {
+      if (recording.elapsedIntervalId) {
+        clearInterval(recording.elapsedIntervalId);
+      }
+      recording.elapsedIntervalId = window.setInterval(() => {
+        if (recording.mode !== "recording") return;
+        recording.elapsedMs += 1000;
+        updateRecordingUi();
+        if (recording.elapsedMs >= MAX_RECORDING_MS) {
+          stopRecording({ reason: "cap" });
+        }
+      }, 1000);
+    }
+
+    function clearRecordingClock() {
+      if (!recording.elapsedIntervalId) return;
+      clearInterval(recording.elapsedIntervalId);
+      recording.elapsedIntervalId = null;
+    }
+
+    async function startRecording({ auto }) {
+      if (recording.mode !== "idle") return;
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+        setRecHint("Screen capture is not supported in this browser.");
+        return;
+      }
+
+      recording.autoStartArmed = false;
+      recording.stopReason = "manual";
+      recording.elapsedMs = 0;
+      recording.chunks = [];
+      recording.blob = null;
+      if (recording.blobUrl) {
+        URL.revokeObjectURL(recording.blobUrl);
+        recording.blobUrl = "";
+      }
+      els.reviewPlayback.removeAttribute("src");
+      els.playbackWrap.classList.remove("show");
+
+      let displayStream;
+      let micStream = null;
+      try {
+        displayStream = await navigator.mediaDevices.getDisplayMedia({
+          video: { frameRate: 30 },
+          audio: false
+        });
+      } catch (_err) {
+        if (auto) {
+          setRecHint("Auto-record canceled. Use Start when ready.");
+        } else {
+          setRecHint("Recording canceled.");
+        }
+        updateRecordingUi();
+        return;
+      }
+
+      try {
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      } catch (_err) {
+        micStream = null;
+      }
+
+      const combined = new MediaStream();
+      displayStream.getVideoTracks().forEach((track) => combined.addTrack(track));
+      if (micStream) {
+        micStream.getAudioTracks().forEach((track) => combined.addTrack(track));
+      }
+
+      const mimeType = getRecorderMimeType();
+      let mediaRecorder;
+      try {
+        mediaRecorder = mimeType ? new MediaRecorder(combined, { mimeType }) : new MediaRecorder(combined);
+      } catch (_err) {
+        stopStreamTracks(displayStream);
+        stopStreamTracks(micStream);
+        setRecHint("Could not start recorder in this browser.");
+        updateRecordingUi();
+        return;
+      }
+
+      recording.mode = "recording";
+      recording.mediaRecorder = mediaRecorder;
+      recording.displayStream = displayStream;
+      recording.micStream = micStream;
+      recording.mimeType = mimeType || "video/webm";
+
+      displayStream.getVideoTracks().forEach((track) => {
+        track.addEventListener("ended", () => {
+          if (recording.mode === "recording" || recording.mode === "paused") {
+            stopRecording({ reason: "display-ended" });
+          }
+        });
+      });
+
+      mediaRecorder.addEventListener("dataavailable", (event) => {
+        if (event.data && event.data.size > 0) {
+          recording.chunks.push(event.data);
+        }
+      });
+
+      mediaRecorder.addEventListener("stop", () => {
+        clearRecordingClock();
+        stopStreamTracks(recording.displayStream);
+        stopStreamTracks(recording.micStream);
+        recording.displayStream = null;
+        recording.micStream = null;
+        recording.mediaRecorder = null;
+
+        if (recording.chunks.length > 0) {
+          recording.blob = new Blob(recording.chunks, { type: recording.mimeType || "video/webm" });
+          recording.blobUrl = URL.createObjectURL(recording.blob);
+          els.reviewPlayback.src = recording.blobUrl;
+          if (recording.stopReason === "cap") {
+            setRecHint("Recording stopped at 10:00 cap. Click Download to save.");
+          } else if (recording.stopReason === "display-ended") {
+            setRecHint("Screen sharing ended. Clip is ready to download.");
+          } else {
+            setRecHint("Recording stopped. Clip ready for playback/download.");
+          }
+        } else {
+          recording.blob = null;
+          setRecHint("No clip data captured. Try recording again.");
+        }
+
+        recording.mode = "idle";
+        updateRecordingUi();
+      });
+
+      mediaRecorder.start(1000);
+      startRecordingClock();
+      setRecHint(
+        micStream
+          ? "Recording now. Speak your thought process out loud."
+          : "Recording without mic audio (permission denied)."
+      );
+      updateRecordingUi();
+    }
+
+    function pauseStreetTimerForRecording() {
+      if (!state.timerId) {
+        timerPausedByRecording = false;
+        return;
+      }
+      clearInterval(state.timerId);
+      state.timerId = null;
+      timerPausedByRecording = true;
+    }
+
+    function resumeStreetTimerAfterRecordingPause() {
+      if (!timerPausedByRecording) return;
+      timerPausedByRecording = false;
+      if (state.timeLeft > 0 && ["flop", "turn", "river"].includes(state.stage)) {
+        startTimerTickLoop();
+      }
+    }
+
+    function pauseRecording() {
+      if (recording.mode !== "recording" || !recording.mediaRecorder) return;
+      try {
+        recording.mediaRecorder.pause();
+      } catch (_err) {
+        return;
+      }
+      recording.mode = "paused";
+      pauseStreetTimerForRecording();
+      setRecHint("Recording paused. Drill timer paused too.");
+      updateRecordingUi();
+    }
+
+    function resumeRecording() {
+      if (recording.mode !== "paused" || !recording.mediaRecorder) return;
+      try {
+        recording.mediaRecorder.resume();
+      } catch (_err) {
+        return;
+      }
+      recording.mode = "recording";
+      resumeStreetTimerAfterRecordingPause();
+      setRecHint("Recording resumed.");
+      updateRecordingUi();
+    }
+
+    function stopRecording({ reason }) {
+      if (recording.mode !== "recording" && recording.mode !== "paused") return;
+      recording.stopReason = reason || "manual";
+      if (recording.mode === "paused") {
+        resumeStreetTimerAfterRecordingPause();
+      }
+      recording.mode = "stopping";
+      updateRecordingUi();
+      try {
+        recording.mediaRecorder.stop();
+      } catch (_err) {
+        clearRecordingClock();
+        stopStreamTracks(recording.displayStream);
+        stopStreamTracks(recording.micStream);
+        recording.displayStream = null;
+        recording.micStream = null;
+        recording.mediaRecorder = null;
+        recording.mode = "idle";
+        setRecHint("Recorder stopped unexpectedly.");
+        updateRecordingUi();
+      }
+    }
+
+    function togglePlayback() {
+      if (!recording.blobUrl) return;
+      const nowVisible = els.playbackWrap.classList.toggle("show");
+      if (nowVisible) {
+        els.reviewPlayback.play().catch(() => {});
+      } else {
+        els.reviewPlayback.pause();
+      }
+    }
+
+    function downloadRecording() {
+      if (!recording.blob) return;
+      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
+      const link = document.createElement("a");
+      link.href = recording.blobUrl;
+      link.download = `rtp-drillz-session-${stamp}.webm`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     }
 
     function ensureAudioContext() {
@@ -618,30 +1181,7 @@
       els.countdown.textContent = `Time left: ${mm}:${ss}`;
     }
 
-    function stopTimer(resetDisplay) {
-      if (state.timerId) {
-        clearInterval(state.timerId);
-        state.timerId = null;
-      }
-      if (resetDisplay) {
-        setCountdownIdle();
-      }
-    }
-
-    function startTimerForStreet() {
-      hideTimeOverlay();
-      stopTableFlash();
-      stopTimer(false);
-
-      const seconds = TIMER_MAP[state.timerChoice] || 0;
-      if (!seconds) {
-        setCountdownIdle();
-        return;
-      }
-
-      state.timeLeft = seconds;
-      updateCountdown();
-
+    function startTimerTickLoop() {
       state.timerId = window.setInterval(() => {
         state.timeLeft -= 1;
         updateCountdown();
@@ -655,6 +1195,34 @@
           onTimeUp();
         }
       }, 1000);
+    }
+
+    function stopTimer(resetDisplay) {
+      if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+      }
+      timerPausedByRecording = false;
+      if (resetDisplay) {
+        setCountdownIdle();
+      }
+    }
+
+    function startTimerForStreet() {
+      hideTimeOverlay();
+      stopTableFlash();
+      stopTimer(false);
+      timerPausedByRecording = false;
+
+      const seconds = TIMER_MAP[state.timerChoice] || 0;
+      if (!seconds) {
+        setCountdownIdle();
+        return;
+      }
+
+      state.timeLeft = seconds;
+      updateCountdown();
+      startTimerTickLoop();
     }
 
     function showTimeOverlay() {
