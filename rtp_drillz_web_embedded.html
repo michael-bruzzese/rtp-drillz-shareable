@@ -399,6 +399,8 @@
     }
 
     .hero-hand-panel {
+      display: flex;
+      flex-direction: column;
       flex: 1;
       min-width: 300px;
     }
@@ -418,6 +420,7 @@
       flex-wrap: wrap;
       gap: 10px;
       min-height: 60px;
+      margin-top: 6px;
     }
 
     button {
@@ -692,11 +695,10 @@
         <div class="hero-hand-panel">
           <h3 class="hero-title">Hero Hand</h3>
           <div id="handCards" class="cards"></div>
+          <nav id="controls" class="controls"></nav>
         </div>
       </div>
     </section>
-
-    <nav id="controls" class="controls"></nav>
   </main>
 
   <script>
