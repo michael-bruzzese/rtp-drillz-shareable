@@ -58,18 +58,48 @@
 
     .timer-wrap {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
       background: #202020;
       border: 1px solid #333;
       border-radius: 10px;
       padding: 10px 12px;
     }
 
+    .timer-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .timer-wrap label {
       font-weight: 700;
       color: var(--text);
       font-size: 14px;
+    }
+
+    .timer-pause-btn {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      background: #2b2b2b;
+      color: var(--white);
+      cursor: pointer;
+      transition: background 120ms ease;
+    }
+
+    .timer-pause-btn:hover {
+      background: #3a3a3a;
+      transform: none;
+    }
+
+    .timer-pause-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
     }
 
     select {
@@ -473,16 +503,19 @@
     <header class="topbar">
       <h1 class="title">RTP Drillz</h1>
       <div class="timer-wrap">
-        <label for="timerSelect">Timer / street</label>
-        <select id="timerSelect">
-          <option>None</option>
-          <option>10s</option>
-          <option>15s</option>
-          <option>30s</option>
-          <option>45s</option>
-          <option>60s</option>
-          <option>90s</option>
-        </select>
+        <div class="timer-row">
+          <label for="timerSelect">Timer / street</label>
+          <select id="timerSelect">
+            <option>None</option>
+            <option>10s</option>
+            <option>15s</option>
+            <option>30s</option>
+            <option>45s</option>
+            <option>60s</option>
+            <option>90s</option>
+          </select>
+        </div>
+        <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
       </div>
     </header>
 
@@ -604,6 +637,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       timerChoice: "None",
       timeLeft: 0,
       timerId: null,
+      timerPausedByUser: false,
       flashId: null
     };
     let audioContext = null;
@@ -625,6 +659,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
     const els = {
       timerSelect: document.getElementById("timerSelect"),
+      timerPauseBtn: document.getElementById("timerPauseBtn"),
       table: document.getElementById("table"),
       countdown: document.getElementById("countdown"),
       timeOverlay: document.getElementById("timeOverlay"),
@@ -666,7 +701,9 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         } else if (state.timerChoice === "None") {
           setCountdownIdle();
         }
+        updateTimerPauseButton();
       });
+      els.timerPauseBtn.addEventListener("click", toggleTimerPause);
 
       els.recStartBtn.addEventListener("click", () => {
         ensureAudioContext();
@@ -831,6 +868,27 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
     function setCountdownIdle() {
       els.countdown.textContent = "Time left: --:--";
+    }
+
+    function updateTimerPauseButton() {
+      const onStreet = ["flop", "turn", "river"].includes(state.stage);
+      const hasTimer = state.timerChoice !== "None" && state.timeLeft > 0;
+      const canToggle = onStreet && hasTimer && !timerPausedByRecording && (Boolean(state.timerId) || state.timerPausedByUser);
+      els.timerPauseBtn.disabled = !canToggle;
+      els.timerPauseBtn.textContent = state.timerPausedByUser ? "Resume Timer" : "Pause Timer";
+    }
+
+    function toggleTimerPause() {
+      if (els.timerPauseBtn.disabled) return;
+      if (state.timerPausedByUser) {
+        state.timerPausedByUser = false;
+        startTimerTickLoop();
+      } else if (state.timerId) {
+        clearInterval(state.timerId);
+        state.timerId = null;
+        state.timerPausedByUser = true;
+      }
+      updateTimerPauseButton();
     }
 
     function setRecHint(text) {
@@ -1054,19 +1112,22 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     function pauseStreetTimerForRecording() {
       if (!state.timerId) {
         timerPausedByRecording = false;
+        updateTimerPauseButton();
         return;
       }
       clearInterval(state.timerId);
       state.timerId = null;
       timerPausedByRecording = true;
+      updateTimerPauseButton();
     }
 
     function resumeStreetTimerAfterRecordingPause() {
       if (!timerPausedByRecording) return;
       timerPausedByRecording = false;
-      if (state.timeLeft > 0 && ["flop", "turn", "river"].includes(state.stage)) {
+      if (state.timeLeft > 0 && ["flop", "turn", "river"].includes(state.stage) && !state.timerPausedByUser) {
         startTimerTickLoop();
       }
+      updateTimerPauseButton();
     }
 
     function pauseRecording() {
@@ -1185,6 +1246,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function startTimerTickLoop() {
+      if (state.timerId) return;
       state.timerId = window.setInterval(() => {
         state.timeLeft -= 1;
         updateCountdown();
@@ -1196,8 +1258,11 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         if (state.timeLeft <= 0) {
           stopTimer(false);
           onTimeUp();
+        } else {
+          updateTimerPauseButton();
         }
       }, 1000);
+      updateTimerPauseButton();
     }
 
     function stopTimer(resetDisplay) {
@@ -1206,9 +1271,11 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         state.timerId = null;
       }
       timerPausedByRecording = false;
+      state.timerPausedByUser = false;
       if (resetDisplay) {
         setCountdownIdle();
       }
+      updateTimerPauseButton();
     }
 
     function startTimerForStreet() {
@@ -1216,16 +1283,19 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       stopTableFlash();
       stopTimer(false);
       timerPausedByRecording = false;
+      state.timerPausedByUser = false;
 
       const seconds = TIMER_MAP[state.timerChoice] || 0;
       if (!seconds) {
         setCountdownIdle();
+        updateTimerPauseButton();
         return;
       }
 
       state.timeLeft = seconds;
       updateCountdown();
       startTimerTickLoop();
+      updateTimerPauseButton();
     }
 
     function showTimeOverlay() {
@@ -1495,6 +1565,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           { text: "New River", primary: false, onClick: enterRiver }
         ]);
       }
+
+      updateTimerPauseButton();
     }
 
     init();
