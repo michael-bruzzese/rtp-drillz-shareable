@@ -165,6 +165,88 @@
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
     }
 
+    .table-config {
+      position: absolute;
+      z-index: 4;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.28);
+      padding: 8px;
+      backdrop-filter: blur(2px);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    }
+
+    .table-config-left {
+      top: 10px;
+      left: 12px;
+      width: 196px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .table-config-right {
+      top: 62px;
+      right: 12px;
+      width: 172px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .stack-title {
+      color: var(--white);
+      text-align: center;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+
+    .config-row {
+      display: grid;
+      gap: 6px;
+    }
+
+    .config-row.row-three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .config-row.row-two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .config-btn {
+      border: 1px solid #4a4a4a;
+      border-radius: 8px;
+      padding: 7px 4px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--white);
+      background: rgba(33, 33, 33, 0.9);
+      line-height: 1.1;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+
+    .config-btn:hover {
+      background: rgba(49, 49, 49, 0.95);
+      transform: none;
+    }
+
+    .config-btn.active {
+      border-color: var(--orange);
+      background: #5b2f00;
+      color: #fff4e7;
+      box-shadow: 0 0 0 1px rgba(200, 95, 0, 0.3) inset;
+    }
+
     .time-overlay {
       position: absolute;
       inset: 0;
@@ -508,6 +590,32 @@
       font-size: clamp(18px, 2.4vw, 28px);
     }
 
+    body.layout-compact .table-config {
+      padding: 6px;
+    }
+
+    body.layout-compact .table-config-left {
+      width: 170px;
+      top: 8px;
+      left: 8px;
+      gap: 5px;
+    }
+
+    body.layout-compact .table-config-right {
+      width: 154px;
+      top: 50px;
+      right: 8px;
+    }
+
+    body.layout-compact .config-btn {
+      font-size: 11px;
+      padding: 6px 3px;
+    }
+
+    body.layout-compact .stack-title {
+      font-size: 12px;
+    }
+
     body.layout-compact .board-title {
       font-size: clamp(20px, 3vw, 30px);
       margin-top: 4px;
@@ -595,6 +703,21 @@
         padding: 20px 10px 12px;
       }
 
+      .table-config {
+        position: static;
+        width: 100%;
+        max-width: 360px;
+      }
+
+      .table-config-left,
+      .table-config-right {
+        width: 100%;
+      }
+
+      .table-config-right {
+        margin-top: 6px;
+      }
+
       .hero-layout {
         flex-direction: column;
       }
@@ -652,11 +775,37 @@
     <section id="table" class="table">
       <div id="countdown" class="countdown">Time left: --:--</div>
       <div id="timeOverlay" class="time-overlay">TIME!</div>
+      <div class="table-config table-config-left">
+        <div class="config-row row-three">
+          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="SRP">SRP</button>
+          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="3BP">3BP</button>
+          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="4BP">4BP</button>
+        </div>
+        <div class="config-row row-two">
+          <button class="config-btn" type="button" data-config-group="position" data-config-value="IP">IP</button>
+          <button class="config-btn" type="button" data-config-group="position" data-config-value="OOP">OOP</button>
+        </div>
+        <div class="config-row row-two">
+          <button class="config-btn" type="button" data-config-group="role" data-config-value="PFR">PFR</button>
+          <button class="config-btn" type="button" data-config-group="role" data-config-value="PFC">PFC</button>
+        </div>
+      </div>
+      <div class="table-config table-config-right">
+        <div class="stack-title">Effective Stacks</div>
+        <div class="stack-grid">
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="50BB">50BB</button>
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="100BB">100BB</button>
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="150BB">150BB</button>
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="200BB">200BB</button>
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="300BB">300BB</button>
+          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="500BB+">500BB+</button>
+        </div>
+      </div>
       <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
 
       <h3 class="board-title">Board</h3>
       <div id="boardCards" class="cards"></div>
-      <p id="status" class="status">Pick a timer and deal a hand.</p>
+      <p id="status" class="status">&nbsp;</p>
     </section>
 
     <section class="hero-wrap">
@@ -761,6 +910,12 @@
       hand: [],
       board: [],
       deck: [],
+      config: {
+        spotType: "",
+        position: "",
+        role: "",
+        stacks: ""
+      },
       timerChoice: "None",
       layoutMode: "standard",
       timeLeft: 0,
@@ -797,6 +952,7 @@
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
       status: document.getElementById("status"),
+      configButtons: Array.from(document.querySelectorAll("[data-config-group]")),
       webcamPreview: document.getElementById("webcamPreview"),
       webcamPlaceholder: document.getElementById("webcamPlaceholder"),
       recDot: document.getElementById("recDot"),
@@ -859,8 +1015,35 @@
       els.recDownloadBtn.addEventListener("click", downloadRecording);
 
       void initWebcamPreview();
+      bindConfigControls();
+      renderConfigSelections();
       updateRecordingUi();
       refreshScene();
+    }
+
+    function bindConfigControls() {
+      els.configButtons.forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const group = btn.dataset.configGroup;
+          const value = btn.dataset.configValue;
+          if (!group || !value) return;
+          state.config[group] = value;
+          renderConfigSelections();
+        });
+      });
+    }
+
+    function renderConfigSelections() {
+      els.configButtons.forEach((btn) => {
+        const group = btn.dataset.configGroup;
+        const value = btn.dataset.configValue;
+        const selected = Boolean(group && value && state.config[group] === value);
+        btn.classList.toggle("active", selected);
+        btn.setAttribute("aria-pressed", selected ? "true" : "false");
+      });
+
+      const labels = [state.config.spotType, state.config.position, state.config.role].filter(Boolean);
+      els.status.textContent = labels.length ? labels.join(" | ") : "\u00a0";
     }
 
     function applyLayoutMode(mode) {
@@ -967,7 +1150,12 @@
       state.hand = [];
       state.board = [];
       state.deck = [];
+      state.config.spotType = "";
+      state.config.position = "";
+      state.config.role = "";
+      state.config.stacks = "";
       state.stage = "start";
+      renderConfigSelections();
       refreshScene();
     }
 
@@ -1662,51 +1850,55 @@
 
       if (state.stage === "start") {
         els.startSplash.style.display = "block";
-        els.status.textContent = "Pick a timer and deal a hand.";
         setControls([{ text: "Deal Hand", primary: true, onClick: dealHand }]);
+        updateTimerPauseButton();
+        renderConfigSelections();
         return;
       }
 
       els.startSplash.style.display = "none";
 
       if (state.stage === "hand") {
-        els.status.textContent = "Keep this hand or reroll.";
         setControls([
           { text: "Keep Hand", primary: true, onClick: enterFlop },
           { text: "New Hand", primary: false, onClick: dealHand }
         ]);
+        updateTimerPauseButton();
+        renderConfigSelections();
         return;
       }
 
       if (state.stage === "flop") {
-        els.status.textContent = "Flop dealt. Make your decision.";
         setControls([
           { text: "Keep Flop \u2192 Turn", primary: true, onClick: enterTurn },
           { text: "New Flop", primary: false, onClick: enterFlop }
         ]);
+        updateTimerPauseButton();
+        renderConfigSelections();
         return;
       }
 
       if (state.stage === "turn") {
-        els.status.textContent = "Turn dealt. Decide and continue.";
         setControls([
           { text: "Keep Turn \u2192 River", primary: true, onClick: enterRiver },
           { text: "New Turn", primary: false, onClick: enterTurn }
         ]);
+        updateTimerPauseButton();
+        renderConfigSelections();
         return;
       }
 
       if (state.stage === "river") {
-        els.status.textContent = "River dealt. Final decision spot.";
         setControls([
           { text: "Keep River", primary: true, onClick: keepRiver },
           { text: "New River", primary: false, onClick: enterRiver }
         ]);
+        updateTimerPauseButton();
+        renderConfigSelections();
         return;
       }
 
       if (state.stage === "done") {
-        els.status.textContent = "Drill complete. Final board locked.";
         setControls([
           { text: "Deal Hand", primary: true, onClick: dealHand },
           { text: "New River", primary: false, onClick: enterRiver }
@@ -1714,6 +1906,7 @@
       }
 
       updateTimerPauseButton();
+      renderConfigSelections();
     }
 
     init();
