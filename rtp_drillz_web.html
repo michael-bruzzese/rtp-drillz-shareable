@@ -111,6 +111,22 @@
       font-size: 14px;
     }
 
+    .capture-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #202020;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .capture-wrap label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
     .timer-pause-btn {
       width: 100%;
       padding: 8px 10px;
@@ -747,6 +763,10 @@
       gap: 8px;
     }
 
+    body.capture-off .cam-panel {
+      display: none;
+    }
+
     .cam-title {
       color: var(--white);
       font-weight: 800;
@@ -1270,6 +1290,13 @@
           <option value="replay">Hand Replay</option>
         </select>
       </div>
+      <div class="capture-wrap">
+        <label for="captureSelect">Capture</label>
+        <select id="captureSelect">
+          <option value="off">Off</option>
+          <option value="on">On</option>
+        </select>
+      </div>
     </header>
 
     <section id="manualPanel" class="manual-panel">
@@ -1438,6 +1465,7 @@
     const TIMER_KEY = "rtpDrillzTimerChoice";
     const LAYOUT_KEY = "rtpDrillzLayoutMode";
     const MODE_KEY = "rtpDrillzModeChoice";
+    const CAPTURE_KEY = "rtpDrillzCaptureMode";
     const TIMER_MAP = {
       None: 0,
       "10s": 10,
@@ -1529,6 +1557,7 @@
         active: false,
         index: 0
       },
+      captureMode: "off",
       config: {
         spotType: "",
         position: "",
@@ -1544,6 +1573,7 @@
     };
     let audioContext = null;
     let timerPausedByRecording = false;
+    let webcamPreviewStream = null;
     const recording = {
       mode: "idle", // idle, recording, paused, stopping
       autoStartArmed: true,
@@ -1570,6 +1600,7 @@
       timerPauseBtn: document.getElementById("timerPauseBtn"),
       layoutSelect: document.getElementById("layoutSelect"),
       modeSelect: document.getElementById("modeSelect"),
+      captureSelect: document.getElementById("captureSelect"),
       manualPanel: document.getElementById("manualPanel"),
       sessionPanel: document.getElementById("sessionPanel"),
       inputHandBtn: document.getElementById("inputHandBtn"),
@@ -1631,12 +1662,18 @@
       if (savedMode === "live" || savedMode === "replay") {
         state.mode = savedMode;
       }
+      const savedCapture = localStorage.getItem(CAPTURE_KEY);
+      if (savedCapture === "on" || savedCapture === "off") {
+        state.captureMode = savedCapture;
+      }
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
+      els.captureSelect.value = state.captureMode;
       els.sessionNameInput.value = state.session.name;
       applyLayoutMode(state.layoutMode);
       updateManualPanelVisibility();
+      applyCaptureMode(state.captureMode, false);
 
       els.timerSelect.addEventListener("change", () => {
         ensureAudioContext();
@@ -1663,6 +1700,9 @@
         updateManualPanelVisibility();
         refreshScene();
       });
+      els.captureSelect.addEventListener("change", () => {
+        applyCaptureMode(els.captureSelect.value, true);
+      });
       els.sessionNameInput.addEventListener("input", () => {
         state.session.name = (els.sessionNameInput.value || "").trim();
       });
@@ -1684,7 +1724,6 @@
       els.recDownloadBtn.addEventListener("click", downloadRecording);
       els.inputHandBtn.addEventListener("click", openHandBuilder);
 
-      void initWebcamPreview();
       initManualBuilder();
       bindConfigControls();
       renderConfigSelections();
@@ -1705,6 +1744,39 @@
         state.session.index = 0;
       }
       renderSessionQueue();
+    }
+
+    function isCaptureEnabled() {
+      return state.captureMode === "on";
+    }
+
+    function stopWebcamPreview() {
+      stopStreamTracks(webcamPreviewStream);
+      webcamPreviewStream = null;
+      els.webcamPreview.srcObject = null;
+      els.webcamPlaceholder.textContent = "Capture mode off";
+      els.webcamPlaceholder.style.display = "grid";
+    }
+
+    function applyCaptureMode(mode, persist) {
+      state.captureMode = mode === "on" ? "on" : "off";
+      document.body.classList.toggle("capture-off", !isCaptureEnabled());
+      els.captureSelect.value = state.captureMode;
+      if (persist) {
+        localStorage.setItem(CAPTURE_KEY, state.captureMode);
+      }
+
+      if (isCaptureEnabled()) {
+        setRecHint("Recording auto-starts on first flop. Share this browser tab for full drill capture.");
+        void initWebcamPreview();
+      } else {
+        if (recording.mode === "recording" || recording.mode === "paused") {
+          stopRecording({ reason: "manual" });
+        }
+        stopWebcamPreview();
+        setRecHint("Capture mode is off.");
+      }
+      updateRecordingUi();
     }
 
     function manualFieldOrder() {
@@ -2441,7 +2513,7 @@
       refreshScene();
       startTimerForStreet();
 
-      if (recording.autoStartArmed && recording.mode === "idle") {
+      if (isCaptureEnabled() && recording.autoStartArmed && recording.mode === "idle") {
         recording.autoStartArmed = false;
         void startRecording({ auto: true });
       }
@@ -2539,14 +2611,19 @@
     }
 
     function updateRecordingUi() {
+      const captureEnabled = isCaptureEnabled();
       const isRecording = recording.mode === "recording";
       const isPaused = recording.mode === "paused";
 
       els.recElapsed.textContent = formatElapsed(recording.elapsedMs);
       els.recDot.classList.remove("idle", "recording", "paused");
-      els.recDot.classList.add(isRecording ? "recording" : isPaused ? "paused" : "idle");
+      els.recDot.classList.add(
+        !captureEnabled ? "idle" : isRecording ? "recording" : isPaused ? "paused" : "idle"
+      );
 
-      if (isRecording) {
+      if (!captureEnabled) {
+        els.recStateText.textContent = "Capture off";
+      } else if (isRecording) {
         els.recStateText.textContent = "Recording live";
       } else if (isPaused) {
         els.recStateText.textContent = "Recording paused";
@@ -2556,10 +2633,10 @@
         els.recStateText.textContent = recording.blob ? "Recording ready" : "Recorder idle";
       }
 
-      const canStart = recording.mode === "idle";
-      const canPause = recording.mode === "recording";
-      const canResume = recording.mode === "paused";
-      const canStop = recording.mode === "recording" || recording.mode === "paused";
+      const canStart = captureEnabled && recording.mode === "idle";
+      const canPause = captureEnabled && recording.mode === "recording";
+      const canResume = captureEnabled && recording.mode === "paused";
+      const canStop = captureEnabled && (recording.mode === "recording" || recording.mode === "paused");
       const hasClip = Boolean(recording.blob);
 
       els.recStartBtn.disabled = !canStart;
@@ -2571,6 +2648,12 @@
     }
 
     async function initWebcamPreview() {
+      if (!isCaptureEnabled()) {
+        return;
+      }
+      if (webcamPreviewStream) {
+        return;
+      }
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         setRecHint("Camera preview unavailable in this browser.");
         return;
@@ -2581,9 +2664,12 @@
           video: { width: { ideal: 640 }, height: { ideal: 400 } },
           audio: false
         });
+        webcamPreviewStream = camStream;
         els.webcamPreview.srcObject = camStream;
         els.webcamPlaceholder.style.display = "none";
       } catch (_err) {
+        webcamPreviewStream = null;
+        els.webcamPlaceholder.textContent = "Camera preview unavailable";
         els.webcamPlaceholder.style.display = "grid";
         setRecHint("Camera permission denied. Recording can still run (screen + mic if available).");
       }
@@ -2623,6 +2709,11 @@
     }
 
     async function startRecording({ auto }) {
+      if (!isCaptureEnabled()) {
+        setRecHint("Capture mode is off.");
+        updateRecordingUi();
+        return;
+      }
       if (recording.mode !== "idle") return;
       if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
         setRecHint("Screen capture is not supported in this browser.");

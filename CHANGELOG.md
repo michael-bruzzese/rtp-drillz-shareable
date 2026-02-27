@@ -1,6 +1,7 @@
 # Changelog
 
 ## 2026-02-27
+- Added capture mode toggle (`Off`/`On`) to support one unified app for solo/group and coach-recording workflows.
 - Replaced replay dropdowns with visual `Input Hand` card-picker modal.
 - Added session queue (up to 10 hands) with named session support.
 - Added session JSON export/import for sharing exact hand packs.

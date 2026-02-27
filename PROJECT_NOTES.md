@@ -8,6 +8,9 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
 
 ## Current Feature Snapshot
 - Includes full core drill flow from RTP Drillz.
+- Capture mode toggle:
+  - `Off`: no recorder clutter, no camera/mic prompt.
+  - `On`: full recorder panel and workflow.
 - Webcam preview panel + recording controls (`Start`, `Pause`, `Resume`, `Stop`, `Playback`, `Download`).
 - Auto-start recording on first flop (armed from idle).
 - Recording continues across hand resets/start-over unless user stops it.
