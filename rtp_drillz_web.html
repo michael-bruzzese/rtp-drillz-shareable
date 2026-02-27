@@ -794,6 +794,105 @@
       letter-spacing: 0.2px;
     }
 
+    .preflight-wrap {
+      border: 1px solid #343434;
+      border-radius: 9px;
+      background: #181818;
+      padding: 7px 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .preflight-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .preflight-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #f3f3f3;
+      letter-spacing: 0.2px;
+    }
+
+    .preflight-refresh {
+      border: 1px solid #4a4a4a;
+      border-radius: 7px;
+      padding: 5px 8px;
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .preflight-refresh:hover {
+      background: #373737;
+      transform: none;
+    }
+
+    .preflight-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .preflight-item {
+      border: 1px solid #444;
+      border-radius: 7px;
+      background: #212121;
+      padding: 6px;
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .preflight-label {
+      font-size: 10px;
+      color: #c7c7c7;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      text-transform: uppercase;
+    }
+
+    .preflight-state {
+      font-size: 11px;
+      color: #f2f2f2;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .preflight-item[data-state="ok"] {
+      border-color: #2e6640;
+      background: #1f2f24;
+    }
+
+    .preflight-item[data-state="ok"] .preflight-state {
+      color: #a7efc1;
+    }
+
+    .preflight-item[data-state="warn"] {
+      border-color: #755100;
+      background: #33260f;
+    }
+
+    .preflight-item[data-state="warn"] .preflight-state {
+      color: #ffd88c;
+    }
+
+    .preflight-item[data-state="bad"] {
+      border-color: #6f3030;
+      background: #352020;
+    }
+
+    .preflight-item[data-state="bad"] .preflight-state {
+      color: #ffb2b2;
+    }
+
     .cam-video-shell {
       position: relative;
       width: 100%;
@@ -925,6 +1024,78 @@
       border-radius: 8px;
       background: #000;
       display: block;
+    }
+
+    .timeline-wrap {
+      border: 1px solid #343434;
+      border-radius: 9px;
+      background: #171717;
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .timeline-title {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 800;
+      color: #f2f2f2;
+      letter-spacing: 0.2px;
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 5px;
+      max-height: 160px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .timeline-empty {
+      font-size: 11px;
+      color: #bfbfbf;
+      line-height: 1.3;
+    }
+
+    .timeline-marker {
+      border: 1px solid #4a4a4a;
+      border-radius: 7px;
+      background: #242424;
+      color: #ececec;
+      font-size: 11px;
+      padding: 6px 8px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .timeline-marker:hover {
+      background: #323232;
+      transform: none;
+    }
+
+    .timeline-marker:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+
+    .timeline-marker-label {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .timeline-marker-time {
+      color: #ffd9b0;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 700;
+      flex: 0 0 auto;
     }
 
     .hero-hand-panel {
@@ -1168,6 +1339,23 @@
       aspect-ratio: 4 / 3;
     }
 
+    body.layout-compact .preflight-wrap {
+      padding: 6px;
+      gap: 5px;
+    }
+
+    body.layout-compact .preflight-grid {
+      gap: 5px;
+    }
+
+    body.layout-compact .preflight-item {
+      padding: 5px;
+    }
+
+    body.layout-compact .preflight-state {
+      font-size: 10px;
+    }
+
     body.layout-compact .rec-hint {
       min-height: 0;
       display: none;
@@ -1194,6 +1382,15 @@
     body.layout-compact .playback-video {
       max-height: 140px;
       object-fit: contain;
+    }
+
+    body.layout-compact .timeline-wrap {
+      padding: 7px;
+      gap: 5px;
+    }
+
+    body.layout-compact .timeline-list {
+      max-height: 110px;
     }
 
     body.layout-compact .card {
@@ -1410,6 +1607,26 @@
       <div class="hero-layout">
         <aside class="cam-panel">
           <div class="cam-title">Think Out Loud Capture</div>
+          <div id="preflightWrap" class="preflight-wrap">
+            <div class="preflight-top">
+              <div class="preflight-title">Preflight Check</div>
+              <button id="preflightRefreshBtn" class="preflight-refresh" type="button">Refresh</button>
+            </div>
+            <div class="preflight-grid">
+              <div id="preflightCameraItem" class="preflight-item" data-state="warn">
+                <div class="preflight-label">Camera</div>
+                <div id="preflightCameraState" class="preflight-state">Checking...</div>
+              </div>
+              <div id="preflightMicItem" class="preflight-item" data-state="warn">
+                <div class="preflight-label">Mic</div>
+                <div id="preflightMicState" class="preflight-state">Checking...</div>
+              </div>
+              <div id="preflightDownloadItem" class="preflight-item" data-state="warn">
+                <div class="preflight-label">Download</div>
+                <div id="preflightDownloadState" class="preflight-state">Checking...</div>
+              </div>
+            </div>
+          </div>
           <div class="cam-video-shell">
             <video id="webcamPreview" class="cam-video" autoplay muted playsinline></video>
             <div id="webcamPlaceholder" class="cam-placeholder">Camera preview unavailable</div>
@@ -1436,6 +1653,13 @@
 
           <div id="playbackWrap" class="playback-wrap">
             <video id="reviewPlayback" class="playback-video" controls playsinline></video>
+          </div>
+
+          <div class="timeline-wrap">
+            <h4 class="timeline-title">Street Timeline</h4>
+            <div id="timelineList" class="timeline-list">
+              <div class="timeline-empty">Markers appear here once recording starts.</div>
+            </div>
           </div>
         </aside>
 
@@ -1642,7 +1866,12 @@
       mimeType: "video/webm",
       elapsedMs: 0,
       elapsedIntervalId: null,
-      stopReason: "manual"
+      stopReason: "manual",
+      timeline: [],
+      handHistory: [],
+      handCounter: 0,
+      currentHandNumber: 0,
+      startedAtIso: ""
     };
     const handBuilderState = {
       open: false,
@@ -1700,7 +1929,16 @@
       recPlaybackBtn: document.getElementById("recPlaybackBtn"),
       recDownloadBtn: document.getElementById("recDownloadBtn"),
       playbackWrap: document.getElementById("playbackWrap"),
-      reviewPlayback: document.getElementById("reviewPlayback")
+      reviewPlayback: document.getElementById("reviewPlayback"),
+      preflightWrap: document.getElementById("preflightWrap"),
+      preflightRefreshBtn: document.getElementById("preflightRefreshBtn"),
+      preflightCameraItem: document.getElementById("preflightCameraItem"),
+      preflightMicItem: document.getElementById("preflightMicItem"),
+      preflightDownloadItem: document.getElementById("preflightDownloadItem"),
+      preflightCameraState: document.getElementById("preflightCameraState"),
+      preflightMicState: document.getElementById("preflightMicState"),
+      preflightDownloadState: document.getElementById("preflightDownloadState"),
+      timelineList: document.getElementById("timelineList")
     };
 
     function init() {
@@ -1778,12 +2016,17 @@
       els.recStopBtn.addEventListener("click", () => stopRecording({ reason: "manual" }));
       els.recPlaybackBtn.addEventListener("click", togglePlayback);
       els.recDownloadBtn.addEventListener("click", downloadRecording);
+      els.preflightRefreshBtn.addEventListener("click", () => {
+        void refreshPreflightStatus();
+      });
       els.inputHandBtn.addEventListener("click", openHandBuilder);
 
       initManualBuilder();
       bindConfigControls();
       renderConfigSelections();
       renderSessionQueue();
+      renderTimeline();
+      void refreshPreflightStatus();
       updateRecordingUi();
       refreshScene();
     }
@@ -1832,6 +2075,7 @@
         stopWebcamPreview();
         setRecHint("Capture mode is off.");
       }
+      void refreshPreflightStatus();
       updateRecordingUi();
     }
 
@@ -2496,6 +2740,7 @@
       state.stage = "hand";
       renderSessionQueue();
       refreshScene();
+      addStreetMarker("hand");
     }
 
     function startOver() {
@@ -2580,6 +2825,7 @@
       state.stage = "flop";
       refreshScene();
       startTimerForStreet();
+      addStreetMarker("flop");
 
       if (isCaptureEnabled() && recording.autoStartArmed && recording.mode === "idle") {
         recording.autoStartArmed = false;
@@ -2606,6 +2852,7 @@
       state.stage = "turn";
       refreshScene();
       startTimerForStreet();
+      addStreetMarker("turn");
     }
 
     function enterRiver() {
@@ -2627,6 +2874,7 @@
       state.stage = "river";
       refreshScene();
       startTimerForStreet();
+      addStreetMarker("river");
     }
 
     function keepRiver() {
@@ -2635,6 +2883,7 @@
       hideTimeOverlay();
       stopTableFlash();
       refreshScene();
+      addStreetMarker("done");
     }
 
     function setCountdownIdle() {
@@ -2666,11 +2915,295 @@
       els.recHint.textContent = text;
     }
 
+    function setPreflightItem(itemEl, textEl, stateName, text) {
+      itemEl.dataset.state = stateName;
+      textEl.textContent = text;
+    }
+
+    async function queryPermissionState(permissionName) {
+      if (!navigator.permissions || !navigator.permissions.query) return "";
+      try {
+        const result = await navigator.permissions.query({ name: permissionName });
+        return result && typeof result.state === "string" ? result.state : "";
+      } catch (_err) {
+        return "";
+      }
+    }
+
+    async function refreshPreflightStatus() {
+      const canUseMedia = Boolean(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+      const canDownload =
+        typeof Blob !== "undefined" &&
+        typeof URL !== "undefined" &&
+        typeof URL.createObjectURL === "function" &&
+        "download" in document.createElement("a");
+
+      if (!canUseMedia) {
+        setPreflightItem(els.preflightCameraItem, els.preflightCameraState, "bad", "Unsupported");
+        setPreflightItem(els.preflightMicItem, els.preflightMicState, "bad", "Unsupported");
+      } else {
+        const [cameraPerm, micPerm] = await Promise.all([
+          queryPermissionState("camera"),
+          queryPermissionState("microphone")
+        ]);
+
+        if (webcamPreviewStream && webcamPreviewStream.getVideoTracks().length) {
+          setPreflightItem(els.preflightCameraItem, els.preflightCameraState, "ok", "Ready");
+        } else if (cameraPerm === "granted") {
+          setPreflightItem(els.preflightCameraItem, els.preflightCameraState, "ok", "Granted");
+        } else if (cameraPerm === "denied") {
+          setPreflightItem(els.preflightCameraItem, els.preflightCameraState, "bad", "Blocked");
+        } else {
+          setPreflightItem(els.preflightCameraItem, els.preflightCameraState, "warn", "Needs permission");
+        }
+
+        if (recording.micStream && recording.micStream.getAudioTracks().length) {
+          setPreflightItem(els.preflightMicItem, els.preflightMicState, "ok", "Live");
+        } else if (micPerm === "granted") {
+          setPreflightItem(els.preflightMicItem, els.preflightMicState, "ok", "Granted");
+        } else if (micPerm === "denied") {
+          setPreflightItem(els.preflightMicItem, els.preflightMicState, "bad", "Blocked");
+        } else {
+          setPreflightItem(els.preflightMicItem, els.preflightMicState, "warn", "Needs permission");
+        }
+      }
+
+      if (canDownload) {
+        setPreflightItem(els.preflightDownloadItem, els.preflightDownloadState, "ok", "Supported");
+      } else {
+        setPreflightItem(els.preflightDownloadItem, els.preflightDownloadState, "bad", "Unsupported");
+      }
+    }
+
     function formatElapsed(ms) {
       const totalSeconds = Math.floor(ms / 1000);
       const mm = String(Math.floor(totalSeconds / 60)).padStart(2, "0");
       const ss = String(totalSeconds % 60).padStart(2, "0");
       return `${mm}:${ss}`;
+    }
+
+    function streetName(street) {
+      if (street === "hand") return "Hand";
+      if (street === "flop") return "Flop";
+      if (street === "turn") return "Turn";
+      if (street === "river") return "River";
+      if (street === "done") return "Done";
+      return "Spot";
+    }
+
+    function currentHandNumberHint() {
+      if (state.mode === "replay" && state.session.active) {
+        return state.session.index + 1;
+      }
+      return recording.currentHandNumber || recording.handCounter || 1;
+    }
+
+    function cloneConfigSnapshot() {
+      return {
+        spotType: state.config.spotType || "",
+        position: state.config.position || "",
+        role: state.config.role || "",
+        stacks: state.config.stacks || ""
+      };
+    }
+
+    function initRecordingMetadata() {
+      recording.timeline = [];
+      recording.handHistory = [];
+      recording.handCounter = 0;
+      recording.currentHandNumber = 0;
+      recording.startedAtIso = new Date().toISOString();
+      renderTimeline();
+    }
+
+    function stageToMarkerStreet(stage) {
+      return ["hand", "flop", "turn", "river", "done"].includes(stage) ? stage : "";
+    }
+
+    function ensureHandHistoryEntry(street) {
+      if (street === "hand") {
+        recording.handCounter += 1;
+        recording.currentHandNumber = recording.handCounter;
+      } else if (!recording.currentHandNumber) {
+        recording.handCounter += 1;
+        recording.currentHandNumber = recording.handCounter;
+      }
+
+      let entry = recording.handHistory.find((item) => item.hand_number === recording.currentHandNumber);
+      if (!entry) {
+        entry = {
+          hand_number: recording.currentHandNumber || currentHandNumberHint(),
+          mode: state.mode,
+          hero_hand: [],
+          flop: [],
+          turn: "",
+          river: "",
+          board_runout: [],
+          config: cloneConfigSnapshot(),
+          started_at_ms: recording.elapsedMs,
+          completed_at_ms: null
+        };
+        recording.handHistory.push(entry);
+      }
+
+      entry.mode = state.mode;
+      entry.hero_hand = state.hand.slice(0, 2);
+      entry.config = cloneConfigSnapshot();
+      if (state.board.length >= 3) {
+        entry.flop = state.board.slice(0, 3);
+      }
+      if (state.board.length >= 4) {
+        entry.turn = state.board[3];
+      }
+      if (state.board.length >= 5) {
+        entry.river = state.board[4];
+      }
+      entry.board_runout = state.board.slice(0, 5);
+      if (street === "done") {
+        entry.completed_at_ms = recording.elapsedMs;
+      }
+
+      return entry;
+    }
+
+    function addStreetMarker(street) {
+      if (!street) return;
+      if (recording.mode !== "recording" && recording.mode !== "paused") return;
+
+      const handEntry = ensureHandHistoryEntry(street);
+      const marker = {
+        marker_index: recording.timeline.length + 1,
+        hand_number: handEntry.hand_number || currentHandNumberHint(),
+        street,
+        timestamp_ms: recording.elapsedMs,
+        timestamp_label: formatElapsed(recording.elapsedMs),
+        hero_hand: state.hand.slice(0, 2),
+        board_cards: state.board.slice(0, 5),
+        config: cloneConfigSnapshot()
+      };
+
+      const last = recording.timeline[recording.timeline.length - 1];
+      if (
+        last &&
+        last.hand_number === marker.hand_number &&
+        last.street === marker.street &&
+        Math.abs(last.timestamp_ms - marker.timestamp_ms) < 250
+      ) {
+        return;
+      }
+
+      recording.timeline.push(marker);
+      renderTimeline();
+    }
+
+    function seekPlaybackToMarker(markerIndex) {
+      const marker = recording.timeline[markerIndex];
+      if (!marker) return;
+      if (!recording.blobUrl) {
+        setRecHint("Stop recording first, then use markers to jump through the clip.");
+        return;
+      }
+
+      const targetSeconds = Math.max(0, marker.timestamp_ms / 1000);
+      const applySeek = () => {
+        if (Number.isFinite(els.reviewPlayback.duration)) {
+          els.reviewPlayback.currentTime = Math.min(targetSeconds, Math.max(els.reviewPlayback.duration - 0.05, 0));
+        } else {
+          els.reviewPlayback.currentTime = targetSeconds;
+        }
+        els.reviewPlayback.play().catch(() => {});
+      };
+
+      els.playbackWrap.classList.add("show");
+      if (els.reviewPlayback.readyState >= 1) {
+        applySeek();
+      } else {
+        const onMeta = () => {
+          applySeek();
+          els.reviewPlayback.removeEventListener("loadedmetadata", onMeta);
+        };
+        els.reviewPlayback.addEventListener("loadedmetadata", onMeta);
+      }
+      setRecHint(`Jumped to Hand ${marker.hand_number} ${streetName(marker.street)} at ${marker.timestamp_label}.`);
+    }
+
+    function renderTimeline() {
+      els.timelineList.innerHTML = "";
+      if (!recording.timeline.length) {
+        const empty = document.createElement("div");
+        empty.className = "timeline-empty";
+        empty.textContent = "Markers appear here once recording starts.";
+        els.timelineList.appendChild(empty);
+        return;
+      }
+
+      recording.timeline.forEach((marker, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "timeline-marker";
+        btn.disabled = !recording.blobUrl;
+
+        const label = document.createElement("span");
+        label.className = "timeline-marker-label";
+        label.textContent = `Hand ${marker.hand_number} \u2192 ${streetName(marker.street)}`;
+
+        const time = document.createElement("span");
+        time.className = "timeline-marker-time";
+        time.textContent = marker.timestamp_label;
+
+        btn.appendChild(label);
+        btn.appendChild(time);
+        btn.addEventListener("click", () => seekPlaybackToMarker(index));
+        els.timelineList.appendChild(btn);
+      });
+    }
+
+    function buildCoachNotesPayload(exportedAtIso) {
+      return {
+        version: 1,
+        app: "RTP Drillz Shareable",
+        exported_at: exportedAtIso,
+        recording_started_at: recording.startedAtIso || "",
+        session_name: state.session.name || "",
+        mode: state.mode,
+        timer_per_street: state.timerChoice,
+        capture_mode: state.captureMode,
+        marker_count: recording.timeline.length,
+        hand_count: recording.handHistory.length,
+        markers: recording.timeline.map((marker) => ({
+          marker_index: marker.marker_index,
+          hand_number: marker.hand_number,
+          street: marker.street,
+          timestamp_ms: marker.timestamp_ms,
+          timestamp_label: marker.timestamp_label,
+          hero_hand: marker.hero_hand.slice(),
+          board_cards: marker.board_cards.slice(),
+          config: { ...marker.config }
+        })),
+        hands: recording.handHistory.map((hand) => ({
+          hand_number: hand.hand_number,
+          mode: hand.mode,
+          hero_hand: hand.hero_hand.slice(),
+          flop: hand.flop.slice(),
+          turn: hand.turn || "",
+          river: hand.river || "",
+          board_runout: hand.board_runout.slice(),
+          config: { ...hand.config },
+          started_at_ms: hand.started_at_ms,
+          completed_at_ms: hand.completed_at_ms
+        }))
+      };
+    }
+
+    function downloadBlobFile(blob, fileName) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
 
     function stopStreamTracks(stream) {
@@ -2735,11 +3268,13 @@
         webcamPreviewStream = camStream;
         els.webcamPreview.srcObject = camStream;
         els.webcamPlaceholder.style.display = "none";
+        void refreshPreflightStatus();
       } catch (_err) {
         webcamPreviewStream = null;
         els.webcamPlaceholder.textContent = "Camera preview unavailable";
         els.webcamPlaceholder.style.display = "grid";
         setRecHint("Camera permission denied. Recording can still run (screen + mic if available).");
+        void refreshPreflightStatus();
       }
     }
 
@@ -2793,6 +3328,7 @@
       recording.elapsedMs = 0;
       recording.chunks = [];
       recording.blob = null;
+      initRecordingMetadata();
       if (recording.blobUrl) {
         URL.revokeObjectURL(recording.blobUrl);
         recording.blobUrl = "";
@@ -2886,16 +3422,23 @@
         }
 
         recording.mode = "idle";
+        renderTimeline();
+        void refreshPreflightStatus();
         updateRecordingUi();
       });
 
       mediaRecorder.start(1000);
       startRecordingClock();
+      if (state.hand.length === 2 && state.stage !== "start" && state.stage !== "hand") {
+        addStreetMarker("hand");
+      }
+      addStreetMarker(stageToMarkerStreet(state.stage));
       setRecHint(
         micStream
           ? "Recording now. Speak your thought process out loud."
           : "Recording without mic audio (permission denied)."
       );
+      void refreshPreflightStatus();
       updateRecordingUi();
     }
 
@@ -2965,6 +3508,8 @@
         recording.mediaRecorder = null;
         recording.mode = "idle";
         setRecHint("Recorder stopped unexpectedly.");
+        renderTimeline();
+        void refreshPreflightStatus();
         updateRecordingUi();
       }
     }
@@ -2981,13 +3526,16 @@
 
     function downloadRecording() {
       if (!recording.blob) return;
-      const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-      const link = document.createElement("a");
-      link.href = recording.blobUrl;
-      link.download = `rtp-drillz-session-${stamp}.webm`;
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      const now = new Date();
+      const stamp = now.toISOString().replace(/[:.]/g, "-");
+      const base = `${safeSessionFileName(state.session.name || "rtp-drillz-session")}-${stamp}`;
+
+      downloadBlobFile(recording.blob, `${base}.webm`);
+
+      const sidecar = buildCoachNotesPayload(now.toISOString());
+      const sidecarBlob = new Blob([JSON.stringify(sidecar, null, 2)], { type: "application/json" });
+      downloadBlobFile(sidecarBlob, `${base}.notes.json`);
+      setRecHint("Downloaded recording and coach-notes sidecar.");
     }
 
     function ensureAudioContext() {
