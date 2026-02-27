@@ -422,26 +422,52 @@
       transform: none;
     }
 
-    .builder-slots {
+    .builder-slot-groups {
       display: grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 8px;
+    }
+
+    .builder-group {
+      border: 1px solid #4a4a4a;
+      border-radius: 10px;
+      background: #232323;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .builder-group-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #d7d7d7;
+      letter-spacing: 0.2px;
+      text-align: center;
+    }
+
+    .builder-group-slots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      flex-wrap: wrap;
     }
 
     .builder-slot {
       border: 1px solid #4a4a4a;
-      border-radius: 10px;
-      background: #232323;
-      padding: 6px;
+      border-radius: 8px;
+      background: #242424;
+      padding: 4px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
       align-items: center;
       min-width: 0;
     }
 
     .builder-slot:hover {
-      background: #2b2b2b;
+      background: #313131;
       transform: none;
     }
 
@@ -451,16 +477,9 @@
       background: #2a2118;
     }
 
-    .builder-slot-label {
-      font-size: 12px;
-      font-weight: 800;
-      color: #d7d7d7;
-      letter-spacing: 0.2px;
-    }
-
     .builder-slot-card {
-      width: 78px;
-      height: 112px;
+      width: 68px;
+      height: 98px;
       border-radius: 8px;
       border: 2px dashed #555;
       background: #111;
@@ -1040,14 +1059,14 @@
       gap: 10px;
     }
 
-    body.layout-compact .builder-slots {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+    body.layout-compact .builder-slot-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 6px;
     }
 
     body.layout-compact .builder-slot-card {
-      width: 66px;
-      height: 95px;
+      width: 58px;
+      height: 84px;
     }
 
     body.layout-compact .builder-grid {
@@ -1204,8 +1223,8 @@
         white-space: normal;
       }
 
-      .builder-slots {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .builder-slot-groups {
+        grid-template-columns: repeat(1, minmax(0, 1fr));
       }
 
       .builder-grid {
@@ -1415,35 +1434,51 @@
         <button id="builderCloseBtn" class="builder-close-btn" type="button">Close</button>
       </div>
 
-      <div id="builderSlots" class="builder-slots">
-        <button type="button" class="builder-slot" data-builder-slot="hand1">
-          <span class="builder-slot-label">Hero 1</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="hand2">
-          <span class="builder-slot-label">Hero 2</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="flop1">
-          <span class="builder-slot-label">Flop 1</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="flop2">
-          <span class="builder-slot-label">Flop 2</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="flop3">
-          <span class="builder-slot-label">Flop 3</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="turn">
-          <span class="builder-slot-label">Turn</span>
-          <div class="builder-slot-card"></div>
-        </button>
-        <button type="button" class="builder-slot" data-builder-slot="river">
-          <span class="builder-slot-label">River</span>
-          <div class="builder-slot-card"></div>
-        </button>
+      <div id="builderSlots" class="builder-slot-groups">
+        <div class="builder-group">
+          <div class="builder-group-title">Hero Hole Cards</div>
+          <div class="builder-group-slots">
+            <button type="button" class="builder-slot" data-builder-slot="hand1">
+              <div class="builder-slot-card"></div>
+            </button>
+            <button type="button" class="builder-slot" data-builder-slot="hand2">
+              <div class="builder-slot-card"></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="builder-group">
+          <div class="builder-group-title">Flop</div>
+          <div class="builder-group-slots">
+            <button type="button" class="builder-slot" data-builder-slot="flop1">
+              <div class="builder-slot-card"></div>
+            </button>
+            <button type="button" class="builder-slot" data-builder-slot="flop2">
+              <div class="builder-slot-card"></div>
+            </button>
+            <button type="button" class="builder-slot" data-builder-slot="flop3">
+              <div class="builder-slot-card"></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="builder-group">
+          <div class="builder-group-title">Turn</div>
+          <div class="builder-group-slots">
+            <button type="button" class="builder-slot" data-builder-slot="turn">
+              <div class="builder-slot-card"></div>
+            </button>
+          </div>
+        </div>
+
+        <div class="builder-group">
+          <div class="builder-group-title">River</div>
+          <div class="builder-group-slots">
+            <button type="button" class="builder-slot" data-builder-slot="river">
+              <div class="builder-slot-card"></div>
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="builder-actions">
@@ -1786,6 +1821,18 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       return ["hand1", "hand2", "flop1", "flop2", "flop3", "turn", "river"];
     }
 
+    function builderDeckCardOrder() {
+      const rankOrder = ["A", "2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K"];
+      const suitOrder = ["s", "h", "d", "c"];
+      const ordered = [];
+      suitOrder.forEach((suit) => {
+        rankOrder.forEach((rank) => {
+          ordered.push(`${rank}${suit}`);
+        });
+      });
+      return ordered;
+    }
+
     function cloneManualValues(source) {
       const out = {};
       manualFieldOrder().forEach((field) => {
@@ -1821,7 +1868,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const flop = `${manualCardDisplay(state.manual.flop1)} ${manualCardDisplay(state.manual.flop2)} ${manualCardDisplay(state.manual.flop3)}`;
       const turn = manualCardDisplay(state.manual.turn);
       const river = manualCardDisplay(state.manual.river);
-      els.manualSummary.textContent = `Hero: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
+      els.manualSummary.textContent = `Hero Hole Cards: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
     }
 
     function summarizeManualLine(manual) {
@@ -1829,7 +1876,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const flop = `${manualCardDisplay(manual.flop1)} ${manualCardDisplay(manual.flop2)} ${manualCardDisplay(manual.flop3)}`;
       const turn = manualCardDisplay(manual.turn);
       const river = manualCardDisplay(manual.river);
-      return `Hero ${hero} | Flop ${flop} | Turn ${turn} | River ${river}`;
+      return `Hero Hole Cards ${hero} | Flop ${flop} | Turn ${turn} | River ${river}`;
     }
 
     function hasHeroCards(manual) {
@@ -2102,7 +2149,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         manualFieldOrder().map((field) => handBuilderState.draft[field]).filter(Boolean)
       );
       const activeCard = handBuilderState.draft[handBuilderState.activeField];
-      buildFullDeck().forEach((card) => {
+      builderDeckCardOrder().forEach((card) => {
         const btn = handBuilderState.deckButtons[card];
         if (!btn) return;
         btn.classList.toggle("selected", selectedCards.has(card));
@@ -2203,7 +2250,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       handBuilderState.draft = cloneManualValues(state.manual);
       handBuilderState.activeField = "hand1";
 
-      buildFullDeck().forEach((card) => {
+      builderDeckCardOrder().forEach((card) => {
         const btn = createBuilderDeckButton(card);
         handBuilderState.deckButtons[card] = btn;
         els.builderDeckGrid.appendChild(btn);
