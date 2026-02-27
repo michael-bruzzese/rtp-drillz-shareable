@@ -45,6 +45,8 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
 - `rtp_drillz_web_embedded.html` (deployed embedded cards build)
 - `build_embedded_rtp_drillz.py`
 - `index.html`
+- `tests/e2e/smoke.spec.js` (Playwright smoke tests)
+- `playwright.config.js` and `package.json` (test runner config)
 
 ## Rebuild + Deploy
 ```bash

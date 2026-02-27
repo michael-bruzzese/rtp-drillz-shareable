@@ -24,6 +24,9 @@ jobs:
         with:
           node-version: "22"
 
+      - name: Install Node dependencies
+        run: npm install
+
       - name: Python syntax checks
         run: |
           python -m py_compile rtp_drillz.py build_embedded_rtp_drillz.py
@@ -82,3 +85,9 @@ jobs:
         run: |
           grep -q "__RTP_EMBEDDED_CARDS__" rtp_drillz_web_embedded.html
           grep -q "rtp_drillz_web_embedded.html" index.html
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Playwright smoke tests
+        run: npm run test:e2e

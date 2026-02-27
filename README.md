@@ -31,3 +31,11 @@ python3 build_embedded_rtp_drillz.py \
   --template "./rtp_drillz_web.html" \
   --output "./rtp_drillz_web_embedded.html"
 ```
+
+## E2E Smoke Tests (Playwright)
+
+```bash
+npm install
+npx playwright install chromium
+npm run test:e2e
+```
