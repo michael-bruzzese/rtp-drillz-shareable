@@ -1,6 +1,10 @@
 # Changelog
 
 ## 2026-02-27
+- Replaced replay dropdowns with visual `Input Hand` card-picker modal.
+- Added session queue (up to 10 hands) with named session support.
+- Added session JSON export/import for sharing exact hand packs.
+- Added session hand list controls (load/remove) and run-progress indicator.
 - Added `Go Back a Street` control across all non-start states.
 - Added table context selectors:
   - `SRP/3BP/4BP`

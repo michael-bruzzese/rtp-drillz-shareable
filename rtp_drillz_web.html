@@ -225,6 +225,128 @@
       transform: none;
     }
 
+    .session-panel {
+      display: none;
+      border: 1px solid #343434;
+      border-radius: 12px;
+      background: #1f1f1f;
+      padding: 10px 12px;
+      gap: 10px;
+      flex-direction: column;
+    }
+
+    .session-panel.show {
+      display: flex;
+    }
+
+    .session-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .session-top label {
+      font-size: 13px;
+      font-weight: 700;
+      color: #d8d8d8;
+    }
+
+    .session-name-input {
+      width: min(360px, 100%);
+      padding: 7px 10px;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      background: #272727;
+      color: var(--white);
+      font-size: 14px;
+      outline: none;
+    }
+
+    .session-name-input:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 2px rgba(200, 95, 0, 0.22);
+    }
+
+    .session-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .session-actions button {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 11px;
+      border-radius: 8px;
+      border: 1px solid #4a4a4a;
+      background: #2c2c2c;
+      color: var(--white);
+    }
+
+    .session-actions button:hover {
+      background: #3a3a3a;
+      transform: none;
+    }
+
+    .session-meta {
+      font-size: 13px;
+      color: #d8d8d8;
+      font-weight: 700;
+    }
+
+    .session-list {
+      display: grid;
+      gap: 6px;
+      max-height: 180px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .session-item {
+      border: 1px solid #3a3a3a;
+      border-radius: 9px;
+      background: #232323;
+      padding: 7px 8px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 10px;
+      align-items: center;
+    }
+
+    .session-item.active {
+      border-color: var(--orange);
+      background: #2b2016;
+    }
+
+    .session-item-label {
+      font-size: 12px;
+      color: #ececec;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .session-item-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .session-item-actions button {
+      font-size: 11px;
+      padding: 6px 8px;
+      border-radius: 7px;
+      border: 1px solid #4a4a4a;
+      background: #2d2d2d;
+      color: var(--white);
+    }
+
+    .session-item-actions button:hover {
+      background: #3a3a3a;
+      transform: none;
+    }
+
     .builder-modal {
       position: fixed;
       inset: 0;
@@ -875,6 +997,24 @@
       font-size: 12px;
     }
 
+    body.layout-compact .session-panel {
+      padding: 8px 10px;
+      gap: 8px;
+    }
+
+    body.layout-compact .session-actions {
+      gap: 6px;
+    }
+
+    body.layout-compact .session-actions button {
+      font-size: 11px;
+      padding: 7px 8px;
+    }
+
+    body.layout-compact .session-item-label {
+      font-size: 11px;
+    }
+
     body.layout-compact .builder-dialog {
       padding: 10px;
       gap: 10px;
@@ -1031,6 +1171,15 @@
         align-items: flex-start;
       }
 
+      .session-top {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .session-name-input {
+        width: 100%;
+      }
+
       .manual-summary {
         white-space: normal;
       }
@@ -1129,6 +1278,29 @@
         <div id="manualSummary" class="manual-summary">No hand loaded yet.</div>
       </div>
       <button id="inputHandBtn" class="input-hand-btn" type="button">Input Hand</button>
+    </section>
+
+    <section id="sessionPanel" class="session-panel">
+      <div class="session-top">
+        <label for="sessionNameInput">Session Name</label>
+        <input
+          id="sessionNameInput"
+          class="session-name-input"
+          type="text"
+          maxlength="40"
+          placeholder="e.g. BTN vs BB SRP review"
+        />
+      </div>
+      <div class="session-actions">
+        <button id="addSessionHandBtn" type="button">Add Loaded Hand</button>
+        <button id="startSessionBtn" type="button">Start Session</button>
+        <button id="clearSessionBtn" type="button">Clear Session</button>
+        <button id="exportSessionBtn" type="button">Export Session</button>
+        <button id="importSessionBtn" type="button">Import Session</button>
+        <input id="importSessionInput" type="file" accept=".json,application/json" style="display:none" />
+      </div>
+      <div id="sessionMeta" class="session-meta">0 / 10 hands queued</div>
+      <div id="sessionList" class="session-list"></div>
     </section>
 
     <section id="table" class="table">
@@ -1276,6 +1448,7 @@
       "90s": 90
     };
     const MAX_RECORDING_MS = 10 * 60 * 1000;
+    const MAX_SESSION_HANDS = 10;
 
     const CARD_PREFIXES = [
       "",
@@ -1350,6 +1523,12 @@
         turn: "",
         river: ""
       },
+      session: {
+        name: "",
+        hands: [],
+        active: false,
+        index: 0
+      },
       config: {
         spotType: "",
         position: "",
@@ -1392,8 +1571,18 @@
       layoutSelect: document.getElementById("layoutSelect"),
       modeSelect: document.getElementById("modeSelect"),
       manualPanel: document.getElementById("manualPanel"),
+      sessionPanel: document.getElementById("sessionPanel"),
       inputHandBtn: document.getElementById("inputHandBtn"),
       manualSummary: document.getElementById("manualSummary"),
+      sessionNameInput: document.getElementById("sessionNameInput"),
+      addSessionHandBtn: document.getElementById("addSessionHandBtn"),
+      startSessionBtn: document.getElementById("startSessionBtn"),
+      clearSessionBtn: document.getElementById("clearSessionBtn"),
+      exportSessionBtn: document.getElementById("exportSessionBtn"),
+      importSessionBtn: document.getElementById("importSessionBtn"),
+      importSessionInput: document.getElementById("importSessionInput"),
+      sessionMeta: document.getElementById("sessionMeta"),
+      sessionList: document.getElementById("sessionList"),
       handBuilderModal: document.getElementById("handBuilderModal"),
       builderSlots: Array.from(document.querySelectorAll("[data-builder-slot]")),
       builderDeckGrid: document.getElementById("builderDeckGrid"),
@@ -1445,6 +1634,7 @@
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
+      els.sessionNameInput.value = state.session.name;
       applyLayoutMode(state.layoutMode);
       updateManualPanelVisibility();
 
@@ -1473,6 +1663,15 @@
         updateManualPanelVisibility();
         refreshScene();
       });
+      els.sessionNameInput.addEventListener("input", () => {
+        state.session.name = (els.sessionNameInput.value || "").trim();
+      });
+      els.addSessionHandBtn.addEventListener("click", addLoadedHandToSession);
+      els.startSessionBtn.addEventListener("click", startSessionQueue);
+      els.clearSessionBtn.addEventListener("click", clearSessionQueue);
+      els.exportSessionBtn.addEventListener("click", exportSessionQueue);
+      els.importSessionBtn.addEventListener("click", () => els.importSessionInput.click());
+      els.importSessionInput.addEventListener("change", importSessionQueueFile);
 
       els.recStartBtn.addEventListener("click", () => {
         ensureAudioContext();
@@ -1489,6 +1688,7 @@
       initManualBuilder();
       bindConfigControls();
       renderConfigSelections();
+      renderSessionQueue();
       updateRecordingUi();
       refreshScene();
     }
@@ -1496,9 +1696,15 @@
     function updateManualPanelVisibility() {
       const show = state.mode === "replay";
       els.manualPanel.classList.toggle("show", show);
+      els.sessionPanel.classList.toggle("show", show);
       if (!show && handBuilderState.open) {
         closeHandBuilder(false);
       }
+      if (!show) {
+        state.session.active = false;
+        state.session.index = 0;
+      }
+      renderSessionQueue();
     }
 
     function manualFieldOrder() {
@@ -1541,6 +1747,220 @@
       const turn = manualCardDisplay(state.manual.turn);
       const river = manualCardDisplay(state.manual.river);
       els.manualSummary.textContent = `Hero: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
+    }
+
+    function summarizeManualLine(manual) {
+      const hero = `${manualCardDisplay(manual.hand1)} ${manualCardDisplay(manual.hand2)}`;
+      const flop = `${manualCardDisplay(manual.flop1)} ${manualCardDisplay(manual.flop2)} ${manualCardDisplay(manual.flop3)}`;
+      const turn = manualCardDisplay(manual.turn);
+      const river = manualCardDisplay(manual.river);
+      return `Hero ${hero} | Flop ${flop} | Turn ${turn} | River ${river}`;
+    }
+
+    function hasHeroCards(manual) {
+      return Boolean(manual.hand1 && manual.hand2);
+    }
+
+    function loadSessionHandAt(index, resetStreet) {
+      if (index < 0 || index >= state.session.hands.length) return;
+      state.session.index = index;
+      state.manual = cloneManualValues(state.session.hands[index]);
+      renderManualSummary();
+      if (resetStreet) {
+        stopTimer(true);
+        hideTimeOverlay();
+        stopTableFlash();
+        state.hand = [];
+        state.board = [];
+        state.deck = [];
+        state.stage = "start";
+        refreshScene();
+      }
+      renderSessionQueue();
+    }
+
+    function renderSessionQueue() {
+      const count = state.session.hands.length;
+      const progress = state.session.active
+        ? ` | Running ${Math.min(state.session.index + 1, Math.max(count, 1))}/${Math.max(count, 1)}`
+        : "";
+      els.sessionMeta.textContent = `${count} / ${MAX_SESSION_HANDS} hands queued${progress}`;
+
+      els.addSessionHandBtn.disabled = count >= MAX_SESSION_HANDS;
+      els.startSessionBtn.disabled = count === 0;
+      els.clearSessionBtn.disabled = count === 0;
+      els.exportSessionBtn.disabled = count === 0;
+
+      els.sessionList.innerHTML = "";
+      if (!count) {
+        const empty = document.createElement("div");
+        empty.className = "session-item-label";
+        empty.textContent = "No hands in queue yet.";
+        els.sessionList.appendChild(empty);
+        return;
+      }
+
+      state.session.hands.forEach((hand, index) => {
+        const row = document.createElement("div");
+        row.className = "session-item";
+        if (state.session.active && index === state.session.index) {
+          row.classList.add("active");
+        }
+
+        const label = document.createElement("div");
+        label.className = "session-item-label";
+        label.textContent = `${index + 1}. ${summarizeManualLine(hand)}`;
+
+        const actions = document.createElement("div");
+        actions.className = "session-item-actions";
+
+        const loadBtn = document.createElement("button");
+        loadBtn.type = "button";
+        loadBtn.textContent = "Load";
+        loadBtn.addEventListener("click", () => {
+          state.session.active = false;
+          loadSessionHandAt(index, true);
+        });
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.textContent = "Remove";
+        removeBtn.addEventListener("click", () => {
+          state.session.hands.splice(index, 1);
+          if (!state.session.hands.length) {
+            state.session.active = false;
+            state.session.index = 0;
+          } else if (state.session.index >= state.session.hands.length) {
+            state.session.index = state.session.hands.length - 1;
+          }
+          if (state.session.active && state.session.hands.length) {
+            state.manual = cloneManualValues(state.session.hands[state.session.index]);
+            renderManualSummary();
+          }
+          renderSessionQueue();
+        });
+
+        actions.appendChild(loadBtn);
+        actions.appendChild(removeBtn);
+        row.appendChild(label);
+        row.appendChild(actions);
+        els.sessionList.appendChild(row);
+      });
+    }
+
+    function addLoadedHandToSession() {
+      if (!hasHeroCards(state.manual)) {
+        window.alert("Load at least two hero cards before adding this hand to the session.");
+        return;
+      }
+      if (state.session.hands.length >= MAX_SESSION_HANDS) {
+        window.alert(`Session queue is capped at ${MAX_SESSION_HANDS} hands.`);
+        return;
+      }
+
+      state.session.hands.push(cloneManualValues(state.manual));
+      renderSessionQueue();
+    }
+
+    function startSessionQueue() {
+      if (!state.session.hands.length) {
+        window.alert("Add at least one hand to the session queue first.");
+        return;
+      }
+      state.session.active = true;
+      loadSessionHandAt(0, true);
+    }
+
+    function clearSessionQueue() {
+      state.session.hands = [];
+      state.session.active = false;
+      state.session.index = 0;
+      renderSessionQueue();
+    }
+
+    function safeSessionFileName(name) {
+      const base = (name || "rtp-session")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 40);
+      return base || "rtp-session";
+    }
+
+    function exportSessionQueue() {
+      if (!state.session.hands.length) return;
+      const payload = {
+        version: 1,
+        session_name: state.session.name || "RTP Session",
+        created_at: new Date().toISOString(),
+        hand_count: state.session.hands.length,
+        hands: state.session.hands.map((hand) => cloneManualValues(hand))
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${safeSessionFileName(state.session.name)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function parseImportedSessionHand(raw) {
+      const parsed = {};
+      const used = new Set();
+      manualFieldOrder().forEach((field) => {
+        const value = typeof raw[field] === "string" ? raw[field].trim() : "";
+        if (!value) {
+          parsed[field] = "";
+          return;
+        }
+        const normalized = formatCard(value);
+        if (!/^[2-9TJQKA][shdc]$/.test(normalized)) {
+          throw new Error("Invalid card code in imported session.");
+        }
+        if (used.has(normalized)) {
+          throw new Error("Duplicate card found in imported hand.");
+        }
+        used.add(normalized);
+        parsed[field] = normalized;
+      });
+      return parsed;
+    }
+
+    async function importSessionQueueFile(event) {
+      const file = event.target.files && event.target.files[0];
+      els.importSessionInput.value = "";
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        if (!parsed || !Array.isArray(parsed.hands)) {
+          throw new Error("Session file missing hands array.");
+        }
+
+        const imported = [];
+        for (const raw of parsed.hands) {
+          imported.push(parseImportedSessionHand(raw || {}));
+          if (imported.length >= MAX_SESSION_HANDS) break;
+        }
+
+        state.session.name =
+          typeof parsed.session_name === "string" ? parsed.session_name.trim().slice(0, 40) : "";
+        els.sessionNameInput.value = state.session.name;
+        state.session.hands = imported;
+        state.session.active = false;
+        state.session.index = 0;
+        if (state.session.hands.length) {
+          state.manual = cloneManualValues(state.session.hands[0]);
+          renderManualSummary();
+        }
+        renderSessionQueue();
+      } catch (_err) {
+        window.alert("Could not import that session file. Please check the JSON format.");
+      }
     }
 
     function createBuilderDeckButton(card) {
@@ -1904,6 +2324,22 @@
       hideTimeOverlay();
       stopTableFlash();
 
+      if (state.mode === "replay" && state.session.active) {
+        if (!state.session.hands.length) {
+          state.session.active = false;
+          state.session.index = 0;
+        } else if (state.stage === "done") {
+          if (state.session.index < state.session.hands.length - 1) {
+            loadSessionHandAt(state.session.index + 1, false);
+          } else {
+            state.session.active = false;
+            window.alert("Session complete. Nice work.");
+          }
+        } else {
+          loadSessionHandAt(state.session.index, false);
+        }
+      }
+
       if (state.mode === "replay") {
         const replayHand = resolveReplayCards(
           [state.manual.hand1, state.manual.hand2],
@@ -1918,6 +2354,7 @@
       }
       state.board = [];
       state.stage = "hand";
+      renderSessionQueue();
       refreshScene();
     }
 
@@ -1932,8 +2369,11 @@
       state.config.position = "";
       state.config.role = "";
       state.config.stacks = "";
+      state.session.active = false;
+      state.session.index = 0;
       state.stage = "start";
       renderConfigSelections();
+      renderSessionQueue();
       refreshScene();
     }
 
