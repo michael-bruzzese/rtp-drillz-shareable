@@ -35,7 +35,7 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
   await fillBuilderWithCards(page, CARD_SEQUENCE_ONE);
   await applyBuilder(page);
 
-  await expect(page.locator("#manualSummary")).toContainText("Hero: As Kh");
+  await expect(page.locator("#manualSummary")).toContainText("Hero Hole Cards: As Kh");
   await expect(page.locator("#manualSummary")).toContainText("Flop: Qd Jc Ts");
   await expect(page.locator("#manualSummary")).toContainText("Turn: 9h");
   await expect(page.locator("#manualSummary")).toContainText("River: 2c");
@@ -106,7 +106,7 @@ test("session queue supports naming, export/import, and next-hand progression", 
   await expect(page.locator("#sessionMeta")).toContainText("2 / 10");
 
   await page.locator("#startSessionBtn").click();
-  await expect(page.locator("#manualSummary")).toContainText("Hero: As Kd");
+  await expect(page.locator("#manualSummary")).toContainText("Hero Hole Cards: As Kd");
   await expect(page.locator("#sessionMeta")).toContainText("Running 1/2");
 
   // Play through one full hand, then deal again to advance to the next queued hand.
@@ -117,7 +117,7 @@ test("session queue supports naming, export/import, and next-hand progression", 
   await page.locator("nav#controls button.primary").click(); // Deal (river -> done)
   await page.locator("nav#controls button.primary").click(); // Deal (advance queue)
 
-  await expect(page.locator("#manualSummary")).toContainText("Hero: Ad Qc");
+  await expect(page.locator("#manualSummary")).toContainText("Hero Hole Cards: Ad Qc");
   await expect(page.locator("#sessionMeta")).toContainText("Running 2/2");
 });
 
