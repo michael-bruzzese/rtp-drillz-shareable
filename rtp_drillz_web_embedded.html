@@ -1162,6 +1162,51 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       refreshScene();
     }
 
+    function goBackStreet() {
+      hideTimeOverlay();
+      stopTableFlash();
+
+      if (state.stage === "done") {
+        state.stage = "river";
+        refreshScene();
+        startTimerForStreet();
+        return;
+      }
+
+      if (state.stage === "river") {
+        state.board = state.board.slice(0, 4);
+        state.stage = "turn";
+        refreshScene();
+        startTimerForStreet();
+        return;
+      }
+
+      if (state.stage === "turn") {
+        state.board = state.board.slice(0, 3);
+        state.stage = "flop";
+        refreshScene();
+        startTimerForStreet();
+        return;
+      }
+
+      if (state.stage === "flop") {
+        stopTimer(true);
+        state.board = [];
+        state.stage = "hand";
+        refreshScene();
+        return;
+      }
+
+      if (state.stage === "hand") {
+        stopTimer(true);
+        state.hand = [];
+        state.board = [];
+        state.deck = [];
+        state.stage = "start";
+        refreshScene();
+      }
+    }
+
     function enterFlop() {
       if (state.hand.length !== 2) return;
       resetDeck(state.hand);
@@ -1840,6 +1885,14 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       });
 
       if (state.stage !== "start") {
+        const backBtn = document.createElement("button");
+        backBtn.textContent = "Go Back a Street";
+        backBtn.addEventListener("click", () => {
+          ensureAudioContext();
+          goBackStreet();
+        });
+        els.controls.appendChild(backBtn);
+
         const resetBtn = document.createElement("button");
         resetBtn.textContent = "Start Over";
         resetBtn.addEventListener("click", startOver);
