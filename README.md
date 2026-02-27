@@ -1,4 +1,5 @@
 # RTP Drillz
+[![CI](https://github.com/michael-bruzzese/rtp-drillz-shareable/actions/workflows/ci.yml/badge.svg)](https://github.com/michael-bruzzese/rtp-drillz-shareable/actions/workflows/ci.yml)
 
 RTP Drillz is a poker study tool for range-based flop/turn/river drills.
 
