@@ -95,6 +95,22 @@
       font-size: 14px;
     }
 
+    .mode-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #202020;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .mode-wrap label {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 14px;
+    }
+
     .timer-pause-btn {
       width: 100%;
       padding: 8px 10px;
@@ -153,6 +169,52 @@
 
     .table.flash {
       background: var(--danger);
+    }
+
+    .manual-panel {
+      display: none;
+      border: 1px solid #343434;
+      border-radius: 12px;
+      background: #1f1f1f;
+      padding: 10px 12px;
+      gap: 10px;
+    }
+
+    .manual-panel.show {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .manual-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.2px;
+    }
+
+    .manual-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .manual-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .manual-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #cfcfcf;
+    }
+
+    .manual-cell select {
+      width: 100%;
+      padding: 6px 8px;
+      font-size: 13px;
     }
 
     .countdown {
@@ -577,6 +639,25 @@
       gap: 8px;
     }
 
+    body.layout-compact .manual-panel {
+      padding: 8px 10px;
+      gap: 8px;
+    }
+
+    body.layout-compact .manual-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    body.layout-compact .manual-title {
+      font-size: 14px;
+    }
+
+    body.layout-compact .manual-cell select {
+      padding: 5px 7px;
+      font-size: 12px;
+    }
+
     body.layout-compact .title {
       font-size: clamp(26px, 3.9vw, 42px);
     }
@@ -699,6 +780,10 @@
         padding: 14px 12px 16px;
       }
 
+      .manual-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .table {
         padding: 20px 10px 12px;
       }
@@ -770,7 +855,48 @@
           <option value="compact">Compact</option>
         </select>
       </div>
+      <div class="mode-wrap">
+        <label for="modeSelect">Mode</label>
+        <select id="modeSelect">
+          <option value="live">Live Drill</option>
+          <option value="replay">Hand Replay</option>
+        </select>
+      </div>
     </header>
+
+    <section id="manualPanel" class="manual-panel">
+      <div class="manual-title">Hand Replay Setup</div>
+      <div class="manual-grid">
+        <div class="manual-cell">
+          <span class="manual-label">Hero 1</span>
+          <select id="manualHand1" data-manual-field="hand1"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">Hero 2</span>
+          <select id="manualHand2" data-manual-field="hand2"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">Flop 1</span>
+          <select id="manualFlop1" data-manual-field="flop1"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">Flop 2</span>
+          <select id="manualFlop2" data-manual-field="flop2"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">Flop 3</span>
+          <select id="manualFlop3" data-manual-field="flop3"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">Turn</span>
+          <select id="manualTurn" data-manual-field="turn"></select>
+        </div>
+        <div class="manual-cell">
+          <span class="manual-label">River</span>
+          <select id="manualRiver" data-manual-field="river"></select>
+        </div>
+      </div>
+    </section>
 
     <section id="table" class="table">
       <div id="countdown" class="countdown">Time left: --:--</div>
@@ -857,6 +983,7 @@
     const SUITS = "shdc".split("");
     const TIMER_KEY = "rtpDrillzTimerChoice";
     const LAYOUT_KEY = "rtpDrillzLayoutMode";
+    const MODE_KEY = "rtpDrillzModeChoice";
     const TIMER_MAP = {
       None: 0,
       "10s": 10,
@@ -893,11 +1020,32 @@
       "3": "3",
       "2": "2"
     };
+    const RANK_NAME = {
+      A: "Ace",
+      K: "King",
+      Q: "Queen",
+      J: "Jack",
+      T: "Ten",
+      "9": "Nine",
+      "8": "Eight",
+      "7": "Seven",
+      "6": "Six",
+      "5": "Five",
+      "4": "Four",
+      "3": "Three",
+      "2": "Two"
+    };
     const SUIT_WORD = {
       s: "spades",
       h: "hearts",
       d: "diamonds",
       c: "clubs"
+    };
+    const SUIT_NAME = {
+      s: "Spades",
+      h: "Hearts",
+      d: "Diamonds",
+      c: "Clubs"
     };
     const EMBEDDED_CARDS =
       window.__RTP_EMBEDDED_CARDS__ && typeof window.__RTP_EMBEDDED_CARDS__ === "object"
@@ -907,9 +1055,19 @@
 
     const state = {
       stage: "start",
+      mode: "live",
       hand: [],
       board: [],
       deck: [],
+      manual: {
+        hand1: "",
+        hand2: "",
+        flop1: "",
+        flop2: "",
+        flop3: "",
+        turn: "",
+        river: ""
+      },
       config: {
         spotType: "",
         position: "",
@@ -944,6 +1102,8 @@
       timerSelect: document.getElementById("timerSelect"),
       timerPauseBtn: document.getElementById("timerPauseBtn"),
       layoutSelect: document.getElementById("layoutSelect"),
+      modeSelect: document.getElementById("modeSelect"),
+      manualPanel: document.getElementById("manualPanel"),
       table: document.getElementById("table"),
       countdown: document.getElementById("countdown"),
       timeOverlay: document.getElementById("timeOverlay"),
@@ -952,6 +1112,7 @@
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
       status: document.getElementById("status"),
+      manualSelects: Array.from(document.querySelectorAll("[data-manual-field]")),
       configButtons: Array.from(document.querySelectorAll("[data-config-group]")),
       webcamPreview: document.getElementById("webcamPreview"),
       webcamPlaceholder: document.getElementById("webcamPlaceholder"),
@@ -980,9 +1141,15 @@
       } else if (window.innerHeight < 900) {
         state.layoutMode = "compact";
       }
+      const savedMode = localStorage.getItem(MODE_KEY);
+      if (savedMode === "live" || savedMode === "replay") {
+        state.mode = savedMode;
+      }
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
+      els.modeSelect.value = state.mode;
       applyLayoutMode(state.layoutMode);
+      updateManualPanelVisibility();
 
       els.timerSelect.addEventListener("change", () => {
         ensureAudioContext();
@@ -1003,6 +1170,12 @@
         localStorage.setItem(LAYOUT_KEY, mode);
         applyLayoutMode(mode);
       });
+      els.modeSelect.addEventListener("change", () => {
+        state.mode = els.modeSelect.value === "replay" ? "replay" : "live";
+        localStorage.setItem(MODE_KEY, state.mode);
+        updateManualPanelVisibility();
+        refreshScene();
+      });
 
       els.recStartBtn.addEventListener("click", () => {
         ensureAudioContext();
@@ -1015,10 +1188,90 @@
       els.recDownloadBtn.addEventListener("click", downloadRecording);
 
       void initWebcamPreview();
+      initManualInputs();
       bindConfigControls();
       renderConfigSelections();
       updateRecordingUi();
       refreshScene();
+    }
+
+    function updateManualPanelVisibility() {
+      els.manualPanel.classList.toggle("show", state.mode === "replay");
+    }
+
+    function manualFieldOrder() {
+      return ["hand1", "hand2", "flop1", "flop2", "flop3", "turn", "river"];
+    }
+
+    function buildManualCardOptions(selectEl) {
+      selectEl.innerHTML = "";
+      const emptyOpt = document.createElement("option");
+      emptyOpt.value = "";
+      emptyOpt.textContent = "--";
+      selectEl.appendChild(emptyOpt);
+
+      const rankOrder = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
+      const suitOrder = ["s", "h", "d", "c"];
+
+      rankOrder.forEach((rank) => {
+        suitOrder.forEach((suit) => {
+          const card = `${rank}${suit}`;
+          const opt = document.createElement("option");
+          opt.value = card;
+          opt.textContent = card;
+          selectEl.appendChild(opt);
+        });
+      });
+    }
+
+    function syncManualSelectValues() {
+      els.manualSelects.forEach((sel) => {
+        const field = sel.dataset.manualField;
+        if (!field) return;
+        sel.value = state.manual[field] || "";
+      });
+    }
+
+    function cardPrettyName(code) {
+      if (!code || code.length < 2) return "that card";
+      const rank = code[0].toUpperCase();
+      const suit = code[1].toLowerCase();
+      return `${RANK_NAME[rank] || rank} of ${SUIT_NAME[suit] || suit}`;
+    }
+
+    function showDuplicateCardWarning(cardCode) {
+      const cardName = cardPrettyName(cardCode);
+      window.alert(
+        `Deck should not have two ${cardName} unless you're playing against magicians... and you should not play against magicians.`
+      );
+    }
+
+    function initManualInputs() {
+      els.manualSelects.forEach((sel) => {
+        buildManualCardOptions(sel);
+        sel.addEventListener("change", () => {
+          const field = sel.dataset.manualField;
+          if (!field) return;
+          const value = sel.value || "";
+          if (!value) {
+            state.manual[field] = "";
+            return;
+          }
+
+          const duplicateField = manualFieldOrder().find(
+            (other) => other !== field && state.manual[other] === value
+          );
+          if (duplicateField) {
+            sel.value = "";
+            state.manual[field] = "";
+            showDuplicateCardWarning(value);
+            return;
+          }
+
+          state.manual[field] = value;
+        });
+      });
+      syncManualSelectValues();
     }
 
     function bindConfigControls() {
@@ -1132,12 +1385,77 @@
       }
     }
 
+    function randomAvailableCard(excludedSet) {
+      const available = buildFullDeck().filter((card) => !excludedSet.has(card));
+      if (!available.length) return "";
+      const index = Math.floor(Math.random() * available.length);
+      return available[index];
+    }
+
+    function resolveReplayCards(currentValues, fieldNames, excludedCards, streetLabel) {
+      const resolved = currentValues.slice();
+      const used = new Set(excludedCards);
+      let changed = false;
+
+      for (let i = 0; i < resolved.length; i += 1) {
+        const card = resolved[i];
+        if (!card) continue;
+        if (used.has(card)) {
+          resolved[i] = "";
+          state.manual[fieldNames[i]] = "";
+          changed = true;
+          showDuplicateCardWarning(card);
+          continue;
+        }
+        used.add(card);
+      }
+
+      const missing = [];
+      for (let i = 0; i < resolved.length; i += 1) {
+        if (!resolved[i]) missing.push(i);
+      }
+
+      if (missing.length) {
+        const plural = missing.length > 1 ? "cards" : "card";
+        const allowRandom = window.confirm(
+          `${streetLabel} is missing ${missing.length} ${plural}. Click OK to add random ${plural}, or Cancel to edit.`
+        );
+        if (!allowRandom) {
+          if (changed) syncManualSelectValues();
+          return null;
+        }
+
+        missing.forEach((idx) => {
+          const picked = randomAvailableCard(used);
+          if (!picked) return;
+          resolved[idx] = picked;
+          used.add(picked);
+          state.manual[fieldNames[idx]] = picked;
+          changed = true;
+        });
+      }
+
+      if (changed) syncManualSelectValues();
+      return resolved;
+    }
+
     function dealHand() {
       stopTimer(true);
       hideTimeOverlay();
       stopTableFlash();
 
-      state.hand = generatePlayableHand();
+      if (state.mode === "replay") {
+        const replayHand = resolveReplayCards(
+          [state.manual.hand1, state.manual.hand2],
+          ["hand1", "hand2"],
+          [],
+          "Hero hand"
+        );
+        if (!replayHand) return;
+        state.hand = replayHand;
+      } else {
+        state.hand = generatePlayableHand();
+      }
       state.board = [];
       state.stage = "hand";
       refreshScene();
@@ -1206,8 +1524,19 @@
 
     function enterFlop() {
       if (state.hand.length !== 2) return;
-      resetDeck(state.hand);
-      state.board = [dealCard(), dealCard(), dealCard()];
+      if (state.mode === "replay") {
+        const replayFlop = resolveReplayCards(
+          [state.manual.flop1, state.manual.flop2, state.manual.flop3],
+          ["flop1", "flop2", "flop3"],
+          state.hand,
+          "Flop"
+        );
+        if (!replayFlop) return;
+        state.board = replayFlop;
+      } else {
+        resetDeck(state.hand);
+        state.board = [dealCard(), dealCard(), dealCard()];
+      }
       state.stage = "flop";
       refreshScene();
       startTimerForStreet();
@@ -1221,8 +1550,19 @@
     function enterTurn() {
       if (state.board.length < 3) return;
       const flop = state.board.slice(0, 3);
-      resetDeck([...state.hand, ...flop]);
-      state.board = [...flop, dealCard()];
+      if (state.mode === "replay") {
+        const replayTurn = resolveReplayCards(
+          [state.manual.turn],
+          ["turn"],
+          [...state.hand, ...flop],
+          "Turn"
+        );
+        if (!replayTurn) return;
+        state.board = [...flop, replayTurn[0]];
+      } else {
+        resetDeck([...state.hand, ...flop]);
+        state.board = [...flop, dealCard()];
+      }
       state.stage = "turn";
       refreshScene();
       startTimerForStreet();
@@ -1231,8 +1571,19 @@
     function enterRiver() {
       if (state.board.length < 4) return;
       const four = state.board.slice(0, 4);
-      resetDeck([...state.hand, ...four]);
-      state.board = [...four, dealCard()];
+      if (state.mode === "replay") {
+        const replayRiver = resolveReplayCards(
+          [state.manual.river],
+          ["river"],
+          [...state.hand, ...four],
+          "River"
+        );
+        if (!replayRiver) return;
+        state.board = [...four, replayRiver[0]];
+      } else {
+        resetDeck([...state.hand, ...four]);
+        state.board = [...four, dealCard()];
+      }
       state.stage = "river";
       refreshScene();
       startTimerForStreet();
@@ -1914,7 +2265,7 @@
       if (state.stage === "hand") {
         setControls([
           { text: "Keep Hand", primary: true, onClick: enterFlop },
-          { text: "New Hand", primary: false, onClick: dealHand }
+          { text: state.mode === "replay" ? "Edit Hand" : "New Hand", primary: false, onClick: dealHand }
         ]);
         updateTimerPauseButton();
         renderConfigSelections();
@@ -1924,7 +2275,7 @@
       if (state.stage === "flop") {
         setControls([
           { text: "Keep Flop \u2192 Turn", primary: true, onClick: enterTurn },
-          { text: "New Flop", primary: false, onClick: enterFlop }
+          { text: state.mode === "replay" ? "Edit Flop" : "New Flop", primary: false, onClick: enterFlop }
         ]);
         updateTimerPauseButton();
         renderConfigSelections();
@@ -1934,7 +2285,7 @@
       if (state.stage === "turn") {
         setControls([
           { text: "Keep Turn \u2192 River", primary: true, onClick: enterRiver },
-          { text: "New Turn", primary: false, onClick: enterTurn }
+          { text: state.mode === "replay" ? "Edit Turn" : "New Turn", primary: false, onClick: enterTurn }
         ]);
         updateTimerPauseButton();
         renderConfigSelections();
@@ -1944,7 +2295,7 @@
       if (state.stage === "river") {
         setControls([
           { text: "Keep River", primary: true, onClick: keepRiver },
-          { text: "New River", primary: false, onClick: enterRiver }
+          { text: state.mode === "replay" ? "Edit River" : "New River", primary: false, onClick: enterRiver }
         ]);
         updateTimerPauseButton();
         renderConfigSelections();
@@ -1954,7 +2305,7 @@
       if (state.stage === "done") {
         setControls([
           { text: "Deal Hand", primary: true, onClick: dealHand },
-          { text: "New River", primary: false, onClick: enterRiver }
+          { text: state.mode === "replay" ? "Edit River" : "New River", primary: false, onClick: enterRiver }
         ]);
       }
 
