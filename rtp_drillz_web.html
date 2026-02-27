@@ -177,44 +177,267 @@
       border-radius: 12px;
       background: #1f1f1f;
       padding: 10px 12px;
-      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
     }
 
     .manual-panel.show {
       display: flex;
+    }
+
+    .manual-panel-left {
+      display: flex;
       flex-direction: column;
+      gap: 4px;
+      min-width: 0;
     }
 
     .manual-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 800;
       color: var(--white);
       letter-spacing: 0.2px;
     }
 
-    .manual-grid {
+    .manual-summary {
+      font-size: 13px;
+      color: #d3d3d3;
+      opacity: 0.95;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .input-hand-btn {
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      border: 1px solid #4a4a4a;
+      border-radius: 9px;
+      background: #2c2c2c;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .input-hand-btn:hover {
+      background: #3a3a3a;
+      transform: none;
+    }
+
+    .builder-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.72);
+      padding: 18px;
+    }
+
+    .builder-modal.show {
+      display: flex;
+    }
+
+    .builder-dialog {
+      width: min(1120px, 100%);
+      max-height: calc(100vh - 36px);
+      overflow: auto;
+      border: 1px solid #3a3a3a;
+      border-radius: 14px;
+      background: #191919;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .builder-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .builder-title {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--white);
+    }
+
+    .builder-close-btn {
+      border: 1px solid #4a4a4a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #282828;
+      color: var(--white);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .builder-close-btn:hover {
+      background: #363636;
+      transform: none;
+    }
+
+    .builder-slots {
       display: grid;
       grid-template-columns: repeat(7, minmax(0, 1fr));
       gap: 8px;
     }
 
-    .manual-cell {
+    .builder-slot {
+      border: 1px solid #4a4a4a;
+      border-radius: 10px;
+      background: #232323;
+      padding: 6px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
+      align-items: center;
       min-width: 0;
     }
 
-    .manual-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #cfcfcf;
+    .builder-slot:hover {
+      background: #2b2b2b;
+      transform: none;
     }
 
-    .manual-cell select {
+    .builder-slot.active {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 1px rgba(200, 95, 0, 0.35) inset;
+      background: #2a2118;
+    }
+
+    .builder-slot-label {
+      font-size: 12px;
+      font-weight: 800;
+      color: #d7d7d7;
+      letter-spacing: 0.2px;
+    }
+
+    .builder-slot-card {
+      width: 78px;
+      height: 112px;
+      border-radius: 8px;
+      border: 2px dashed #555;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9e9e9e;
+      font-size: 12px;
+      font-weight: 700;
+      overflow: hidden;
+      text-transform: uppercase;
+    }
+
+    .builder-slot-card img {
       width: 100%;
-      padding: 6px 8px;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      background: #fff;
+    }
+
+    .builder-slot-card.filled {
+      border-style: solid;
+      border-color: #be6820;
+      background: #fff;
+    }
+
+    .builder-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .builder-actions button {
       font-size: 13px;
+      font-weight: 700;
+      padding: 9px 12px;
+      border-radius: 8px;
+      border: 1px solid #4b4b4b;
+      background: #2c2c2c;
+      color: var(--white);
+      cursor: pointer;
+    }
+
+    .builder-actions button:hover {
+      background: #3a3a3a;
+      transform: none;
+    }
+
+    .builder-actions button.primary {
+      background: var(--orange);
+      color: #151515;
+      border-color: #c06a20;
+    }
+
+    .builder-actions button.primary:hover {
+      background: var(--orange-hover);
+    }
+
+    .builder-grid {
+      display: grid;
+      grid-template-columns: repeat(13, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .builder-card-btn {
+      border: 1px solid #4a4a4a;
+      border-radius: 8px;
+      padding: 2px;
+      background: #242424;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 88px;
+      overflow: hidden;
+    }
+
+    .builder-card-btn:hover {
+      background: #323232;
+      transform: none;
+    }
+
+    .builder-card-btn img {
+      width: 100%;
+      max-width: 70px;
+      height: auto;
+      display: block;
+      border-radius: 5px;
+      background: #fff;
+    }
+
+    .builder-card-fallback {
+      width: 100%;
+      max-width: 70px;
+      height: 96px;
+      border-radius: 5px;
+      background: #fff;
+      color: #111;
+      font-size: 20px;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+    }
+
+    .builder-card-btn.selected {
+      border-color: var(--orange);
+      background: #4d2c10;
+    }
+
+    .builder-card-btn.active-selected {
+      box-shadow: 0 0 0 2px rgba(200, 95, 0, 0.6) inset;
     }
 
     .countdown {
@@ -644,18 +867,41 @@
       gap: 8px;
     }
 
-    body.layout-compact .manual-grid {
+    body.layout-compact .manual-title {
+      font-size: 15px;
+    }
+
+    body.layout-compact .manual-summary {
+      font-size: 12px;
+    }
+
+    body.layout-compact .builder-dialog {
+      padding: 10px;
+      gap: 10px;
+    }
+
+    body.layout-compact .builder-slots {
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 6px;
     }
 
-    body.layout-compact .manual-title {
-      font-size: 14px;
+    body.layout-compact .builder-slot-card {
+      width: 66px;
+      height: 95px;
     }
 
-    body.layout-compact .manual-cell select {
-      padding: 5px 7px;
-      font-size: 12px;
+    body.layout-compact .builder-grid {
+      grid-template-columns: repeat(10, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    body.layout-compact .builder-card-btn {
+      min-height: 74px;
+    }
+
+    body.layout-compact .builder-card-btn img,
+    body.layout-compact .builder-card-fallback {
+      max-width: 58px;
     }
 
     body.layout-compact .title {
@@ -780,8 +1026,21 @@
         padding: 14px 12px 16px;
       }
 
-      .manual-grid {
+      .manual-panel {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .manual-summary {
+        white-space: normal;
+      }
+
+      .builder-slots {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .builder-grid {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
       }
 
       .table {
@@ -865,37 +1124,11 @@
     </header>
 
     <section id="manualPanel" class="manual-panel">
-      <div class="manual-title">Hand Replay Setup</div>
-      <div class="manual-grid">
-        <div class="manual-cell">
-          <span class="manual-label">Hero 1</span>
-          <select id="manualHand1" data-manual-field="hand1"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">Hero 2</span>
-          <select id="manualHand2" data-manual-field="hand2"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">Flop 1</span>
-          <select id="manualFlop1" data-manual-field="flop1"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">Flop 2</span>
-          <select id="manualFlop2" data-manual-field="flop2"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">Flop 3</span>
-          <select id="manualFlop3" data-manual-field="flop3"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">Turn</span>
-          <select id="manualTurn" data-manual-field="turn"></select>
-        </div>
-        <div class="manual-cell">
-          <span class="manual-label">River</span>
-          <select id="manualRiver" data-manual-field="river"></select>
-        </div>
+      <div class="manual-panel-left">
+        <div class="manual-title">Hand Replay Setup</div>
+        <div id="manualSummary" class="manual-summary">No hand loaded yet.</div>
       </div>
+      <button id="inputHandBtn" class="input-hand-btn" type="button">Input Hand</button>
     </section>
 
     <section id="table" class="table">
@@ -975,6 +1208,55 @@
       </div>
     </section>
   </main>
+
+  <div id="handBuilderModal" class="builder-modal" aria-hidden="true">
+    <div class="builder-dialog">
+      <div class="builder-top">
+        <h3 class="builder-title">Input Hand</h3>
+        <button id="builderCloseBtn" class="builder-close-btn" type="button">Close</button>
+      </div>
+
+      <div id="builderSlots" class="builder-slots">
+        <button type="button" class="builder-slot" data-builder-slot="hand1">
+          <span class="builder-slot-label">Hero 1</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="hand2">
+          <span class="builder-slot-label">Hero 2</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="flop1">
+          <span class="builder-slot-label">Flop 1</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="flop2">
+          <span class="builder-slot-label">Flop 2</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="flop3">
+          <span class="builder-slot-label">Flop 3</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="turn">
+          <span class="builder-slot-label">Turn</span>
+          <div class="builder-slot-card"></div>
+        </button>
+        <button type="button" class="builder-slot" data-builder-slot="river">
+          <span class="builder-slot-label">River</span>
+          <div class="builder-slot-card"></div>
+        </button>
+      </div>
+
+      <div class="builder-actions">
+        <button id="builderClearSlotBtn" type="button">Clear Slot</button>
+        <button id="builderClearAllBtn" type="button">Clear All</button>
+        <button id="builderAutoFillBtn" type="button">Auto-Fill Missing</button>
+        <button id="builderApplyBtn" type="button" class="primary">Apply</button>
+      </div>
+
+      <div id="builderDeckGrid" class="builder-grid"></div>
+    </div>
+  </div>
 
   <script>
     "use strict";
@@ -1097,6 +1379,12 @@
       elapsedIntervalId: null,
       stopReason: "manual"
     };
+    const handBuilderState = {
+      open: false,
+      activeField: "hand1",
+      draft: {},
+      deckButtons: {}
+    };
 
     const els = {
       timerSelect: document.getElementById("timerSelect"),
@@ -1104,6 +1392,16 @@
       layoutSelect: document.getElementById("layoutSelect"),
       modeSelect: document.getElementById("modeSelect"),
       manualPanel: document.getElementById("manualPanel"),
+      inputHandBtn: document.getElementById("inputHandBtn"),
+      manualSummary: document.getElementById("manualSummary"),
+      handBuilderModal: document.getElementById("handBuilderModal"),
+      builderSlots: Array.from(document.querySelectorAll("[data-builder-slot]")),
+      builderDeckGrid: document.getElementById("builderDeckGrid"),
+      builderCloseBtn: document.getElementById("builderCloseBtn"),
+      builderClearSlotBtn: document.getElementById("builderClearSlotBtn"),
+      builderClearAllBtn: document.getElementById("builderClearAllBtn"),
+      builderAutoFillBtn: document.getElementById("builderAutoFillBtn"),
+      builderApplyBtn: document.getElementById("builderApplyBtn"),
       table: document.getElementById("table"),
       countdown: document.getElementById("countdown"),
       timeOverlay: document.getElementById("timeOverlay"),
@@ -1112,7 +1410,6 @@
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
       status: document.getElementById("status"),
-      manualSelects: Array.from(document.querySelectorAll("[data-manual-field]")),
       configButtons: Array.from(document.querySelectorAll("[data-config-group]")),
       webcamPreview: document.getElementById("webcamPreview"),
       webcamPlaceholder: document.getElementById("webcamPlaceholder"),
@@ -1186,9 +1483,10 @@
       els.recStopBtn.addEventListener("click", () => stopRecording({ reason: "manual" }));
       els.recPlaybackBtn.addEventListener("click", togglePlayback);
       els.recDownloadBtn.addEventListener("click", downloadRecording);
+      els.inputHandBtn.addEventListener("click", openHandBuilder);
 
       void initWebcamPreview();
-      initManualInputs();
+      initManualBuilder();
       bindConfigControls();
       renderConfigSelections();
       updateRecordingUi();
@@ -1196,40 +1494,31 @@
     }
 
     function updateManualPanelVisibility() {
-      els.manualPanel.classList.toggle("show", state.mode === "replay");
+      const show = state.mode === "replay";
+      els.manualPanel.classList.toggle("show", show);
+      if (!show && handBuilderState.open) {
+        closeHandBuilder(false);
+      }
     }
 
     function manualFieldOrder() {
       return ["hand1", "hand2", "flop1", "flop2", "flop3", "turn", "river"];
     }
 
-    function buildManualCardOptions(selectEl) {
-      selectEl.innerHTML = "";
-      const emptyOpt = document.createElement("option");
-      emptyOpt.value = "";
-      emptyOpt.textContent = "--";
-      selectEl.appendChild(emptyOpt);
-
-      const rankOrder = ["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"];
-      const suitOrder = ["s", "h", "d", "c"];
-
-      rankOrder.forEach((rank) => {
-        suitOrder.forEach((suit) => {
-          const card = `${rank}${suit}`;
-          const opt = document.createElement("option");
-          opt.value = card;
-          opt.textContent = card;
-          selectEl.appendChild(opt);
-        });
+    function cloneManualValues(source) {
+      const out = {};
+      manualFieldOrder().forEach((field) => {
+        out[field] = source[field] || "";
       });
+      return out;
     }
 
-    function syncManualSelectValues() {
-      els.manualSelects.forEach((sel) => {
-        const field = sel.dataset.manualField;
-        if (!field) return;
-        sel.value = state.manual[field] || "";
-      });
+    function firstEmptyManualField(values) {
+      return manualFieldOrder().find((field) => !values[field]) || "hand1";
+    }
+
+    function manualCardDisplay(card) {
+      return card ? formatCard(card) : "--";
     }
 
     function cardPrettyName(code) {
@@ -1246,32 +1535,203 @@
       );
     }
 
-    function initManualInputs() {
-      els.manualSelects.forEach((sel) => {
-        buildManualCardOptions(sel);
-        sel.addEventListener("change", () => {
-          const field = sel.dataset.manualField;
-          if (!field) return;
-          const value = sel.value || "";
-          if (!value) {
-            state.manual[field] = "";
-            return;
-          }
+    function renderManualSummary() {
+      const hero = `${manualCardDisplay(state.manual.hand1)} ${manualCardDisplay(state.manual.hand2)}`;
+      const flop = `${manualCardDisplay(state.manual.flop1)} ${manualCardDisplay(state.manual.flop2)} ${manualCardDisplay(state.manual.flop3)}`;
+      const turn = manualCardDisplay(state.manual.turn);
+      const river = manualCardDisplay(state.manual.river);
+      els.manualSummary.textContent = `Hero: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
+    }
 
-          const duplicateField = manualFieldOrder().find(
-            (other) => other !== field && state.manual[other] === value
-          );
-          if (duplicateField) {
-            sel.value = "";
-            state.manual[field] = "";
-            showDuplicateCardWarning(value);
-            return;
-          }
+    function createBuilderDeckButton(card) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "builder-card-btn";
+      btn.dataset.card = card;
+      btn.title = cardPrettyName(card);
 
-          state.manual[field] = value;
-        });
+      const img = document.createElement("img");
+      img.alt = `Card ${formatCard(card)}`;
+
+      const fallback = document.createElement("div");
+      fallback.className = "builder-card-fallback";
+      fallback.textContent = formatCard(card);
+
+      btn.appendChild(img);
+      btn.appendChild(fallback);
+
+      const key = formatCard(card);
+      if (EMBEDDED_CARDS[key]) {
+        img.src = EMBEDDED_CARDS[key];
+        fallback.style.display = "none";
+      } else {
+        attachImageWithFallback(img, fallback, cardImageCandidates(card));
+      }
+
+      btn.addEventListener("click", () => {
+        pickBuilderCard(card);
       });
-      syncManualSelectValues();
+
+      return btn;
+    }
+
+    function createBuilderSlotFace(card, slotBody) {
+      slotBody.innerHTML = "";
+      slotBody.classList.toggle("filled", Boolean(card));
+      if (!card) {
+        slotBody.textContent = "--";
+        return;
+      }
+
+      const img = document.createElement("img");
+      img.alt = `Card ${formatCard(card)}`;
+
+      const fallback = document.createElement("div");
+      fallback.className = "builder-card-fallback";
+      fallback.textContent = formatCard(card);
+
+      slotBody.appendChild(img);
+      slotBody.appendChild(fallback);
+
+      const key = formatCard(card);
+      if (EMBEDDED_CARDS[key]) {
+        img.src = EMBEDDED_CARDS[key];
+        fallback.style.display = "none";
+      } else {
+        attachImageWithFallback(img, fallback, cardImageCandidates(card));
+      }
+    }
+
+    function renderBuilderDeckSelection() {
+      const selectedCards = new Set(
+        manualFieldOrder().map((field) => handBuilderState.draft[field]).filter(Boolean)
+      );
+      const activeCard = handBuilderState.draft[handBuilderState.activeField];
+      buildFullDeck().forEach((card) => {
+        const btn = handBuilderState.deckButtons[card];
+        if (!btn) return;
+        btn.classList.toggle("selected", selectedCards.has(card));
+        btn.classList.toggle("active-selected", Boolean(activeCard && activeCard === card));
+      });
+    }
+
+    function renderBuilderSlots() {
+      els.builderSlots.forEach((slotBtn) => {
+        const field = slotBtn.dataset.builderSlot;
+        if (!field) return;
+        slotBtn.classList.toggle("active", field === handBuilderState.activeField);
+        const slotBody = slotBtn.querySelector(".builder-slot-card");
+        createBuilderSlotFace(handBuilderState.draft[field] || "", slotBody);
+      });
+      renderBuilderDeckSelection();
+    }
+
+    function setBuilderActiveField(field) {
+      if (!manualFieldOrder().includes(field)) return;
+      handBuilderState.activeField = field;
+      renderBuilderSlots();
+    }
+
+    function nextBuilderField(currentField) {
+      const order = manualFieldOrder();
+      const idx = order.indexOf(currentField);
+      if (idx < 0 || idx >= order.length - 1) return currentField;
+      return order[idx + 1];
+    }
+
+    function pickBuilderCard(card) {
+      const activeField = handBuilderState.activeField;
+      if (!activeField) return;
+
+      const duplicateField = manualFieldOrder().find(
+        (field) => field !== activeField && handBuilderState.draft[field] === card
+      );
+      if (duplicateField) {
+        handBuilderState.draft[duplicateField] = "";
+      }
+
+      handBuilderState.draft[activeField] = card;
+      handBuilderState.activeField = nextBuilderField(activeField);
+      renderBuilderSlots();
+    }
+
+    function clearBuilderActiveSlot() {
+      const activeField = handBuilderState.activeField;
+      if (!activeField) return;
+      handBuilderState.draft[activeField] = "";
+      renderBuilderSlots();
+    }
+
+    function clearBuilderAllSlots() {
+      manualFieldOrder().forEach((field) => {
+        handBuilderState.draft[field] = "";
+      });
+      handBuilderState.activeField = "hand1";
+      renderBuilderSlots();
+    }
+
+    function autoFillBuilderMissing() {
+      const used = new Set(
+        manualFieldOrder().map((field) => handBuilderState.draft[field]).filter(Boolean)
+      );
+      manualFieldOrder().forEach((field) => {
+        if (handBuilderState.draft[field]) return;
+        const picked = randomAvailableCard(used);
+        if (!picked) return;
+        handBuilderState.draft[field] = picked;
+        used.add(picked);
+      });
+      renderBuilderSlots();
+    }
+
+    function openHandBuilder() {
+      handBuilderState.draft = cloneManualValues(state.manual);
+      handBuilderState.activeField = firstEmptyManualField(handBuilderState.draft);
+      handBuilderState.open = true;
+      els.handBuilderModal.classList.add("show");
+      els.handBuilderModal.setAttribute("aria-hidden", "false");
+      renderBuilderSlots();
+    }
+
+    function closeHandBuilder(applyChanges) {
+      if (!handBuilderState.open) return;
+      if (applyChanges) {
+        state.manual = cloneManualValues(handBuilderState.draft);
+        renderManualSummary();
+      }
+      handBuilderState.open = false;
+      els.handBuilderModal.classList.remove("show");
+      els.handBuilderModal.setAttribute("aria-hidden", "true");
+    }
+
+    function initManualBuilder() {
+      handBuilderState.draft = cloneManualValues(state.manual);
+      handBuilderState.activeField = "hand1";
+
+      buildFullDeck().forEach((card) => {
+        const btn = createBuilderDeckButton(card);
+        handBuilderState.deckButtons[card] = btn;
+        els.builderDeckGrid.appendChild(btn);
+      });
+
+      els.builderSlots.forEach((slotBtn) => {
+        const field = slotBtn.dataset.builderSlot;
+        if (!field) return;
+        slotBtn.addEventListener("click", () => setBuilderActiveField(field));
+      });
+
+      els.builderCloseBtn.addEventListener("click", () => closeHandBuilder(false));
+      els.builderApplyBtn.addEventListener("click", () => closeHandBuilder(true));
+      els.builderClearSlotBtn.addEventListener("click", clearBuilderActiveSlot);
+      els.builderClearAllBtn.addEventListener("click", clearBuilderAllSlots);
+      els.builderAutoFillBtn.addEventListener("click", autoFillBuilderMissing);
+      els.handBuilderModal.addEventListener("click", (event) => {
+        if (event.target === els.handBuilderModal) {
+          closeHandBuilder(false);
+        }
+      });
+
+      renderManualSummary();
     }
 
     function bindConfigControls() {
@@ -1421,7 +1881,7 @@
           `${streetLabel} is missing ${missing.length} ${plural}. Click OK to add random ${plural}, or Cancel to edit.`
         );
         if (!allowRandom) {
-          if (changed) syncManualSelectValues();
+          if (changed) renderManualSummary();
           return null;
         }
 
@@ -1435,7 +1895,7 @@
         });
       }
 
-      if (changed) syncManualSelectValues();
+      if (changed) renderManualSummary();
       return resolved;
     }
 
