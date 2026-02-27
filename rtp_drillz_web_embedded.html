@@ -542,20 +542,20 @@
 
     .builder-grid {
       display: grid;
-      grid-template-columns: repeat(13, minmax(0, 1fr));
-      gap: 7px;
+      grid-template-columns: repeat(13, 1fr);
+      gap: 5px;
     }
 
     .builder-card-btn {
       border: 1px solid #4a4a4a;
       border-radius: 8px;
-      padding: 2px;
+      padding: 1px;
       background: #242424;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 88px;
+      min-height: 74px;
       overflow: hidden;
     }
 
@@ -566,7 +566,7 @@
 
     .builder-card-btn img {
       width: 100%;
-      max-width: 70px;
+      max-width: 58px;
       height: auto;
       display: block;
       border-radius: 5px;
@@ -575,12 +575,12 @@
 
     .builder-card-fallback {
       width: 100%;
-      max-width: 70px;
-      height: 96px;
+      max-width: 58px;
+      height: 80px;
       border-radius: 5px;
       background: #fff;
       color: #111;
-      font-size: 20px;
+      font-size: 16px;
       font-weight: 800;
       display: none;
       align-items: center;
@@ -1070,17 +1070,22 @@
     }
 
     body.layout-compact .builder-grid {
-      grid-template-columns: repeat(10, minmax(0, 1fr));
-      gap: 5px;
+      grid-template-columns: repeat(13, minmax(0, 1fr));
+      gap: 4px;
     }
 
     body.layout-compact .builder-card-btn {
-      min-height: 74px;
+      min-height: 64px;
     }
 
     body.layout-compact .builder-card-btn img,
     body.layout-compact .builder-card-fallback {
-      max-width: 58px;
+      max-width: 50px;
+    }
+
+    body.layout-compact .builder-card-fallback {
+      height: 70px;
+      font-size: 14px;
     }
 
     body.layout-compact .title {
@@ -1228,7 +1233,22 @@
       }
 
       .builder-grid {
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(13, minmax(0, 1fr));
+        gap: 3px;
+      }
+
+      .builder-card-btn {
+        min-height: 54px;
+      }
+
+      .builder-card-btn img,
+      .builder-card-fallback {
+        max-width: 42px;
+      }
+
+      .builder-card-fallback {
+        height: 58px;
+        font-size: 12px;
       }
 
       .table {
