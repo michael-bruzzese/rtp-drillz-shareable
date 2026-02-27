@@ -39,6 +39,8 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
   await expect(page.locator("#manualSummary")).toContainText("Flop: Qd Jc Ts");
   await expect(page.locator("#manualSummary")).toContainText("Turn: 9h");
   await expect(page.locator("#manualSummary")).toContainText("River: 2c");
+  await expect(page.locator("#manualReadyState")).toContainText("Ready:");
+  await expect(page.locator("#manualReadyState")).toContainText("Deal");
 
   await page.locator("nav#controls button.primary").click();
   await expect(page.locator("#handCards .card-shell")).toHaveCount(2);
@@ -129,6 +131,10 @@ test("capture toggle switches UI mode cleanly", async ({ page }) => {
 
   await page.locator("#captureSelect").selectOption("on");
   await expect(page.locator("body")).not.toHaveClass(/capture-off/);
+  await expect(page.locator("#preflightCameraState")).not.toHaveText("");
+  await expect(page.locator("#preflightMicState")).not.toHaveText("");
+  await expect(page.locator("#preflightDownloadState")).toContainText(/Supported|Unsupported/);
+  await expect(page.locator("#timelineList")).toContainText("Markers appear here once recording starts.");
 
   await page.locator("#captureSelect").selectOption("off");
   await expect(page.locator("body")).toHaveClass(/capture-off/);

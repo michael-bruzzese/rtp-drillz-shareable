@@ -225,6 +225,15 @@
       text-overflow: ellipsis;
     }
 
+    .manual-ready-state {
+      font-size: 12px;
+      color: #ffd9b0;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
     .input-hand-btn {
       padding: 10px 14px;
       font-size: 14px;
@@ -1208,6 +1217,10 @@
       font-size: 12px;
     }
 
+    body.layout-compact .manual-ready-state {
+      font-size: 11px;
+    }
+
     body.layout-compact .session-panel {
       padding: 8px 10px;
       gap: 8px;
@@ -1426,6 +1439,10 @@
         white-space: normal;
       }
 
+      .manual-ready-state {
+        white-space: normal;
+      }
+
       .builder-slot-groups {
         grid-template-columns: repeat(1, minmax(0, 1fr));
       }
@@ -1540,6 +1557,7 @@
       <div class="manual-panel-left">
         <div class="manual-title">Hand Replay Setup</div>
         <div id="manualSummary" class="manual-summary">No hand loaded yet.</div>
+        <div id="manualReadyState" class="manual-ready-state">Ready: Click Deal to load hero hand.</div>
       </div>
       <button id="inputHandBtn" class="input-hand-btn" type="button">Input Hand</button>
     </section>
@@ -1890,6 +1908,7 @@
       sessionPanel: document.getElementById("sessionPanel"),
       inputHandBtn: document.getElementById("inputHandBtn"),
       manualSummary: document.getElementById("manualSummary"),
+      manualReadyState: document.getElementById("manualReadyState"),
       sessionNameInput: document.getElementById("sessionNameInput"),
       addSessionHandBtn: document.getElementById("addSessionHandBtn"),
       startSessionBtn: document.getElementById("startSessionBtn"),
@@ -2131,6 +2150,46 @@
       const turn = manualCardDisplay(state.manual.turn);
       const river = manualCardDisplay(state.manual.river);
       els.manualSummary.textContent = `Hero Hole Cards: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
+      renderReplayReadyState();
+    }
+
+    function replayPrimaryActionText() {
+      if (state.stage === "hand") return "Click Deal Flop.";
+      if (state.stage === "flop") return "Click Deal Turn.";
+      if (state.stage === "turn") return "Click Deal River.";
+      if (state.stage === "river") return "Click Deal.";
+      if (state.stage === "done") return "Click Deal for the next hand.";
+      return "Click Deal to load hero hand.";
+    }
+
+    function renderReplayReadyState() {
+      if (!els.manualReadyState) return;
+      if (state.mode !== "replay") {
+        els.manualReadyState.textContent = "Ready: Hand Replay mode is off.";
+        return;
+      }
+
+      if (!state.manual.hand1 || !state.manual.hand2) {
+        els.manualReadyState.textContent = "Ready: Select both Hero Hole Cards, then click Deal.";
+        return;
+      }
+
+      const boardMissing = ["flop1", "flop2", "flop3", "turn", "river"].filter((field) => !state.manual[field]).length;
+      if (boardMissing > 0) {
+        els.manualReadyState.textContent = `Ready: ${replayPrimaryActionText()} (${boardMissing} board card${boardMissing > 1 ? "s" : ""} can auto-fill)`;
+        return;
+      }
+
+      els.manualReadyState.textContent = `Ready: ${replayPrimaryActionText()}`;
+    }
+
+    function focusPrimaryActionControl() {
+      window.requestAnimationFrame(() => {
+        const primaryBtn = els.controls.querySelector("button.primary");
+        if (primaryBtn) {
+          primaryBtn.focus({ preventScroll: true });
+        }
+      });
     }
 
     function summarizeManualLine(manual) {
@@ -2506,6 +2565,9 @@
       handBuilderState.open = false;
       els.handBuilderModal.classList.remove("show");
       els.handBuilderModal.setAttribute("aria-hidden", "true");
+      if (applyChanges) {
+        focusPrimaryActionControl();
+      }
     }
 
     function initManualBuilder() {
@@ -3145,7 +3207,7 @@
 
         const label = document.createElement("span");
         label.className = "timeline-marker-label";
-        label.textContent = `Hand ${marker.hand_number} \u2192 ${streetName(marker.street)}`;
+        label.textContent = `Hand ${marker.hand_number} -> ${streetName(marker.street)}`;
 
         const time = document.createElement("span");
         time.className = "timeline-marker-time";
@@ -3858,6 +3920,7 @@
     function refreshScene() {
       renderBoard();
       renderHand();
+      renderReplayReadyState();
 
       if (state.stage === "start") {
         els.startSplash.style.display = "block";
