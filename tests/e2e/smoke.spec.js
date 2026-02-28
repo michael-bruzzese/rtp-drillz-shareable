@@ -10,6 +10,10 @@ async function setMode(page, modeValue) {
   await page.locator("#modeSelect").selectOption(modeValue);
 }
 
+async function setWorkspace(page, workspaceValue) {
+  await page.locator("#appModeSelect").selectOption(workspaceValue);
+}
+
 async function openHandBuilder(page) {
   await page.locator("#inputHandBtn").click();
   await expect(page.locator("#handBuilderModal")).toHaveClass(/show/);
@@ -139,4 +143,69 @@ test("capture toggle switches UI mode cleanly", async ({ page }) => {
   await page.locator("#captureSelect").selectOption("off");
   await expect(page.locator("body")).toHaveClass(/capture-off/);
   await expect(page.locator("#recStateText")).toContainText("Capture off");
+});
+
+test("coach mode imports notes/video and exports a single review pack", async ({ page }) => {
+  await page.goto(APP_URL);
+  await setWorkspace(page, "coach");
+
+  await expect(page.locator("body")).toHaveClass(/coach-mode/);
+  await expect(page.locator("#coachPanel")).toBeVisible();
+
+  const notesPayload = {
+    version: 1,
+    app: "RTP Drillz Shareable",
+    session_name: "Coach Review Session",
+    markers: [
+      {
+        marker_index: 1,
+        hand_number: 1,
+        street: "flop",
+        timestamp_ms: 42000,
+        timestamp_label: "00:42",
+        hero_hand: ["As", "Kh"],
+        board_cards: ["Qd", "Jc", "Ts"],
+        config: { spotType: "SRP", position: "IP", role: "PFR", stacks: "100BB" }
+      }
+    ],
+    hands: [
+      {
+        hand_number: 1,
+        mode: "replay",
+        hero_hand: ["As", "Kh"],
+        flop: ["Qd", "Jc", "Ts"],
+        turn: "9h",
+        river: "2c",
+        board_runout: ["Qd", "Jc", "Ts", "9h", "2c"],
+        config: { spotType: "SRP", position: "IP", role: "PFR", stacks: "100BB" },
+        started_at_ms: 0,
+        completed_at_ms: 90000
+      }
+    ]
+  };
+
+  await page.locator("#coachLoadNotesInput").setInputFiles({
+    name: "coach-notes.json",
+    mimeType: "application/json",
+    buffer: Buffer.from(JSON.stringify(notesPayload))
+  });
+
+  await expect(page.locator("#timelineList")).toContainText("Hand 1 -> Flop");
+  await expect(page.locator("#coachMeta")).toContainText("Coach Review Session");
+
+  await page.locator(".timeline-marker").first().click();
+  await expect(page.locator("#coachMarkerDetails")).toContainText("Hand 1 -> Flop");
+
+  await page.locator("#coachLoadVideoInput").setInputFiles({
+    name: "coach-clip.webm",
+    mimeType: "video/webm",
+    buffer: Buffer.from("1a45dfa300000000", "hex")
+  });
+
+  await expect(page.locator("#recStateText")).toContainText("Coach clip loaded");
+
+  const downloadPromise = page.waitForEvent("download");
+  await page.locator("#recExportPackBtn").click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toContain(".zip");
 });

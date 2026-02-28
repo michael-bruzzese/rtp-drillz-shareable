@@ -24,6 +24,19 @@ Open:
 
 - `http://127.0.0.1:8765/rtp_drillz_web_embedded.html`
 
+## Modes
+
+- `Workspace: Drill`: full drill flow, replay input, timer, and optional capture.
+- `Workspace: Coach Review`: load exported review files and scrub by street timeline.
+
+## Shareable Outputs
+
+- `Download`: exports `webm + notes.json`.
+- `Export Pack`: exports a single `.zip` bundle containing:
+  - recording `.webm`
+  - coach sidecar `.notes.json`
+  - session queue `.session.json`
+
 ## Rebuild Embedded HTML
 
 ```bash
