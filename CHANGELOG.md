@@ -1,18 +1,5 @@
 # Changelog
 
-## 2026-02-28
-- Added `Workspace` selector with dedicated `Coach Review` mode.
-- Added coach loader panel for:
-  - `.zip` review pack import
-  - standalone `.webm` video import
-  - standalone `.notes.json` import
-- Added review marker detail card and active marker highlighting in the timeline.
-- Added single-file `Export Pack` (`.zip`) with in-browser zip creation (no backend/service required).
-- Added in-browser zip parsing for coach pack import (stored/no-compression format).
-- Added preflight capture checks and street timeline integration improvements.
-- Added replay ready-state line and primary-action refocus after `Input Hand -> Apply`.
-- Expanded Playwright smoke suite with coach-mode import/export coverage.
-
 ## 2026-02-27
 - Added Playwright smoke test suite and CI execution for core web flows.
 - Added capture mode toggle (`Off`/`On`) to support one unified app for solo/group and coach-recording workflows.

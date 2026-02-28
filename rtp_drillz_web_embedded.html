@@ -95,22 +95,6 @@
       font-size: 14px;
     }
 
-    .app-mode-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #202020;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 10px 12px;
-    }
-
-    .app-mode-wrap label {
-      font-weight: 700;
-      color: var(--text);
-      font-size: 14px;
-    }
-
     .mode-wrap {
       display: flex;
       align-items: center;
@@ -819,80 +803,6 @@
       letter-spacing: 0.2px;
     }
 
-    .coach-panel {
-      display: none;
-      border: 1px solid #343434;
-      border-radius: 9px;
-      background: #181818;
-      padding: 8px;
-      gap: 8px;
-    }
-
-    .coach-panel-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .coach-panel-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #f2f2f2;
-      letter-spacing: 0.2px;
-    }
-
-    .coach-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .coach-actions button {
-      border: 1px solid #4a4a4a;
-      border-radius: 7px;
-      padding: 6px 9px;
-      background: #2a2a2a;
-      color: #fff;
-      font-size: 11px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .coach-actions button:hover {
-      background: #373737;
-      transform: none;
-    }
-
-    .coach-meta {
-      font-size: 11px;
-      color: #d4d4d4;
-      line-height: 1.35;
-    }
-
-    .coach-marker-details {
-      border: 1px solid #3d3d3d;
-      border-radius: 8px;
-      background: #202020;
-      padding: 7px;
-      display: grid;
-      gap: 4px;
-    }
-
-    .coach-marker-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .coach-marker-line {
-      font-size: 11px;
-      color: #dedede;
-      line-height: 1.35;
-      word-break: break-word;
-    }
-
     .preflight-wrap {
       border: 1px solid #343434;
       border-radius: 9px;
@@ -1197,12 +1107,6 @@
       flex: 0 0 auto;
     }
 
-    .timeline-marker.active {
-      border-color: var(--orange);
-      background: #4a2b12;
-      color: #fff2e2;
-    }
-
     .hero-hand-panel {
       display: flex;
       flex-direction: column;
@@ -1256,40 +1160,6 @@
       background: var(--orange-hover);
     }
 
-    body.coach-mode .timer-wrap,
-    body.coach-mode .layout-wrap,
-    body.coach-mode .mode-wrap,
-    body.coach-mode .capture-wrap,
-    body.coach-mode .manual-panel,
-    body.coach-mode .session-panel,
-    body.coach-mode .table,
-    body.coach-mode .hero-hand-panel {
-      display: none !important;
-    }
-
-    body.coach-mode .hero-wrap {
-      padding: 10px;
-    }
-
-    body.coach-mode .hero-layout {
-      justify-content: center;
-      align-items: stretch;
-    }
-
-    body.coach-mode .cam-panel {
-      display: flex !important;
-      width: min(920px, 100%);
-      min-width: 0;
-    }
-
-    body.coach-mode .coach-panel {
-      display: grid;
-    }
-
-    body.coach-mode .preflight-wrap {
-      display: none;
-    }
-
     .card-shell {
       background: var(--orange);
       border-radius: 8px;
@@ -1332,13 +1202,6 @@
 
     body.layout-compact .topbar {
       gap: 8px;
-    }
-
-    body.layout-compact .app-mode-wrap,
-    body.layout-compact .layout-wrap,
-    body.layout-compact .mode-wrap,
-    body.layout-compact .capture-wrap {
-      padding: 8px 10px;
     }
 
     body.layout-compact .manual-panel {
@@ -1487,16 +1350,6 @@
 
     body.layout-compact .cam-video-shell {
       aspect-ratio: 4 / 3;
-    }
-
-    body.layout-compact .coach-panel {
-      padding: 7px;
-      gap: 6px;
-    }
-
-    body.layout-compact .coach-actions button {
-      font-size: 10px;
-      padding: 5px 7px;
     }
 
     body.layout-compact .preflight-wrap {
@@ -1662,13 +1515,6 @@
   <main class="app">
     <header class="topbar">
       <h1 class="title">RTP Drillz</h1>
-      <div class="app-mode-wrap">
-        <label for="appModeSelect">Workspace</label>
-        <select id="appModeSelect">
-          <option value="drill">Drill</option>
-          <option value="coach">Coach Review</option>
-        </select>
-      </div>
       <div class="timer-wrap">
         <div class="timer-row">
           <label for="timerSelect">Timer / street</label>
@@ -1779,24 +1625,6 @@
       <div class="hero-layout">
         <aside class="cam-panel">
           <div class="cam-title">Think Out Loud Capture</div>
-          <div id="coachPanel" class="coach-panel">
-            <div class="coach-panel-top">
-              <div class="coach-panel-title">Coach Review Loader</div>
-              <div class="coach-actions">
-                <button id="coachLoadPackBtn" type="button">Load Pack (.zip)</button>
-                <button id="coachLoadVideoBtn" type="button">Load Video (.webm)</button>
-                <button id="coachLoadNotesBtn" type="button">Load Notes (.json)</button>
-              </div>
-            </div>
-            <input id="coachLoadPackInput" type="file" accept=".zip,application/zip" style="display:none" />
-            <input id="coachLoadVideoInput" type="file" accept="video/webm,.webm" style="display:none" />
-            <input id="coachLoadNotesInput" type="file" accept=".json,application/json" style="display:none" />
-            <div id="coachMeta" class="coach-meta">No review package loaded yet.</div>
-            <div id="coachMarkerDetails" class="coach-marker-details">
-              <div class="coach-marker-title">Marker Details</div>
-              <div class="coach-marker-line">Load notes, then click a timeline marker to inspect the spot.</div>
-            </div>
-          </div>
           <div id="preflightWrap" class="preflight-wrap">
             <div class="preflight-top">
               <div class="preflight-title">Preflight Check</div>
@@ -1839,7 +1667,6 @@
             <button id="recStopBtn" type="button" disabled>Stop</button>
             <button id="recPlaybackBtn" type="button" disabled>Playback</button>
             <button id="recDownloadBtn" type="button" disabled>Download</button>
-            <button id="recExportPackBtn" type="button" disabled>Export Pack</button>
           </div>
 
           <div id="playbackWrap" class="playback-wrap">
@@ -1940,7 +1767,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     const LAYOUT_KEY = "rtpDrillzLayoutMode";
     const MODE_KEY = "rtpDrillzModeChoice";
     const CAPTURE_KEY = "rtpDrillzCaptureMode";
-    const APP_MODE_KEY = "rtpDrillzAppMode";
     const TIMER_MAP = {
       None: 0,
       "10s": 10,
@@ -2012,7 +1838,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     const GENERATED_BACK_DATA_URI = buildGeneratedBackDataUri();
 
     const state = {
-      appMode: "drill",
       stage: "start",
       mode: "live",
       hand: [],
@@ -2032,11 +1857,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         hands: [],
         active: false,
         index: 0
-      },
-      coach: {
-        notesName: "",
-        videoName: "",
-        markerIndex: -1
       },
       captureMode: "off",
       config: {
@@ -2082,7 +1902,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     };
 
     const els = {
-      appModeSelect: document.getElementById("appModeSelect"),
       timerSelect: document.getElementById("timerSelect"),
       timerPauseBtn: document.getElementById("timerPauseBtn"),
       layoutSelect: document.getElementById("layoutSelect"),
@@ -2131,18 +1950,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       recStopBtn: document.getElementById("recStopBtn"),
       recPlaybackBtn: document.getElementById("recPlaybackBtn"),
       recDownloadBtn: document.getElementById("recDownloadBtn"),
-      recExportPackBtn: document.getElementById("recExportPackBtn"),
       playbackWrap: document.getElementById("playbackWrap"),
       reviewPlayback: document.getElementById("reviewPlayback"),
-      coachPanel: document.getElementById("coachPanel"),
-      coachLoadPackBtn: document.getElementById("coachLoadPackBtn"),
-      coachLoadVideoBtn: document.getElementById("coachLoadVideoBtn"),
-      coachLoadNotesBtn: document.getElementById("coachLoadNotesBtn"),
-      coachLoadPackInput: document.getElementById("coachLoadPackInput"),
-      coachLoadVideoInput: document.getElementById("coachLoadVideoInput"),
-      coachLoadNotesInput: document.getElementById("coachLoadNotesInput"),
-      coachMeta: document.getElementById("coachMeta"),
-      coachMarkerDetails: document.getElementById("coachMarkerDetails"),
       preflightWrap: document.getElementById("preflightWrap"),
       preflightRefreshBtn: document.getElementById("preflightRefreshBtn"),
       preflightCameraItem: document.getElementById("preflightCameraItem"),
@@ -2173,27 +1982,15 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       if (savedCapture === "on" || savedCapture === "off") {
         state.captureMode = savedCapture;
       }
-      const savedAppMode = localStorage.getItem(APP_MODE_KEY);
-      if (savedAppMode === "drill" || savedAppMode === "coach") {
-        state.appMode = savedAppMode;
-      }
-      applyAppModeFromQuery();
-      if (state.appMode === "coach") {
-        state.captureMode = "off";
-      }
-      els.appModeSelect.value = state.appMode;
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
       els.captureSelect.value = state.captureMode;
       els.sessionNameInput.value = state.session.name;
       applyLayoutMode(state.layoutMode);
-      applyAppMode(state.appMode, false);
+      updateManualPanelVisibility();
+      applyCaptureMode(state.captureMode, false);
 
-      els.appModeSelect.addEventListener("change", () => {
-        const nextMode = els.appModeSelect.value === "coach" ? "coach" : "drill";
-        applyAppMode(nextMode, true);
-      });
       els.timerSelect.addEventListener("change", () => {
         ensureAudioContext();
         state.timerChoice = els.timerSelect.value;
@@ -2241,18 +2038,9 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       els.recStopBtn.addEventListener("click", () => stopRecording({ reason: "manual" }));
       els.recPlaybackBtn.addEventListener("click", togglePlayback);
       els.recDownloadBtn.addEventListener("click", downloadRecording);
-      els.recExportPackBtn.addEventListener("click", () => {
-        void exportRecordingPack();
-      });
       els.preflightRefreshBtn.addEventListener("click", () => {
         void refreshPreflightStatus();
       });
-      els.coachLoadPackBtn.addEventListener("click", () => els.coachLoadPackInput.click());
-      els.coachLoadVideoBtn.addEventListener("click", () => els.coachLoadVideoInput.click());
-      els.coachLoadNotesBtn.addEventListener("click", () => els.coachLoadNotesInput.click());
-      els.coachLoadPackInput.addEventListener("change", importCoachPackFile);
-      els.coachLoadVideoInput.addEventListener("change", importCoachVideoFile);
-      els.coachLoadNotesInput.addEventListener("change", importCoachNotesFile);
       els.inputHandBtn.addEventListener("click", openHandBuilder);
 
       initManualBuilder();
@@ -2260,15 +2048,13 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       renderConfigSelections();
       renderSessionQueue();
       renderTimeline();
-      renderCoachMeta();
-      renderCoachMarkerDetails();
       void refreshPreflightStatus();
       updateRecordingUi();
       refreshScene();
     }
 
     function updateManualPanelVisibility() {
-      const show = state.appMode === "drill" && state.mode === "replay";
+      const show = state.mode === "replay";
       els.manualPanel.classList.toggle("show", show);
       els.sessionPanel.classList.toggle("show", show);
       if (!show && handBuilderState.open) {
@@ -2281,50 +2067,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       renderSessionQueue();
     }
 
-    function applyAppModeFromQuery() {
-      const params = new URLSearchParams(window.location.search);
-      const queryMode = params.get("workspace") || params.get("view");
-      if (queryMode === "coach" || queryMode === "drill") {
-        state.appMode = queryMode;
-      }
-    }
-
-    function isCoachMode() {
-      return state.appMode === "coach";
-    }
-
-    function applyAppMode(mode, persist) {
-      state.appMode = mode === "coach" ? "coach" : "drill";
-      document.body.classList.toggle("coach-mode", isCoachMode());
-      document.body.classList.toggle("capture-off", !isCaptureEnabled());
-      els.appModeSelect.value = state.appMode;
-      if (persist) {
-        localStorage.setItem(APP_MODE_KEY, state.appMode);
-      }
-
-      if (isCoachMode()) {
-        stopTimer(true);
-        hideTimeOverlay();
-        stopTableFlash();
-        if (recording.mode === "recording" || recording.mode === "paused") {
-          stopRecording({ reason: "manual" });
-        }
-        stopWebcamPreview();
-        setRecHint("Coach mode: load a review pack or load video + notes.");
-      } else if (state.captureMode === "on") {
-        void initWebcamPreview();
-      }
-
-      updateManualPanelVisibility();
-      renderCoachMeta();
-      renderCoachMarkerDetails();
-      void refreshPreflightStatus();
-      updateRecordingUi();
-      refreshScene();
-    }
-
     function isCaptureEnabled() {
-      return state.captureMode === "on" && !isCoachMode();
+      return state.captureMode === "on";
     }
 
     function stopWebcamPreview() {
@@ -2341,14 +2085,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       els.captureSelect.value = state.captureMode;
       if (persist) {
         localStorage.setItem(CAPTURE_KEY, state.captureMode);
-      }
-
-      if (isCoachMode()) {
-        stopWebcamPreview();
-        setRecHint("Coach mode: load a review pack or load video + notes.");
-        void refreshPreflightStatus();
-        updateRecordingUi();
-        return;
       }
 
       if (isCaptureEnabled()) {
@@ -3342,12 +3078,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       recording.handCounter = 0;
       recording.currentHandNumber = 0;
       recording.startedAtIso = new Date().toISOString();
-      state.coach.videoName = "";
-      state.coach.notesName = "";
-      state.coach.markerIndex = -1;
       renderTimeline();
-      renderCoachMarkerDetails();
-      renderCoachMeta();
     }
 
     function stageToMarkerStreet(stage) {
@@ -3427,26 +3158,14 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       }
 
       recording.timeline.push(marker);
-      if (state.coach.markerIndex < 0) {
-        state.coach.markerIndex = 0;
-      }
       renderTimeline();
-      renderCoachMarkerDetails();
-      renderCoachMeta();
     }
 
     function seekPlaybackToMarker(markerIndex) {
       const marker = recording.timeline[markerIndex];
       if (!marker) return;
       if (!recording.blobUrl) {
-        state.coach.markerIndex = markerIndex;
-        renderTimeline();
-        renderCoachMarkerDetails();
-        setRecHint(
-          isCoachMode()
-            ? "Load a .webm clip to enable timestamp jumping."
-            : "Stop recording first, then use markers to jump through the clip."
-        );
+        setRecHint("Stop recording first, then use markers to jump through the clip.");
         return;
       }
 
@@ -3471,9 +3190,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         els.reviewPlayback.addEventListener("loadedmetadata", onMeta);
       }
       setRecHint(`Jumped to Hand ${marker.hand_number} ${streetName(marker.street)} at ${marker.timestamp_label}.`);
-      state.coach.markerIndex = markerIndex;
-      renderTimeline();
-      renderCoachMarkerDetails();
     }
 
     function renderTimeline() {
@@ -3490,10 +3206,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "timeline-marker";
-        btn.disabled = !recording.blobUrl && !isCoachMode();
-        if (index === state.coach.markerIndex) {
-          btn.classList.add("active");
-        }
+        btn.disabled = !recording.blobUrl;
 
         const label = document.createElement("span");
         label.className = "timeline-marker-label";
@@ -3508,45 +3221,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         btn.addEventListener("click", () => seekPlaybackToMarker(index));
         els.timelineList.appendChild(btn);
       });
-    }
-
-    function markerConfigLabel(config) {
-      if (!config) return "None";
-      const parts = [config.spotType, config.position, config.role].filter(Boolean);
-      return parts.length ? parts.join(" | ") : "None";
-    }
-
-    function renderCoachMeta() {
-      const videoName = state.coach.videoName || "None";
-      const notesName = state.coach.notesName || "None";
-      const markerCount = recording.timeline.length;
-      const handCount = recording.handHistory.length;
-      const sessionName = state.session.name || "Untitled";
-      els.coachMeta.textContent =
-        `Session: ${sessionName} | Video: ${videoName} | Notes: ${notesName} | Hands: ${handCount} | Markers: ${markerCount}`;
-    }
-
-    function renderCoachMarkerDetails() {
-      if (!recording.timeline.length) {
-        els.coachMarkerDetails.innerHTML =
-          `<div class="coach-marker-title">Marker Details</div>` +
-          `<div class="coach-marker-line">Load notes, then click a timeline marker to inspect the spot.</div>`;
-        return;
-      }
-
-      if (state.coach.markerIndex < 0 || state.coach.markerIndex >= recording.timeline.length) {
-        state.coach.markerIndex = 0;
-      }
-      const marker = recording.timeline[state.coach.markerIndex];
-      const hero = marker.hero_hand && marker.hero_hand.length ? marker.hero_hand.join(" ") : "-- --";
-      const board = marker.board_cards && marker.board_cards.length ? marker.board_cards.join(" ") : "--";
-      const stack = marker.config && marker.config.stacks ? marker.config.stacks : "None";
-
-      els.coachMarkerDetails.innerHTML =
-        `<div class="coach-marker-title">Hand ${marker.hand_number} -> ${streetName(marker.street)} (${marker.timestamp_label})</div>` +
-        `<div class="coach-marker-line">Hero: ${hero}</div>` +
-        `<div class="coach-marker-line">Board: ${board}</div>` +
-        `<div class="coach-marker-line">Config: ${markerConfigLabel(marker.config)} | Stacks: ${stack}</div>`;
     }
 
     function buildCoachNotesPayload(exportedAtIso) {
@@ -3586,288 +3260,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       };
     }
 
-    function buildSessionQueuePayload(exportedAtIso) {
-      return {
-        version: 1,
-        session_name: state.session.name || "RTP Session",
-        exported_at: exportedAtIso,
-        hand_count: state.session.hands.length,
-        hands: state.session.hands.map((hand) => cloneManualValues(hand))
-      };
-    }
-
-    function toUint8Array(data) {
-      if (data instanceof Uint8Array) return data;
-      if (data instanceof ArrayBuffer) return new Uint8Array(data);
-      if (typeof data === "string") return new TextEncoder().encode(data);
-      return new Uint8Array();
-    }
-
-    const CRC_TABLE = (() => {
-      const table = new Uint32Array(256);
-      for (let n = 0; n < 256; n += 1) {
-        let c = n;
-        for (let k = 0; k < 8; k += 1) {
-          c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
-        }
-        table[n] = c >>> 0;
-      }
-      return table;
-    })();
-
-    function crc32(bytes) {
-      let crc = 0xffffffff;
-      for (let i = 0; i < bytes.length; i += 1) {
-        crc = CRC_TABLE[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
-      }
-      return (crc ^ 0xffffffff) >>> 0;
-    }
-
-    function writeU16(view, offset, value) {
-      view.setUint16(offset, value & 0xffff, true);
-    }
-
-    function writeU32(view, offset, value) {
-      view.setUint32(offset, value >>> 0, true);
-    }
-
-    async function createStoredZip(files) {
-      const encoder = new TextEncoder();
-      const localParts = [];
-      const centralParts = [];
-      let localOffset = 0;
-
-      for (const file of files) {
-        const nameBytes = encoder.encode(file.name);
-        let dataBytes;
-        if (file.data instanceof Blob) {
-          dataBytes = new Uint8Array(await file.data.arrayBuffer());
-        } else {
-          dataBytes = toUint8Array(file.data);
-        }
-        const checksum = crc32(dataBytes);
-
-        const local = new Uint8Array(30 + nameBytes.length + dataBytes.length);
-        const localView = new DataView(local.buffer);
-        writeU32(localView, 0, 0x04034b50);
-        writeU16(localView, 4, 20);
-        writeU16(localView, 6, 0);
-        writeU16(localView, 8, 0);
-        writeU16(localView, 10, 0);
-        writeU16(localView, 12, 0);
-        writeU32(localView, 14, checksum);
-        writeU32(localView, 18, dataBytes.length);
-        writeU32(localView, 22, dataBytes.length);
-        writeU16(localView, 26, nameBytes.length);
-        writeU16(localView, 28, 0);
-        local.set(nameBytes, 30);
-        local.set(dataBytes, 30 + nameBytes.length);
-        localParts.push(local);
-
-        const central = new Uint8Array(46 + nameBytes.length);
-        const centralView = new DataView(central.buffer);
-        writeU32(centralView, 0, 0x02014b50);
-        writeU16(centralView, 4, 20);
-        writeU16(centralView, 6, 20);
-        writeU16(centralView, 8, 0);
-        writeU16(centralView, 10, 0);
-        writeU16(centralView, 12, 0);
-        writeU16(centralView, 14, 0);
-        writeU32(centralView, 16, checksum);
-        writeU32(centralView, 20, dataBytes.length);
-        writeU32(centralView, 24, dataBytes.length);
-        writeU16(centralView, 28, nameBytes.length);
-        writeU16(centralView, 30, 0);
-        writeU16(centralView, 32, 0);
-        writeU16(centralView, 34, 0);
-        writeU16(centralView, 36, 0);
-        writeU32(centralView, 38, 0);
-        writeU32(centralView, 42, localOffset);
-        central.set(nameBytes, 46);
-        centralParts.push(central);
-
-        localOffset += local.length;
-      }
-
-      const centralSize = centralParts.reduce((sum, item) => sum + item.length, 0);
-      const end = new Uint8Array(22);
-      const endView = new DataView(end.buffer);
-      writeU32(endView, 0, 0x06054b50);
-      writeU16(endView, 4, 0);
-      writeU16(endView, 6, 0);
-      writeU16(endView, 8, files.length);
-      writeU16(endView, 10, files.length);
-      writeU32(endView, 12, centralSize);
-      writeU32(endView, 16, localOffset);
-      writeU16(endView, 20, 0);
-
-      return new Blob([...localParts, ...centralParts, end], { type: "application/zip" });
-    }
-
-    function parseStoredZip(arrayBuffer) {
-      const files = {};
-      const view = new DataView(arrayBuffer);
-      const decoder = new TextDecoder();
-      let offset = 0;
-      while (offset + 30 <= view.byteLength) {
-        const sig = view.getUint32(offset, true);
-        if (sig === 0x02014b50 || sig === 0x06054b50) {
-          break;
-        }
-        if (sig !== 0x04034b50) {
-          throw new Error("Unsupported zip format.");
-        }
-        const flags = view.getUint16(offset + 6, true);
-        const method = view.getUint16(offset + 8, true);
-        const compSize = view.getUint32(offset + 18, true);
-        const nameLen = view.getUint16(offset + 26, true);
-        const extraLen = view.getUint16(offset + 28, true);
-        if (flags !== 0 || method !== 0) {
-          throw new Error("Zip compression method not supported.");
-        }
-        const nameStart = offset + 30;
-        const nameEnd = nameStart + nameLen;
-        const dataStart = nameEnd + extraLen;
-        const dataEnd = dataStart + compSize;
-        if (dataEnd > view.byteLength) {
-          throw new Error("Corrupted zip payload.");
-        }
-        const nameBytes = new Uint8Array(arrayBuffer, nameStart, nameLen);
-        const name = decoder.decode(nameBytes);
-        files[name] = new Uint8Array(arrayBuffer.slice(dataStart, dataEnd));
-        offset = dataEnd;
-      }
-      return files;
-    }
-
-    function setRecordingBlob(blob, fileName) {
-      if (recording.blobUrl) {
-        URL.revokeObjectURL(recording.blobUrl);
-      }
-      recording.blob = blob;
-      recording.blobUrl = URL.createObjectURL(blob);
-      els.reviewPlayback.src = recording.blobUrl;
-      els.playbackWrap.classList.remove("show");
-      state.coach.videoName = fileName || "loaded-video.webm";
-      renderCoachMeta();
-      renderTimeline();
-      updateRecordingUi();
-    }
-
-    function normalizeMarkerRecord(raw, index) {
-      const markerIndex = Number.isFinite(raw.marker_index) ? Math.max(1, Math.floor(raw.marker_index)) : index + 1;
-      const handNumber = Number.isFinite(raw.hand_number) ? Math.max(1, Math.floor(raw.hand_number)) : 1;
-      const street = typeof raw.street === "string" ? raw.street.toLowerCase() : "hand";
-      const timestampMs = Number.isFinite(raw.timestamp_ms) ? Math.max(0, Math.floor(raw.timestamp_ms)) : 0;
-      const heroHand = Array.isArray(raw.hero_hand) ? raw.hero_hand.slice(0, 2).map(formatCard) : [];
-      const boardCards = Array.isArray(raw.board_cards) ? raw.board_cards.slice(0, 5).map(formatCard) : [];
-      return {
-        marker_index: markerIndex,
-        hand_number: handNumber,
-        street: ["hand", "flop", "turn", "river", "done"].includes(street) ? street : "hand",
-        timestamp_ms: timestampMs,
-        timestamp_label: formatElapsed(timestampMs),
-        hero_hand: heroHand,
-        board_cards: boardCards,
-        config: raw && raw.config ? { ...raw.config } : { spotType: "", position: "", role: "", stacks: "" }
-      };
-    }
-
-    function normalizeHandRecord(raw, index) {
-      return {
-        hand_number: Number.isFinite(raw.hand_number) ? Math.max(1, Math.floor(raw.hand_number)) : index + 1,
-        mode: raw && raw.mode === "replay" ? "replay" : "live",
-        hero_hand: Array.isArray(raw.hero_hand) ? raw.hero_hand.slice(0, 2).map(formatCard) : [],
-        flop: Array.isArray(raw.flop) ? raw.flop.slice(0, 3).map(formatCard) : [],
-        turn: raw && raw.turn ? formatCard(raw.turn) : "",
-        river: raw && raw.river ? formatCard(raw.river) : "",
-        board_runout: Array.isArray(raw.board_runout) ? raw.board_runout.slice(0, 5).map(formatCard) : [],
-        config: raw && raw.config ? { ...raw.config } : { spotType: "", position: "", role: "", stacks: "" },
-        started_at_ms: Number.isFinite(raw.started_at_ms) ? Math.max(0, Math.floor(raw.started_at_ms)) : 0,
-        completed_at_ms: Number.isFinite(raw.completed_at_ms) ? Math.max(0, Math.floor(raw.completed_at_ms)) : null
-      };
-    }
-
-    function applyImportedCoachNotes(parsed, sourceName) {
-      recording.timeline = Array.isArray(parsed.markers)
-        ? parsed.markers.map((marker, index) => normalizeMarkerRecord(marker || {}, index))
-        : [];
-      recording.handHistory = Array.isArray(parsed.hands)
-        ? parsed.hands.map((hand, index) => normalizeHandRecord(hand || {}, index))
-        : [];
-      recording.startedAtIso = typeof parsed.recording_started_at === "string" ? parsed.recording_started_at : "";
-      if (typeof parsed.session_name === "string") {
-        state.session.name = parsed.session_name.trim().slice(0, 40);
-        els.sessionNameInput.value = state.session.name;
-      }
-      state.coach.notesName = sourceName || "loaded-notes.json";
-      state.coach.markerIndex = recording.timeline.length ? 0 : -1;
-      renderTimeline();
-      renderCoachMeta();
-      renderCoachMarkerDetails();
-      setRecHint(`Loaded notes: ${state.coach.notesName}`);
-      updateRecordingUi();
-    }
-
-    async function importCoachNotesFile(event) {
-      const file = event.target.files && event.target.files[0];
-      els.coachLoadNotesInput.value = "";
-      if (!file) return;
-      try {
-        const parsed = JSON.parse(await file.text());
-        applyImportedCoachNotes(parsed, file.name || "notes.json");
-      } catch (_err) {
-        window.alert("Could not load notes file. Please provide a valid JSON notes export.");
-      }
-    }
-
-    async function importCoachVideoFile(event) {
-      const file = event.target.files && event.target.files[0];
-      els.coachLoadVideoInput.value = "";
-      if (!file) return;
-      const blob = file.slice(0, file.size, file.type || "video/webm");
-      setRecordingBlob(blob, file.name || "video.webm");
-      setRecHint(`Loaded video: ${state.coach.videoName}`);
-    }
-
-    async function importCoachPackFile(event) {
-      const file = event.target.files && event.target.files[0];
-      els.coachLoadPackInput.value = "";
-      if (!file) return;
-      try {
-        const bytesByName = parseStoredZip(await file.arrayBuffer());
-        const names = Object.keys(bytesByName);
-        const videoName = names.find((name) => name.toLowerCase().endsWith(".webm"));
-        const notesName = names.find((name) => name.toLowerCase().endsWith(".notes.json"));
-        const sessionName = names.find((name) => name.toLowerCase().endsWith(".session.json"));
-
-        if (!videoName || !notesName) {
-          throw new Error("Pack missing required files.");
-        }
-
-        const videoBlob = new Blob([bytesByName[videoName]], { type: "video/webm" });
-        setRecordingBlob(videoBlob, videoName);
-        const notesText = new TextDecoder().decode(bytesByName[notesName]);
-        applyImportedCoachNotes(JSON.parse(notesText), notesName);
-
-        if (sessionName) {
-          try {
-            const sessionText = new TextDecoder().decode(bytesByName[sessionName]);
-            const parsedSession = JSON.parse(sessionText);
-            if (parsedSession && typeof parsedSession.session_name === "string") {
-              state.session.name = parsedSession.session_name.trim().slice(0, 40);
-              els.sessionNameInput.value = state.session.name;
-            }
-          } catch (_err) {
-            // Session file is optional; ignore parse issues.
-          }
-        }
-        setRecHint(`Loaded review pack: ${file.name}`);
-      } catch (_err) {
-        window.alert("Could not load pack. Use Export Pack from RTP Drillz Shareable and try again.");
-      }
-    }
-
     function downloadBlobFile(blob, fileName) {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -3886,7 +3278,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
     function updateRecordingUi() {
       const captureEnabled = isCaptureEnabled();
-      const coachMode = isCoachMode();
       const isRecording = recording.mode === "recording";
       const isPaused = recording.mode === "paused";
 
@@ -3896,9 +3287,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         !captureEnabled ? "idle" : isRecording ? "recording" : isPaused ? "paused" : "idle"
       );
 
-      if (coachMode) {
-        els.recStateText.textContent = recording.blob ? "Coach clip loaded" : "Coach review mode";
-      } else if (!captureEnabled) {
+      if (!captureEnabled) {
         els.recStateText.textContent = "Capture off";
       } else if (isRecording) {
         els.recStateText.textContent = "Recording live";
@@ -3910,10 +3299,10 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         els.recStateText.textContent = recording.blob ? "Recording ready" : "Recorder idle";
       }
 
-      const canStart = !coachMode && captureEnabled && recording.mode === "idle";
-      const canPause = !coachMode && captureEnabled && recording.mode === "recording";
-      const canResume = !coachMode && captureEnabled && recording.mode === "paused";
-      const canStop = !coachMode && captureEnabled && (recording.mode === "recording" || recording.mode === "paused");
+      const canStart = captureEnabled && recording.mode === "idle";
+      const canPause = captureEnabled && recording.mode === "recording";
+      const canResume = captureEnabled && recording.mode === "paused";
+      const canStop = captureEnabled && (recording.mode === "recording" || recording.mode === "paused");
       const hasClip = Boolean(recording.blob);
 
       els.recStartBtn.disabled = !canStart;
@@ -3922,7 +3311,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       els.recStopBtn.disabled = !canStop;
       els.recPlaybackBtn.disabled = !hasClip;
       els.recDownloadBtn.disabled = !hasClip;
-      els.recExportPackBtn.disabled = !hasClip;
     }
 
     async function initWebcamPreview() {
@@ -4213,31 +3601,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const sidecarBlob = new Blob([JSON.stringify(sidecar, null, 2)], { type: "application/json" });
       downloadBlobFile(sidecarBlob, `${base}.notes.json`);
       setRecHint("Downloaded recording and coach-notes sidecar.");
-    }
-
-    async function exportRecordingPack() {
-      if (!recording.blob) return;
-      const now = new Date();
-      const stamp = now.toISOString().replace(/[:.]/g, "-");
-      const base = `${safeSessionFileName(state.session.name || "rtp-drillz-session")}-${stamp}`;
-      const notesPayload = buildCoachNotesPayload(now.toISOString());
-      const sessionPayload = buildSessionQueuePayload(now.toISOString());
-
-      const files = [
-        { name: `${base}.webm`, data: recording.blob },
-        { name: `${base}.notes.json`, data: JSON.stringify(notesPayload, null, 2) },
-        { name: `${base}.session.json`, data: JSON.stringify(sessionPayload, null, 2) },
-        {
-          name: "README.txt",
-          data:
-            "RTP Drillz Shareable review package\n" +
-            "- Load this zip in Coach Review mode.\n" +
-            "- Includes recording (.webm), notes (.notes.json), and session queue (.session.json).\n"
-        }
-      ];
-      const zipBlob = await createStoredZip(files);
-      downloadBlobFile(zipBlob, `${base}.zip`);
-      setRecHint("Exported single-file review pack (.zip).");
     }
 
     function ensureAudioContext() {
@@ -4558,10 +3921,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function refreshScene() {
-      if (isCoachMode()) {
-        renderReplayReadyState();
-        return;
-      }
       renderBoard();
       renderHand();
       renderReplayReadyState();
