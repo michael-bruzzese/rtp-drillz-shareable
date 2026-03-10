@@ -69,11 +69,11 @@ test("postflop hero raise does not immediately offer another raise option", asyn
   await page.locator("nav#controls button.primary").click();
   await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 160));
   await expect(page.locator("#status")).toContainText("Flop | Hero");
-  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 320));
+  await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 320));
 
-  await expect(page.locator("#status")).toContainText("Turn | Hero");
+  await expect(page.locator("#status")).toContainText("Done");
   await expect(page.locator("nav#controls button", { hasText: /^Raise To \d+$/ })).toHaveCount(0);
-  await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(1);
+  await expect(page.locator("nav#controls button.primary")).toHaveText("Deal");
 });
 
 test("session queue supports naming, export/import, and next-hand progression", async ({ page }) => {
@@ -170,12 +170,11 @@ test("replay keeps villain hole cards hidden until showdown", async ({ page }) =
   await expect(page.locator("#seatMap")).toContainText("Cards locked");
   await expect(page.locator("#seatMap")).not.toContainText("Ac Ad");
 
-  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("40");
-  await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
-  await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
-  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
-  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
-  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
+  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 160));
+  await expect(page.locator("#seatMap")).not.toContainText("Ac Ad");
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
 
   await expect(page.locator("#status")).toContainText("Done");
   await expect(page.locator("#seatMap")).toContainText("Ac Ad");

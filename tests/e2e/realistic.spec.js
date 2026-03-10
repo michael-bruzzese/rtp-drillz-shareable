@@ -22,6 +22,7 @@ test("realistic mode shows legal hero actions and hides legacy deal controls", a
   await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(1);
   await expect(page.locator("nav#controls button", { hasText: /^Check$/ })).toHaveCount(0);
   await expect(page.locator("nav#controls .action-size-wrap")).toHaveCount(1);
+  await expect(page.locator("#seatMap .dealer-button")).toHaveCount(1);
 });
 
 test("realistic sizing controls keep slider and numeric input in sync", async ({ page }) => {
@@ -55,5 +56,6 @@ test("hero preflop call auto-progresses to flop realistic decision point", async
   await expect(page.locator("#potDisplay")).toContainText("Pot");
   await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
   await expect(page.locator("nav#controls button", { hasText: /^Deal Turn$/ })).toHaveCount(0);
-  await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(1);
+  await expect(page.locator("nav#controls button", { hasText: /^Check$/ })).toHaveCount(1);
+  await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(0);
 });

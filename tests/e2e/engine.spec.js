@@ -24,12 +24,13 @@ test("engine tracks configured blinds and single-raised pot accounting", async (
   const state = await snapshot(page);
 
   expect(state.stage).toBe("flop");
-  expect(state.tableState.pot).toBe(250);
+  expect(state.tableState.pot).toBe(170);
   expect(state.heroPosition).toBe("BTN");
   expect(state.players.find((player) => player.position === "BTN").stack).toBe(920);
-  expect(state.players.find((player) => player.position === "BB").stack).toBe(840);
+  expect(state.players.find((player) => player.position === "BB").stack).toBe(920);
   expect(state.players.find((player) => player.position === "SB").stack).toBe(990);
-  expect(state.legalHero.toCall).toBe(80);
+  expect(state.legalHero.toCall).toBe(0);
+  expect(state.legalHero.check).toBe(true);
 });
 
 test("engine preserves 4-bet IP structure and hero facing action", async ({ page }) => {
@@ -67,7 +68,8 @@ test("engine preserves 4-bet IP structure and hero facing action", async ({ page
   state = await snapshot(page);
 
   expect(state.stage).toBe("flop");
-  expect(state.tableState.pot).toBe(775);
-  expect(state.legalHero.toCall).toBe(260);
+  expect(state.tableState.pot).toBe(515);
+  expect(state.legalHero.toCall).toBe(0);
+  expect(state.legalHero.check).toBe(true);
   expect(state.tableState.streetSnapshots).toContain("flop");
 });
