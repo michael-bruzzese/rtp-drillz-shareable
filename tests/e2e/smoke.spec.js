@@ -50,12 +50,30 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
   await page.locator("nav#controls button.primary").click();
   await expect(page.locator("#handCards .card-shell")).toHaveCount(2);
   await expect(page.locator("#seatMap .seat-chip")).toHaveCount(6);
-  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("40");
+  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("80");
   await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
-  await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
+  await page.locator("nav#controls button", { hasText: /^Raise To 80$/ }).click();
   await expect(page.locator("#status")).toContainText("Flop | Hero");
   await expect(page.locator("#potDisplay")).toContainText("Pot");
   await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
+});
+
+test("postflop hero raise does not immediately offer another raise option", async ({ page }) => {
+  await page.goto(APP_URL);
+  await setMode(page, "replay");
+
+  await openHandBuilder(page);
+  await fillBuilderWithCards(page, CARD_SEQUENCE_ONE);
+  await applyBuilder(page);
+
+  await page.locator("nav#controls button.primary").click();
+  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 160));
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 320));
+
+  await expect(page.locator("#status")).toContainText("Turn | Hero");
+  await expect(page.locator("nav#controls button", { hasText: /^Raise To \d+$/ })).toHaveCount(0);
+  await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(1);
 });
 
 test("session queue supports naming, export/import, and next-hand progression", async ({ page }) => {

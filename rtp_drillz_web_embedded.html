@@ -1648,8 +1648,9 @@
     }
 
     .hero-utility-controls button {
-      padding: 10px 14px;
-      font-size: 14px;
+      min-height: 46px;
+      padding: 12px 18px;
+      font-size: 16px;
       font-weight: 700;
       border-radius: 8px;
       background: #202020;
@@ -2022,8 +2023,9 @@
     }
 
     body.layout-compact .hero-utility-controls button {
-      padding: 9px 12px;
-      font-size: 13px;
+      min-height: 42px;
+      padding: 11px 16px;
+      font-size: 15px;
     }
 
     @media (max-width: 900px) {
@@ -2758,7 +2760,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         actionSeat: 0,
         pendingActionSeats: [],
         betInputTo: DEFAULT_BIG_BLIND_CHIPS,
-        heroActionLocked: false,
+        heroLockedDecisionKey: "",
         headsUpLocked: false,
         lastAggressorSeat: -1,
         lastFullRaiseSize: DEFAULT_BIG_BLIND_CHIPS,
@@ -4885,7 +4887,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       state.tableState.actionSeat = findSeatByPosition("UTG");
       state.tableState.pendingActionSeats = [];
       state.tableState.betInputTo = bigBlindChips();
-      state.tableState.heroActionLocked = false;
+      state.tableState.heroLockedDecisionKey = "";
       state.tableState.headsUpLocked = false;
       state.tableState.lastAggressorSeat = -1;
       state.tableState.lastFullRaiseSize = bigBlindChips();
@@ -5353,6 +5355,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function beginStreetRound(street) {
+      clearHeroDecisionLock();
       state.tableState.street = street;
       state.players.forEach((player) => {
         if (player.status !== "folded") {
@@ -5396,6 +5399,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       };
       state.stage = snapshot.stage;
       state.board = snapshot.boardBase.slice();
+      clearHeroDecisionLock();
       renderStackEditor();
       return true;
     }
@@ -5826,6 +5830,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function dealHand() {
+      clearHeroDecisionLock();
       stopTimer(true);
       hideTimeOverlay();
       stopTableFlash();
@@ -5881,6 +5886,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function startOver() {
+      clearHeroDecisionLock();
       stopTimer(true);
       hideTimeOverlay();
       stopTableFlash();
@@ -5903,6 +5909,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function goBackStreet() {
+      clearHeroDecisionLock();
       hideTimeOverlay();
       stopTableFlash();
 
@@ -6066,6 +6073,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function keepRiver() {
+      clearHeroDecisionLock();
       state.stage = "done";
       setTableStreetFromVisualStage(state.stage);
       stopTimer(true);
@@ -7025,7 +7033,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         btn.textContent = text;
         if (actionId) btn.dataset.actionId = actionId;
         if (primary) btn.classList.add("primary");
-        if (container === els.controls && state.tableState.heroActionLocked) {
+        if (container === els.controls && isHeroDecisionLocked()) {
           btn.disabled = true;
         }
         btn.addEventListener("click", () => {
@@ -7055,6 +7063,33 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     function setControls(buttons, utilityButtons = []) {
       renderControlButtons(els.controls, buttons);
       renderControlButtons(els.heroUtilityControls, buildBaseUtilityButtons().concat(utilityButtons));
+    }
+
+    function clearHeroDecisionLock() {
+      state.tableState.heroLockedDecisionKey = "";
+    }
+
+    function currentHeroDecisionKey() {
+      const hero = getHeroPlayer();
+      if (!hero || hero.status !== "active" || state.tableState.actionSeat !== hero.seat) {
+        return "";
+      }
+      return JSON.stringify({
+        stage: state.stage,
+        street: state.tableState.street,
+        actionSeat: state.tableState.actionSeat,
+        pot: state.tableState.pot,
+        toCall: state.tableState.toCall,
+        heroStack: hero.stack,
+        heroCommittedStreet: hero.committedStreet,
+        heroCommittedHand: hero.committedHand,
+        pendingActionSeats: state.tableState.pendingActionSeats.slice()
+      });
+    }
+
+    function isHeroDecisionLocked() {
+      const key = currentHeroDecisionKey();
+      return Boolean(key) && key === state.tableState.heroLockedDecisionKey;
     }
 
     function sizingStepForLegalActions(legal) {
@@ -7095,7 +7130,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function applyHeroRealisticAction(action, explicitSizeChips = null) {
-      if (state.tableState.heroActionLocked) {
+      if (isHeroDecisionLocked()) {
         return;
       }
       const hero = getHeroPlayer();
@@ -7123,10 +7158,10 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         size = legal.maxCommit;
       }
 
-      state.tableState.heroActionLocked = true;
+      state.tableState.heroLockedDecisionKey = currentHeroDecisionKey();
       const ok = applyPlayerAction(hero.seat, action, size);
       if (!ok) {
-        state.tableState.heroActionLocked = false;
+        clearHeroDecisionLock();
         window.alert("That action is not legal in the current state.");
         return;
       }
@@ -7135,6 +7170,14 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
     function buildRealisticActionButtons(legal) {
       const buttons = [];
+      const heroAlreadyAggressedPostflop =
+        state.tableState.street !== "preflop" &&
+        state.actionLog.some(
+          (entry) =>
+            entry.street === state.tableState.street &&
+            entry.seat === state.tableState.heroSeat &&
+            (entry.action === "bet" || entry.action === "raise" || entry.action === "all-in")
+        );
       if (legal.toCall > 0) {
         buttons.push({ text: "Fold", primary: false, onClick: () => applyHeroRealisticAction("fold"), actionId: "fold" });
       }
@@ -7149,7 +7192,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           actionId: "call"
         });
       }
-      if (legal.bet) {
+      if (legal.bet && !heroAlreadyAggressedPostflop) {
         buttons.push({
           text: `Bet To ${state.tableState.betInputTo}`,
           primary: false,
@@ -7157,7 +7200,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           actionId: "bet"
         });
       }
-      if (legal.raise) {
+      if (legal.raise && !heroAlreadyAggressedPostflop) {
         buttons.push({
           text: `Raise To ${state.tableState.betInputTo}`,
           primary: false,
@@ -7165,7 +7208,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           actionId: "raise"
         });
       }
-      if (legal.allIn) {
+      if (legal.allIn && !heroAlreadyAggressedPostflop) {
         buttons.push({
           text: `All-in ${legal.maxCommit}`,
           primary: false,
@@ -7177,6 +7220,9 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function appendRealisticSizingControl(legal) {
+      if (!els.controls.querySelector('button[data-action-id="bet"], button[data-action-id="raise"], button[data-action-id="all-in"]')) {
+        return;
+      }
       const bounds = realisticSizingBounds(legal);
       if (!bounds) return;
 
@@ -7270,7 +7316,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         }
       });
 
-      if (state.tableState.heroActionLocked) {
+      if (isHeroDecisionLocked()) {
         slider.disabled = true;
         number.disabled = true;
       }
@@ -7328,7 +7374,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function refreshScene() {
-      state.tableState.heroActionLocked = false;
       renderBoard();
       renderHand();
       renderReplayReadyState();
