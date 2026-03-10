@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026-03-08
+- Added realistic table vertical slice behind URL flag (`?realistic=1`) while preserving default classic flow.
+- Added 6-max table-state engine foundations for live mode:
+  - rotating button / position mapping
+  - 5/10 blind posting
+  - pot, stack, and legal-action tracking
+- Added realistic hero action controls:
+  - `Fold`, `Check`, `Call`, `Bet To`, `Raise To`, `All-in`
+  - bet sizing via slider + numeric input (whole-BB increments)
+- Added temporary heads-up lock behavior where non-involved players auto-fold after aggression + call.
+- Added auto-villain action progression to advance action until hero's turn.
+- Added hidden internal range-authoring modal:
+  - open with `Ctrl+Alt+Shift+D` or `?devtools=1`
+  - supports profile hand-balloon editing and profile rule updates
+- Added hidden profile/range engine support:
+  - combo-weighted profile packs
+  - action-rule multiplier lookup
+  - conservative fallback + coverage-gap logging
+  - card blocker application
+- Added dedicated realistic-mode Playwright coverage in `tests/e2e/realistic.spec.js`.
+
 ## 2026-02-27
 - Added Playwright smoke test suite and CI execution for core web flows.
 - Added capture mode toggle (`Off`/`On`) to support one unified app for solo/group and coach-recording workflows.

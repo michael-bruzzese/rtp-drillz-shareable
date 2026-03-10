@@ -24,6 +24,11 @@ Open:
 
 - `http://127.0.0.1:8765/rtp_drillz_web_embedded.html`
 
+Optional dev flags:
+
+- Realistic table slice: `?realistic=1`
+- Hidden internal range tools: `?devtools=1` (or hotkey `Ctrl+Alt+Shift+D`)
+
 ## Rebuild Embedded HTML
 
 ```bash
@@ -40,3 +45,8 @@ npm install
 npx playwright install chromium
 npm run test:e2e
 ```
+
+Test files:
+
+- `tests/e2e/smoke.spec.js`
+- `tests/e2e/realistic.spec.js`

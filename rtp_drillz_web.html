@@ -607,6 +607,198 @@
       box-shadow: 0 0 0 2px rgba(200, 95, 0, 0.6) inset;
     }
 
+    .devtools-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 22;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.84);
+      padding: 16px;
+    }
+
+    .devtools-modal.show {
+      display: flex;
+    }
+
+    .devtools-dialog {
+      width: min(1180px, 100%);
+      max-height: calc(100vh - 32px);
+      overflow: auto;
+      border: 1px solid #3b3b3b;
+      border-radius: 14px;
+      background: #161616;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .devtools-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .devtools-title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 800;
+      color: #f0f0f0;
+    }
+
+    .devtools-hint {
+      color: #b8b8b8;
+      font-size: 12px;
+      margin: 0;
+    }
+
+    .devtools-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .devtools-row label {
+      font-size: 12px;
+      font-weight: 700;
+      color: #d7d7d7;
+    }
+
+    .devtools-row input,
+    .devtools-row select,
+    .devtools-row button,
+    .devtools-row textarea {
+      font-size: 12px;
+    }
+
+    .devtools-row input[type="number"] {
+      width: 92px;
+    }
+
+    .devtools-row button {
+      border: 1px solid #4a4a4a;
+      border-radius: 7px;
+      padding: 7px 10px;
+      background: #2a2a2a;
+      color: #f2f2f2;
+      cursor: pointer;
+    }
+
+    .devtools-row button:hover {
+      background: #383838;
+      transform: none;
+    }
+
+    .devtools-main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .devtools-panel {
+      border: 1px solid #3d3d3d;
+      border-radius: 10px;
+      padding: 8px;
+      background: #202020;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 0;
+    }
+
+    .devtools-panel h4 {
+      margin: 0;
+      font-size: 13px;
+      font-weight: 800;
+      color: #ebebeb;
+    }
+
+    .devtools-balloon-grid {
+      display: grid;
+      grid-template-columns: repeat(13, minmax(0, 1fr));
+      gap: 3px;
+    }
+
+    .devtools-cell-btn {
+      border: 1px solid #4a4a4a;
+      border-radius: 6px;
+      padding: 5px 3px;
+      background: #262626;
+      color: #efefef;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      cursor: pointer;
+    }
+
+    .devtools-cell-btn:hover {
+      background: #343434;
+      transform: none;
+    }
+
+    .devtools-cell-btn.active {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 1px rgba(200, 95, 0, 0.42) inset;
+      background: #3e2b18;
+    }
+
+    .devtools-cell-class {
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .devtools-cell-weight {
+      font-size: 10px;
+      color: #cfcfcf;
+      line-height: 1;
+    }
+
+    .devtools-cell-combos {
+      font-size: 10px;
+      color: #9f9f9f;
+      line-height: 1;
+    }
+
+    .devtools-meta {
+      font-size: 12px;
+      color: #d7d7d7;
+      min-height: 18px;
+    }
+
+    .devtools-coverage,
+    .devtools-json {
+      width: 100%;
+      min-height: 126px;
+      resize: vertical;
+      border-radius: 7px;
+      border: 1px solid #4a4a4a;
+      background: #131313;
+      color: #f0f0f0;
+      padding: 8px;
+      font-family: "SF Mono", "Consolas", monospace;
+      line-height: 1.35;
+    }
+
+    .devtools-coverage {
+      min-height: 150px;
+    }
+
+    @media (max-width: 980px) {
+      .devtools-main {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .countdown {
       position: absolute;
       top: 12px;
@@ -1130,6 +1322,44 @@
       gap: 10px;
       min-height: 60px;
       margin-top: 6px;
+    }
+
+    .action-size-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 8px 10px;
+      border-radius: 9px;
+      border: 1px solid #3e3e3e;
+      background: #1f1f1f;
+      color: #e6e6e6;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .action-size-wrap input[type="range"] {
+      width: min(260px, 55vw);
+      accent-color: var(--orange);
+      cursor: pointer;
+    }
+
+    .action-size-wrap input[type="number"] {
+      width: 96px;
+      background: #2a2a2a;
+      border: 1px solid #4a4a4a;
+      color: var(--white);
+      border-radius: 7px;
+      padding: 6px 8px;
+      font-weight: 700;
+    }
+
+    .action-size-readout {
+      color: #ffd6ad;
+      font-family: "Courier New", Courier, monospace;
+      font-weight: 800;
+      min-width: 108px;
+      text-align: right;
     }
 
     button {
@@ -1755,6 +1985,90 @@
     </div>
   </div>
 
+  <div id="devToolsModal" class="devtools-modal" aria-hidden="true">
+    <div class="devtools-dialog">
+      <div class="devtools-top">
+        <h3 class="devtools-title">Internal Hand Balloon Tools</h3>
+        <button id="devCloseBtn" class="builder-close-btn" type="button">Close</button>
+      </div>
+      <p class="devtools-hint">
+        Hidden internal panel. Open with <strong>Ctrl+Alt+Shift+D</strong> or use <code>?devtools=1</code>.
+      </p>
+
+      <div class="devtools-row">
+        <label for="devProfileSelect">Profile</label>
+        <select id="devProfileSelect"></select>
+        <label for="devSeatSelect">Seat</label>
+        <select id="devSeatSelect"></select>
+        <label for="devSeatProfileSelect">Seat Profile</label>
+        <select id="devSeatProfileSelect"></select>
+        <button id="devAssignSeatBtn" type="button">Assign Seat Profile</button>
+      </div>
+
+      <div class="devtools-main">
+        <section class="devtools-panel">
+          <h4>Hand Balloon Chart</h4>
+          <div id="devSelectedCellLabel" class="devtools-meta">Select a cell to edit average weight.</div>
+          <div class="devtools-row">
+            <label for="devCellWeightInput">Weight 0..1</label>
+            <input id="devCellWeightInput" type="number" min="0" max="1" step="0.01" />
+            <button id="devApplyCellWeightBtn" type="button">Apply Cell Weight</button>
+          </div>
+          <div id="devHandBalloonGrid" class="devtools-balloon-grid"></div>
+        </section>
+
+        <section class="devtools-panel">
+          <h4>Rule + Pack Controls</h4>
+          <div class="devtools-row">
+            <label for="devRuleStreet">Street</label>
+            <select id="devRuleStreet">
+              <option value="preflop">preflop</option>
+              <option value="flop">flop</option>
+              <option value="turn">turn</option>
+              <option value="river">river</option>
+            </select>
+            <label for="devRulePosition">Position</label>
+            <select id="devRulePosition">
+              <option value="ANY">ANY</option>
+              <option value="UTG">UTG</option>
+              <option value="HJ">HJ</option>
+              <option value="CO">CO</option>
+              <option value="BTN">BTN</option>
+              <option value="SB">SB</option>
+              <option value="BB">BB</option>
+            </select>
+          </div>
+          <div class="devtools-row">
+            <label for="devRuleAction">Action</label>
+            <select id="devRuleAction">
+              <option value="fold">fold</option>
+              <option value="check">check</option>
+              <option value="call">call</option>
+              <option value="bet">bet</option>
+              <option value="raise">raise</option>
+              <option value="all-in">all-in</option>
+            </select>
+            <label for="devRuleSizeInput">Size BB</label>
+            <input id="devRuleSizeInput" type="number" min="0" step="1" value="1" />
+            <label><input id="devRuleAnySize" type="checkbox" /> Any Size</label>
+          </div>
+          <div class="devtools-row">
+            <label for="devRuleMultiplierInput">Multiplier</label>
+            <input id="devRuleMultiplierInput" type="number" min="0" max="1" step="0.01" value="0.5" />
+            <button id="devSaveRuleBtn" type="button">Save Rule</button>
+          </div>
+          <div class="devtools-row">
+            <button id="devRefreshCoverageBtn" type="button">Refresh Coverage Gaps</button>
+            <button id="devExportPackBtn" type="button">Export Pack JSON</button>
+            <button id="devImportPackBtn" type="button">Import Pack JSON</button>
+          </div>
+          <textarea id="devCoverageText" class="devtools-coverage" readonly></textarea>
+          <textarea id="devPackJson" class="devtools-json" spellcheck="false"></textarea>
+        </section>
+      </div>
+    </div>
+  </div>
+
   <script>
     "use strict";
 
@@ -1775,6 +2089,27 @@
     };
     const MAX_RECORDING_MS = 10 * 60 * 1000;
     const MAX_SESSION_HANDS = 10;
+    const SEAT_COUNT = 6;
+    const SMALL_BLIND_CHIPS = 5;
+    const BIG_BLIND_CHIPS = 10;
+    const DEFAULT_EFFECTIVE_STACK_BB = 100;
+    const TABLE_POSITIONS_6MAX = ["BTN", "SB", "BB", "UTG", "HJ", "CO"];
+    const PLAYER_PROFILES = [
+      "Passive Fish",
+      "Fish",
+      "Aggressive Fish",
+      "Trying Rec (TREX)",
+      "Whale",
+      "Reg",
+      "Pro"
+    ];
+    const HAND_BALLOON_RANK_ORDER = "AKQJT98765432".split("");
+    const DEFAULT_PLAYER_PROFILE = "Reg";
+    const PROFILE_PACK_STORAGE_KEY = "rtpDrillzProfilePackV1";
+    const PROFILE_PACK_NAME_KEY = "rtpDrillzActiveProfilePackName";
+    const DEVTOOLS_ENABLED_KEY = "rtpDrillzDevToolsEnabled";
+    const REALISTIC_MODE_KEY = "rtpDrillzRealisticMode";
+    const MAX_COVERAGE_GAPS = 250;
 
     const CARD_PREFIXES = [
       "",
@@ -1833,6 +2168,7 @@
         ? window.__RTP_EMBEDDED_CARDS__
         : {};
     const GENERATED_BACK_DATA_URI = buildGeneratedBackDataUri();
+    const ALL_COMBO_KEYS = buildAllComboKeys();
 
     const state = {
       stage: "start",
@@ -1867,7 +2203,43 @@
       timeLeft: 0,
       timerId: null,
       timerPausedByUser: false,
-      flashId: null
+      flashId: null,
+      featureFlags: {
+        realisticTableMode: false
+      },
+      tableState: {
+        handNumber: 0,
+        buttonSeat: 0,
+        heroSeat: 0,
+        street: "preflop",
+        pot: 0,
+        toCall: 0,
+        minRaiseTo: BIG_BLIND_CHIPS,
+        actionSeat: 0,
+        pendingActionSeats: [],
+        betInputTo: BIG_BLIND_CHIPS,
+        headsUpLocked: false,
+        lastAggressorSeat: -1,
+        lastFullRaiseSize: BIG_BLIND_CHIPS,
+        pendingHeadsUpAggressorSeat: -1
+      },
+      players: [],
+      hiddenRanges: {
+        bySeat: {}
+      },
+      actionLog: [],
+      coverageGaps: [],
+      profilePacks: {},
+      activeProfilePackName: "",
+      developerTools: {
+        enabled: false,
+        open: false,
+        selectedProfile: DEFAULT_PLAYER_PROFILE,
+        selectedSeat: 0,
+        selectedHandClass: "",
+        selectedCellId: "",
+        selectedCellWeight: ""
+      }
     };
     let audioContext = null;
     let timerPausedByRecording = false;
@@ -1957,7 +2329,29 @@
       preflightCameraState: document.getElementById("preflightCameraState"),
       preflightMicState: document.getElementById("preflightMicState"),
       preflightDownloadState: document.getElementById("preflightDownloadState"),
-      timelineList: document.getElementById("timelineList")
+      timelineList: document.getElementById("timelineList"),
+      devToolsModal: document.getElementById("devToolsModal"),
+      devCloseBtn: document.getElementById("devCloseBtn"),
+      devProfileSelect: document.getElementById("devProfileSelect"),
+      devSeatSelect: document.getElementById("devSeatSelect"),
+      devSeatProfileSelect: document.getElementById("devSeatProfileSelect"),
+      devAssignSeatBtn: document.getElementById("devAssignSeatBtn"),
+      devSelectedCellLabel: document.getElementById("devSelectedCellLabel"),
+      devCellWeightInput: document.getElementById("devCellWeightInput"),
+      devApplyCellWeightBtn: document.getElementById("devApplyCellWeightBtn"),
+      devHandBalloonGrid: document.getElementById("devHandBalloonGrid"),
+      devRuleStreet: document.getElementById("devRuleStreet"),
+      devRulePosition: document.getElementById("devRulePosition"),
+      devRuleAction: document.getElementById("devRuleAction"),
+      devRuleSizeInput: document.getElementById("devRuleSizeInput"),
+      devRuleAnySize: document.getElementById("devRuleAnySize"),
+      devRuleMultiplierInput: document.getElementById("devRuleMultiplierInput"),
+      devSaveRuleBtn: document.getElementById("devSaveRuleBtn"),
+      devRefreshCoverageBtn: document.getElementById("devRefreshCoverageBtn"),
+      devExportPackBtn: document.getElementById("devExportPackBtn"),
+      devImportPackBtn: document.getElementById("devImportPackBtn"),
+      devCoverageText: document.getElementById("devCoverageText"),
+      devPackJson: document.getElementById("devPackJson")
     };
 
     function init() {
@@ -1979,6 +2373,14 @@
       if (savedCapture === "on" || savedCapture === "off") {
         state.captureMode = savedCapture;
       }
+      const savedRealistic = localStorage.getItem(REALISTIC_MODE_KEY);
+      if (savedRealistic === "1" || savedRealistic === "0") {
+        state.featureFlags.realisticTableMode = savedRealistic === "1";
+      }
+      if (isRealisticModeRequestedFromUrl()) {
+        state.featureFlags.realisticTableMode = true;
+      }
+      localStorage.setItem(REALISTIC_MODE_KEY, state.featureFlags.realisticTableMode ? "1" : "0");
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
@@ -1987,6 +2389,10 @@
       applyLayoutMode(state.layoutMode);
       updateManualPanelVisibility();
       applyCaptureMode(state.captureMode, false);
+      initializeProfilePackState();
+      initializeTableEngineState({ resetStacks: true });
+      registerInternalRangeAuthoringApi();
+      initDeveloperRangeModal();
 
       els.timerSelect.addEventListener("change", () => {
         ensureAudioContext();
@@ -2607,6 +3013,9 @@
           const value = btn.dataset.configValue;
           if (!group || !value) return;
           state.config[group] = value;
+          if (group === "stacks") {
+            syncPlayerStacksToEffectiveInput();
+          }
           renderConfigSelections();
         });
       });
@@ -2623,6 +3032,1528 @@
 
       const labels = [state.config.spotType, state.config.position, state.config.role].filter(Boolean);
       els.status.textContent = labels.length ? labels.join(" | ") : "\u00a0";
+    }
+
+    function renderStatusLine() {
+      renderConfigSelections();
+      if (!isRealisticLiveMode()) return;
+
+      const stageLabelMap = {
+        start: "Start",
+        hand: "Preflop",
+        flop: "Flop",
+        turn: "Turn",
+        river: "River",
+        done: "Done"
+      };
+      const stageLabel = stageLabelMap[state.stage] || "Spot";
+      const hero = getHeroPlayer();
+      const actor = getPlayerBySeat(state.tableState.actionSeat);
+      const heroToCall = hero ? getLegalActions(hero.seat).toCall : 0;
+      const actorLabel = actor ? `${actor.position || "NA"} ${actor.name}` : "Round complete";
+      const heroLabel = hero ? `${hero.position || "NA"} ${hero.name}` : "Hero";
+      els.status.textContent =
+        `${stageLabel} | Pot ${state.tableState.pot} | Hero ${heroLabel} | To Call ${heroToCall} | Action ${actorLabel}`;
+    }
+
+    function clamp01(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return 0;
+      return Math.max(0, Math.min(1, n));
+    }
+
+    function clonePlainObject(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function profileKey(name) {
+      const candidate = String(name || "").trim();
+      return PLAYER_PROFILES.includes(candidate) ? candidate : DEFAULT_PLAYER_PROFILE;
+    }
+
+    function normalizeActionName(action) {
+      const key = String(action || "").trim().toLowerCase().replace(/\s+/g, "-");
+      return key === "allin" ? "all-in" : key;
+    }
+
+    function buildAllComboKeys() {
+      const deck = [];
+      for (const rank of RANKS) {
+        for (const suit of SUITS) {
+          deck.push(`${rank}${suit}`);
+        }
+      }
+
+      const combos = [];
+      for (let i = 0; i < deck.length; i += 1) {
+        for (let j = i + 1; j < deck.length; j += 1) {
+          const key = normalizeComboKey(deck[i], deck[j]);
+          if (key) combos.push(key);
+        }
+      }
+      return combos;
+    }
+
+    function normalizeComboKey(cardOne, cardTwo) {
+      const c1 = formatCard(cardOne);
+      const c2 = formatCard(cardTwo);
+      if (!/^[2-9TJQKA][shdc]$/.test(c1) || !/^[2-9TJQKA][shdc]$/.test(c2)) return "";
+      if (c1 === c2) return "";
+      const cards = [c1, c2].sort((a, b) => {
+        const rankDiff = rankValue(b[0]) - rankValue(a[0]);
+        if (rankDiff) return rankDiff;
+        return SUITS.indexOf(a[1]) - SUITS.indexOf(b[1]);
+      });
+      return `${cards[0]}${cards[1]}`;
+    }
+
+    function parseComboKey(comboKey) {
+      const raw = String(comboKey || "").trim();
+      if (!/^[2-9TJQKA][shdc][2-9TJQKA][shdc]$/.test(raw)) return null;
+      const normalized = normalizeComboKey(raw.slice(0, 2), raw.slice(2, 4));
+      if (!normalized) return null;
+      return {
+        key: normalized,
+        cardOne: normalized.slice(0, 2),
+        cardTwo: normalized.slice(2, 4)
+      };
+    }
+
+    function comboKeyToHandClass(comboKey) {
+      const parsed = parseComboKey(comboKey);
+      if (!parsed) return "";
+      const r1 = parsed.cardOne[0];
+      const r2 = parsed.cardTwo[0];
+      const s1 = parsed.cardOne[1];
+      const s2 = parsed.cardTwo[1];
+      if (r1 === r2) {
+        return `${r1}${r2}`;
+      }
+
+      const idx1 = HAND_BALLOON_RANK_ORDER.indexOf(r1);
+      const idx2 = HAND_BALLOON_RANK_ORDER.indexOf(r2);
+      if (idx1 < 0 || idx2 < 0) return "";
+
+      const high = idx1 <= idx2 ? r1 : r2;
+      const low = idx1 <= idx2 ? r2 : r1;
+      const suited = s1 === s2 ? "s" : "o";
+      return `${high}${low}${suited}`;
+    }
+
+    function createDefaultProfileTemplate() {
+      return {
+        preflop: {
+          default_weight: 1,
+          combo_weights: {}
+        },
+        action_rules: {
+          preflop: {},
+          flop: {},
+          turn: {},
+          river: {}
+        }
+      };
+    }
+
+    function createDefaultProfilePack() {
+      const profiles = {};
+      PLAYER_PROFILES.forEach((profile) => {
+        profiles[profile] = createDefaultProfileTemplate();
+      });
+
+      return {
+        version: 1,
+        name: "internal-default-v1",
+        created_at: new Date().toISOString(),
+        profiles
+      };
+    }
+
+    function sanitizeProfileTemplate(rawTemplate) {
+      const template = createDefaultProfileTemplate();
+      const source = rawTemplate && typeof rawTemplate === "object" ? rawTemplate : {};
+      if (source.preflop && typeof source.preflop === "object") {
+        template.preflop.default_weight = clamp01(source.preflop.default_weight);
+        const rawComboWeights =
+          source.preflop.combo_weights && typeof source.preflop.combo_weights === "object"
+            ? source.preflop.combo_weights
+            : {};
+        Object.keys(rawComboWeights).forEach((rawKey) => {
+          const parsed = parseComboKey(rawKey);
+          if (!parsed) return;
+          template.preflop.combo_weights[parsed.key] = clamp01(rawComboWeights[rawKey]);
+        });
+      }
+
+      if (source.action_rules && typeof source.action_rules === "object") {
+        ["preflop", "flop", "turn", "river"].forEach((street) => {
+          const rulesForStreet =
+            source.action_rules[street] && typeof source.action_rules[street] === "object"
+              ? source.action_rules[street]
+              : {};
+          Object.keys(rulesForStreet).forEach((ruleKey) => {
+            const node = rulesForStreet[ruleKey];
+            if (!node || typeof node !== "object") return;
+            const multiplier = clamp01(node.multiplier);
+            template.action_rules[street][ruleKey] = { multiplier };
+          });
+        });
+      }
+
+      return template;
+    }
+
+    function sanitizeProfilePack(rawPack) {
+      const pack = createDefaultProfilePack();
+      if (!rawPack || typeof rawPack !== "object") return pack;
+
+      if (Number.isFinite(Number(rawPack.version))) {
+        pack.version = Number(rawPack.version);
+      }
+      if (typeof rawPack.name === "string" && rawPack.name.trim()) {
+        pack.name = rawPack.name.trim().slice(0, 80);
+      }
+      if (typeof rawPack.created_at === "string" && rawPack.created_at.trim()) {
+        pack.created_at = rawPack.created_at.trim();
+      }
+
+      const sourceProfiles =
+        rawPack.profiles && typeof rawPack.profiles === "object" ? rawPack.profiles : {};
+      PLAYER_PROFILES.forEach((name) => {
+        pack.profiles[name] = sanitizeProfileTemplate(sourceProfiles[name]);
+      });
+      return pack;
+    }
+
+    function initializeProfilePackState() {
+      const fallback = createDefaultProfilePack();
+      let pack = fallback;
+      let activePackName = fallback.name;
+
+      try {
+        const rawPack = localStorage.getItem(PROFILE_PACK_STORAGE_KEY);
+        if (rawPack) {
+          pack = sanitizeProfilePack(JSON.parse(rawPack));
+          activePackName = pack.name;
+        }
+      } catch (_err) {
+        pack = fallback;
+        activePackName = fallback.name;
+      }
+
+      const savedName = localStorage.getItem(PROFILE_PACK_NAME_KEY);
+      if (typeof savedName === "string" && savedName.trim()) {
+        activePackName = savedName.trim().slice(0, 80);
+      }
+
+      state.profilePacks = {
+        [activePackName]: pack
+      };
+      state.activeProfilePackName = activePackName;
+      localStorage.setItem(PROFILE_PACK_STORAGE_KEY, JSON.stringify(pack));
+      localStorage.setItem(PROFILE_PACK_NAME_KEY, activePackName);
+    }
+
+    function getActiveProfilePack() {
+      const active = state.profilePacks[state.activeProfilePackName];
+      if (active) return active;
+      const fallback = sanitizeProfilePack(createDefaultProfilePack());
+      state.activeProfilePackName = fallback.name;
+      state.profilePacks[fallback.name] = fallback;
+      return fallback;
+    }
+
+    function getProfileTemplate(profileName) {
+      const pack = getActiveProfilePack();
+      const key = profileKey(profileName);
+      const template = pack.profiles && pack.profiles[key];
+      if (template) return template;
+      const created = createDefaultProfileTemplate();
+      if (!pack.profiles) pack.profiles = {};
+      pack.profiles[key] = created;
+      return created;
+    }
+
+    function buildSeatRangeFromProfile(profileName) {
+      const template = getProfileTemplate(profileName);
+      const defaultWeight = clamp01(template.preflop.default_weight);
+      const combos = {};
+      ALL_COMBO_KEYS.forEach((comboKey) => {
+        combos[comboKey] = defaultWeight;
+      });
+      const overrides = template.preflop.combo_weights || {};
+      Object.keys(overrides).forEach((rawKey) => {
+        const parsed = parseComboKey(rawKey);
+        if (!parsed) return;
+        combos[parsed.key] = clamp01(overrides[rawKey]);
+      });
+      return combos;
+    }
+
+    function buildHandBalloonChart(profileName) {
+      const combos = buildSeatRangeFromProfile(profileName);
+      const grouped = {};
+      Object.keys(combos).forEach((comboKey) => {
+        const handClass = comboKeyToHandClass(comboKey);
+        if (!handClass) return;
+        if (!grouped[handClass]) {
+          grouped[handClass] = [];
+        }
+        grouped[handClass].push(clamp01(combos[comboKey]));
+      });
+
+      const cells = [];
+      HAND_BALLOON_RANK_ORDER.forEach((rowRank, rowIdx) => {
+        HAND_BALLOON_RANK_ORDER.forEach((colRank, colIdx) => {
+          let handClass = "";
+          if (rowIdx === colIdx) {
+            handClass = `${rowRank}${colRank}`;
+          } else if (rowIdx < colIdx) {
+            handClass = `${rowRank}${colRank}s`;
+          } else {
+            handClass = `${colRank}${rowRank}o`;
+          }
+
+          const values = grouped[handClass] || [];
+          const sum = values.reduce((acc, weight) => acc + weight, 0);
+          const avg = values.length ? sum / values.length : 0;
+          cells.push({
+            id: `${rowRank}${colRank}`,
+            hand_class: handClass,
+            row_rank: rowRank,
+            col_rank: colRank,
+            combo_count: values.length,
+            avg_weight: Number(avg.toFixed(4))
+          });
+        });
+      });
+
+      return {
+        profile: profileKey(profileName),
+        rank_order: HAND_BALLOON_RANK_ORDER.slice(),
+        cells
+      };
+    }
+
+    function assignSeatProfile(seat, profileName) {
+      const player = getPlayerBySeat(seat);
+      if (!player) return false;
+      player.profile = profileKey(profileName);
+      const entry = state.hiddenRanges.bySeat[seat];
+      if (entry) {
+        entry.profile = player.profile;
+        entry.combos = buildSeatRangeFromProfile(player.profile);
+        applyKnownCardBlockers([...state.hand, ...state.board]);
+      }
+      return true;
+    }
+
+    function setComboWeight({ profileName, comboKey, weight }) {
+      const parsed = parseComboKey(comboKey);
+      if (!parsed) return false;
+      const template = getProfileTemplate(profileName);
+      template.preflop.combo_weights[parsed.key] = clamp01(weight);
+      saveActiveProfilePack();
+      return true;
+    }
+
+    function comboKeysForHandClass(handClass) {
+      const target = String(handClass || "").trim();
+      if (!target) return [];
+      return ALL_COMBO_KEYS.filter((comboKey) => comboKeyToHandClass(comboKey) === target);
+    }
+
+    function setHandClassWeight({ profileName, handClass, weight }) {
+      const keys = comboKeysForHandClass(handClass);
+      if (!keys.length) return false;
+      const template = getProfileTemplate(profileName);
+      const safeWeight = clamp01(weight);
+      keys.forEach((comboKey) => {
+        template.preflop.combo_weights[comboKey] = safeWeight;
+      });
+      saveActiveProfilePack();
+      return true;
+    }
+
+    function setActionRuleMultiplier({ profileName, street, position, action, sizeBucketBb, multiplier }) {
+      const template = getProfileTemplate(profileName);
+      const streetKey = ["preflop", "flop", "turn", "river"].includes(street) ? street : "preflop";
+      const actionKey = normalizeActionName(action);
+      const safePosition = String(position || "ANY").trim().toUpperCase() || "ANY";
+      const rawBucket = String(sizeBucketBb || "").trim().toUpperCase();
+      const bucket = rawBucket === "ANY" ? "ANY" : Number.isFinite(Number(sizeBucketBb)) ? Math.max(0, Number(sizeBucketBb)) : 0;
+      const ruleKey = `${safePosition}|${actionKey}|${bucket}`;
+      template.action_rules[streetKey][ruleKey] = { multiplier: clamp01(multiplier) };
+      saveActiveProfilePack();
+      return ruleKey;
+    }
+
+    function saveActiveProfilePack() {
+      const pack = sanitizeProfilePack(getActiveProfilePack());
+      state.profilePacks[state.activeProfilePackName] = pack;
+      localStorage.setItem(PROFILE_PACK_STORAGE_KEY, JSON.stringify(pack));
+      localStorage.setItem(PROFILE_PACK_NAME_KEY, state.activeProfilePackName);
+      return clonePlainObject(pack);
+    }
+
+    function loadProfilePack(rawPack) {
+      const sanitized = sanitizeProfilePack(rawPack);
+      state.profilePacks[sanitized.name] = sanitized;
+      state.activeProfilePackName = sanitized.name;
+      localStorage.setItem(PROFILE_PACK_STORAGE_KEY, JSON.stringify(sanitized));
+      localStorage.setItem(PROFILE_PACK_NAME_KEY, sanitized.name);
+      if (state.players.length) {
+        initHiddenRangesForHand();
+        applyKnownCardBlockers([...state.hand, ...state.board]);
+      }
+      return clonePlainObject(sanitized);
+    }
+
+    function serializeProfileRules() {
+      return JSON.stringify(saveActiveProfilePack(), null, 2);
+    }
+
+    function comboIncludesBlockedCard(comboKey, blockedCards) {
+      const parsed = parseComboKey(comboKey);
+      if (!parsed) return false;
+      return blockedCards.has(parsed.cardOne) || blockedCards.has(parsed.cardTwo);
+    }
+
+    function applyKnownCardBlockers(knownCards) {
+      const blocked = new Set((knownCards || []).map((card) => formatCard(card)).filter(Boolean));
+      if (!blocked.size) return;
+      Object.values(state.hiddenRanges.bySeat || {}).forEach((entry) => {
+        if (!entry || !entry.combos) return;
+        Object.keys(entry.combos).forEach((comboKey) => {
+          if (comboIncludesBlockedCard(comboKey, blocked)) {
+            entry.combos[comboKey] = 0;
+          }
+        });
+      });
+    }
+
+    function roundSizeBucketBb(sizeChips) {
+      const chips = Number(sizeChips);
+      if (!Number.isFinite(chips) || chips <= 0) return 0;
+      if (chips === SMALL_BLIND_CHIPS) return 0.5;
+      return Math.max(1, Math.round(chips / BIG_BLIND_CHIPS));
+    }
+
+    function findActionRule({ profileName, street, position, action, sizeBucketBb }) {
+      const template = getProfileTemplate(profileName);
+      const rules = template.action_rules[street] || {};
+      const actionKey = normalizeActionName(action);
+      const pos = String(position || "ANY").trim().toUpperCase() || "ANY";
+      const rawBucket = String(sizeBucketBb || "").trim().toUpperCase();
+      const bucket = rawBucket === "ANY" ? "ANY" : Number.isFinite(Number(sizeBucketBb)) ? Math.max(0, Number(sizeBucketBb)) : 0;
+      const exact = `${pos}|${actionKey}|${bucket}`;
+      const anyPos = `ANY|${actionKey}|${bucket}`;
+      const anyAny = `ANY|${actionKey}|ANY`;
+      const anyBucketPos = `${pos}|${actionKey}|ANY`;
+      return rules[exact] || rules[anyPos] || rules[anyBucketPos] || rules[anyAny] || null;
+    }
+
+    function logRuleCoverageGap(detail) {
+      const normalized = {
+        at_iso: new Date().toISOString(),
+        hand_number: state.tableState.handNumber,
+        street: detail.street || "",
+        seat: Number.isFinite(Number(detail.seat)) ? Number(detail.seat) : -1,
+        position: detail.position || "",
+        profile: detail.profile || "",
+        action: detail.action || "",
+        size_bucket_bb: Number.isFinite(Number(detail.sizeBucketBb)) ? Number(detail.sizeBucketBb) : 0
+      };
+      state.coverageGaps.push(normalized);
+      if (state.coverageGaps.length > MAX_COVERAGE_GAPS) {
+        state.coverageGaps.shift();
+      }
+    }
+
+    function fallbackMultiplierForAction(street, action) {
+      const actionKey = normalizeActionName(action);
+      const matrix = {
+        preflop: { fold: 0, check: 0.85, call: 0.7, bet: 0.5, raise: 0.4, "all-in": 0.2 },
+        flop: { fold: 0, check: 0.88, call: 0.72, bet: 0.52, raise: 0.42, "all-in": 0.2 },
+        turn: { fold: 0, check: 0.9, call: 0.75, bet: 0.55, raise: 0.45, "all-in": 0.22 },
+        river: { fold: 0, check: 0.92, call: 0.78, bet: 0.58, raise: 0.5, "all-in": 0.24 }
+      };
+      const byStreet = matrix[street] || matrix.preflop;
+      if (Object.prototype.hasOwnProperty.call(byStreet, actionKey)) {
+        return byStreet[actionKey];
+      }
+      return 0.5;
+    }
+
+    function applyConservativeFallback({ seat, street, position, profile, action, sizeBucketBb }) {
+      logRuleCoverageGap({ seat, street, position, profile, action, sizeBucketBb });
+      return {
+        source: "fallback",
+        multiplier: fallbackMultiplierForAction(street, action)
+      };
+    }
+
+    function reweightRangeForAction({ seat, action, sizeChips = 0, reason = "action" }) {
+      const entry = state.hiddenRanges.bySeat[seat];
+      const player = getPlayerBySeat(seat);
+      if (!entry || !entry.combos || !player) return;
+
+      const street = state.tableState.street || "preflop";
+      const position = player.position || "ANY";
+      const profile = profileKey(player.profile);
+      const sizeBucketBb = roundSizeBucketBb(sizeChips);
+      const actionKey = normalizeActionName(action);
+
+      let multiplier = 0;
+      let source = "explicit";
+      const rule = findActionRule({
+        profileName: profile,
+        street,
+        position,
+        action: actionKey,
+        sizeBucketBb
+      });
+      if (rule && Number.isFinite(Number(rule.multiplier))) {
+        multiplier = clamp01(rule.multiplier);
+      } else {
+        const fallback = applyConservativeFallback({
+          seat,
+          street,
+          position,
+          profile,
+          action: actionKey,
+          sizeBucketBb
+        });
+        multiplier = clamp01(fallback.multiplier);
+        source = fallback.source;
+      }
+
+      if (actionKey === "fold") {
+        multiplier = 0;
+      }
+
+      Object.keys(entry.combos).forEach((comboKey) => {
+        entry.combos[comboKey] = clamp01(entry.combos[comboKey] * multiplier);
+      });
+
+      entry.timeline.push({
+        at_iso: new Date().toISOString(),
+        hand_number: state.tableState.handNumber,
+        street,
+        seat,
+        position,
+        profile,
+        action: actionKey,
+        size_chips: Number(sizeChips) || 0,
+        size_bucket_bb: sizeBucketBb,
+        multiplier,
+        source,
+        reason
+      });
+    }
+
+    function registerInternalRangeAuthoringApi() {
+      window.__rtpRangeTools = {
+        activeProfilePackName: () => state.activeProfilePackName,
+        exportProfilePack: () => saveActiveProfilePack(),
+        importProfilePack: (rawPack) => loadProfilePack(rawPack),
+        serializeProfileRules: () => serializeProfileRules(),
+        handBalloonChart: (profileName) => buildHandBalloonChart(profileName),
+        setComboWeight: ({ profileName, comboKey, weight }) => setComboWeight({ profileName, comboKey, weight }),
+        setHandClassWeight: ({ profileName, handClass, weight }) =>
+          setHandClassWeight({ profileName, handClass, weight }),
+        setActionRuleMultiplier: ({ profileName, street, position, action, sizeBucketBb, multiplier }) =>
+          setActionRuleMultiplier({ profileName, street, position, action, sizeBucketBb, multiplier }),
+        assignSeatProfile: ({ seat, profileName }) => assignSeatProfile(seat, profileName),
+        coverageGaps: () => clonePlainObject(state.coverageGaps),
+        openUi: () => openDeveloperModal(),
+        closeUi: () => closeDeveloperModal()
+      };
+    }
+
+    function isDevToolsEnabledFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search || "");
+        return params.get("devtools") === "1";
+      } catch (_err) {
+        return false;
+      }
+    }
+
+    function isRealisticModeRequestedFromUrl() {
+      try {
+        const params = new URLSearchParams(window.location.search || "");
+        return params.get("realistic") === "1";
+      } catch (_err) {
+        return false;
+      }
+    }
+
+    function setDeveloperToolsEnabled(enabled, persist = true) {
+      const next = Boolean(enabled);
+      state.developerTools.enabled = next;
+      if (persist) {
+        localStorage.setItem(DEVTOOLS_ENABLED_KEY, next ? "1" : "0");
+      }
+    }
+
+    function openDeveloperModal() {
+      if (!state.developerTools.enabled) {
+        setDeveloperToolsEnabled(true, true);
+      }
+      state.developerTools.open = true;
+      els.devToolsModal.classList.add("show");
+      els.devToolsModal.setAttribute("aria-hidden", "false");
+      refreshDeveloperModal();
+    }
+
+    function closeDeveloperModal() {
+      state.developerTools.open = false;
+      els.devToolsModal.classList.remove("show");
+      els.devToolsModal.setAttribute("aria-hidden", "true");
+    }
+
+    function toggleDeveloperModal(forceOpen) {
+      const shouldOpen = typeof forceOpen === "boolean" ? forceOpen : !state.developerTools.open;
+      if (shouldOpen) {
+        openDeveloperModal();
+      } else {
+        closeDeveloperModal();
+      }
+    }
+
+    function refreshLiveRangesForProfile(profileName) {
+      const profile = profileKey(profileName);
+      if (state.stage !== "start") return;
+      state.players.forEach((player) => {
+        if (profileKey(player.profile) !== profile) return;
+        const entry = state.hiddenRanges.bySeat[player.seat];
+        if (!entry) return;
+        entry.profile = profile;
+        entry.combos = buildSeatRangeFromProfile(profile);
+      });
+      applyKnownCardBlockers([...state.hand, ...state.board]);
+    }
+
+    function refreshDeveloperProfileSelects() {
+      const profile = profileKey(state.developerTools.selectedProfile || DEFAULT_PLAYER_PROFILE);
+      state.developerTools.selectedProfile = profile;
+
+      [els.devProfileSelect, els.devSeatProfileSelect].forEach((selectEl) => {
+        selectEl.innerHTML = "";
+        PLAYER_PROFILES.forEach((name) => {
+          const option = document.createElement("option");
+          option.value = name;
+          option.textContent = name;
+          if (selectEl === els.devProfileSelect && name === profile) {
+            option.selected = true;
+          }
+          selectEl.appendChild(option);
+        });
+      });
+
+      els.devSeatProfileSelect.value = profile;
+    }
+
+    function refreshDeveloperSeatSelect() {
+      const current = Number(state.developerTools.selectedSeat) || 0;
+      els.devSeatSelect.innerHTML = "";
+      state.players.forEach((player) => {
+        const option = document.createElement("option");
+        option.value = String(player.seat);
+        option.textContent = `${player.name} (${player.position || "NA"}) - ${player.profile}`;
+        if (player.seat === current) {
+          option.selected = true;
+        }
+        els.devSeatSelect.appendChild(option);
+      });
+      if (!getPlayerBySeat(current) && state.players.length) {
+        state.developerTools.selectedSeat = state.players[0].seat;
+        els.devSeatSelect.value = String(state.developerTools.selectedSeat);
+      }
+      const selectedPlayer = getPlayerBySeat(Number(els.devSeatSelect.value));
+      if (selectedPlayer) {
+        els.devSeatProfileSelect.value = profileKey(selectedPlayer.profile);
+      }
+    }
+
+    function setDeveloperSelectedCell(cell) {
+      state.developerTools.selectedCellId = cell ? cell.id : "";
+      state.developerTools.selectedHandClass = cell ? cell.hand_class : "";
+      state.developerTools.selectedCellWeight = cell ? String(cell.avg_weight) : "";
+      els.devCellWeightInput.value = state.developerTools.selectedCellWeight;
+      if (!cell) {
+        els.devSelectedCellLabel.textContent = "Select a cell to edit average weight.";
+        return;
+      }
+      els.devSelectedCellLabel.textContent = `${cell.hand_class} (${cell.combo_count} combos) avg weight ${cell.avg_weight}`;
+    }
+
+    function cellWeightColor(weight) {
+      const safe = clamp01(weight);
+      const alpha = 0.14 + safe * 0.58;
+      return `rgba(200, 95, 0, ${alpha.toFixed(3)})`;
+    }
+
+    function renderDeveloperBalloonGrid() {
+      const profile = profileKey(state.developerTools.selectedProfile);
+      const chart = buildHandBalloonChart(profile);
+      els.devHandBalloonGrid.innerHTML = "";
+
+      chart.cells.forEach((cell) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "devtools-cell-btn";
+        if (state.developerTools.selectedCellId && state.developerTools.selectedCellId === cell.id) {
+          btn.classList.add("active");
+        }
+        btn.style.background = cellWeightColor(cell.avg_weight);
+
+        const classLabel = document.createElement("span");
+        classLabel.className = "devtools-cell-class";
+        classLabel.textContent = cell.hand_class;
+
+        const weightLabel = document.createElement("span");
+        weightLabel.className = "devtools-cell-weight";
+        weightLabel.textContent = cell.avg_weight.toFixed(2);
+
+        const combosLabel = document.createElement("span");
+        combosLabel.className = "devtools-cell-combos";
+        combosLabel.textContent = `${cell.combo_count}c`;
+
+        btn.appendChild(classLabel);
+        btn.appendChild(weightLabel);
+        btn.appendChild(combosLabel);
+        btn.addEventListener("click", () => {
+          setDeveloperSelectedCell(cell);
+          renderDeveloperBalloonGrid();
+        });
+        els.devHandBalloonGrid.appendChild(btn);
+      });
+    }
+
+    function applyDeveloperCellWeight() {
+      const handClass = state.developerTools.selectedHandClass;
+      if (!handClass) {
+        window.alert("Select a hand balloon cell first.");
+        return;
+      }
+      const weight = clamp01(els.devCellWeightInput.value);
+      const profile = profileKey(state.developerTools.selectedProfile);
+      const ok = setHandClassWeight({ profileName: profile, handClass, weight });
+      if (!ok) {
+        window.alert("Could not apply that hand-class weight.");
+        return;
+      }
+      refreshLiveRangesForProfile(profile);
+      const chart = buildHandBalloonChart(profile);
+      const cell = chart.cells.find((entry) => entry.hand_class === handClass) || null;
+      setDeveloperSelectedCell(cell);
+      renderDeveloperBalloonGrid();
+      refreshDeveloperCoverageText();
+    }
+
+    function assignDeveloperSeatProfile() {
+      const seat = Number(els.devSeatSelect.value);
+      const profile = profileKey(els.devSeatProfileSelect.value);
+      if (!Number.isFinite(seat)) return;
+      assignSeatProfile(seat, profile);
+      refreshDeveloperSeatSelect();
+      renderDeveloperBalloonGrid();
+    }
+
+    function saveDeveloperRuleFromForm() {
+      const profile = profileKey(state.developerTools.selectedProfile);
+      const street = els.devRuleStreet.value;
+      const position = els.devRulePosition.value || "ANY";
+      const action = els.devRuleAction.value || "check";
+      const sizeBucketBb = els.devRuleAnySize.checked ? "ANY" : Math.max(0, Math.round(Number(els.devRuleSizeInput.value) || 0));
+      const multiplier = clamp01(els.devRuleMultiplierInput.value);
+      setActionRuleMultiplier({
+        profileName: profile,
+        street,
+        position,
+        action,
+        sizeBucketBb,
+        multiplier
+      });
+      refreshDeveloperCoverageText();
+    }
+
+    function refreshDeveloperCoverageText() {
+      const recent = state.coverageGaps.slice(-40);
+      if (!recent.length) {
+        els.devCoverageText.value = "No coverage gaps logged yet.";
+        return;
+      }
+      els.devCoverageText.value = recent.map((item) => JSON.stringify(item)).join("\n");
+    }
+
+    function exportDeveloperPackJson() {
+      els.devPackJson.value = serializeProfileRules();
+    }
+
+    function importDeveloperPackJson() {
+      const raw = (els.devPackJson.value || "").trim();
+      if (!raw) {
+        window.alert("Paste a profile pack JSON first.");
+        return;
+      }
+      try {
+        const parsed = JSON.parse(raw);
+        const imported = loadProfilePack(parsed);
+        state.developerTools.selectedProfile = profileKey(state.developerTools.selectedProfile);
+        if (!PLAYER_PROFILES.includes(state.developerTools.selectedProfile)) {
+          state.developerTools.selectedProfile = DEFAULT_PLAYER_PROFILE;
+        }
+        if (imported && imported.name) {
+          localStorage.setItem(PROFILE_PACK_NAME_KEY, imported.name);
+        }
+        refreshDeveloperModal();
+      } catch (_err) {
+        window.alert("Invalid profile pack JSON.");
+      }
+    }
+
+    function refreshDeveloperModal() {
+      refreshDeveloperProfileSelects();
+      refreshDeveloperSeatSelect();
+      renderDeveloperBalloonGrid();
+      refreshDeveloperCoverageText();
+    }
+
+    function handleDeveloperHotkey(event) {
+      if (event.ctrlKey && event.altKey && event.shiftKey && String(event.key).toLowerCase() === "d") {
+        event.preventDefault();
+        if (!state.developerTools.enabled) {
+          setDeveloperToolsEnabled(true, true);
+        }
+        toggleDeveloperModal();
+        return;
+      }
+      if (event.key === "Escape" && state.developerTools.open) {
+        closeDeveloperModal();
+      }
+    }
+
+    function initDeveloperRangeModal() {
+      const enabledByUrl = isDevToolsEnabledFromUrl();
+      const enabledByStorage = localStorage.getItem(DEVTOOLS_ENABLED_KEY) === "1";
+      setDeveloperToolsEnabled(enabledByUrl || enabledByStorage, false);
+      if (enabledByUrl) {
+        localStorage.setItem(DEVTOOLS_ENABLED_KEY, "1");
+      }
+
+      const defaultProfile = profileKey(state.developerTools.selectedProfile || DEFAULT_PLAYER_PROFILE);
+      state.developerTools.selectedProfile = defaultProfile;
+      state.developerTools.selectedSeat = state.players.length ? state.players[0].seat : 0;
+      state.developerTools.selectedHandClass = "";
+      state.developerTools.selectedCellId = "";
+      state.developerTools.selectedCellWeight = "";
+
+      els.devCloseBtn.addEventListener("click", closeDeveloperModal);
+      els.devToolsModal.addEventListener("click", (event) => {
+        if (event.target === els.devToolsModal) {
+          closeDeveloperModal();
+        }
+      });
+
+      els.devProfileSelect.addEventListener("change", () => {
+        state.developerTools.selectedProfile = profileKey(els.devProfileSelect.value);
+        state.developerTools.selectedHandClass = "";
+        state.developerTools.selectedCellId = "";
+        renderDeveloperBalloonGrid();
+        refreshDeveloperCoverageText();
+      });
+
+      els.devSeatSelect.addEventListener("change", () => {
+        state.developerTools.selectedSeat = Number(els.devSeatSelect.value) || 0;
+        const selected = getPlayerBySeat(state.developerTools.selectedSeat);
+        if (selected) {
+          els.devSeatProfileSelect.value = profileKey(selected.profile);
+        }
+      });
+
+      els.devSeatProfileSelect.addEventListener("change", () => {
+        state.developerTools.selectedProfile = profileKey(els.devSeatProfileSelect.value);
+        els.devProfileSelect.value = state.developerTools.selectedProfile;
+        renderDeveloperBalloonGrid();
+      });
+
+      els.devAssignSeatBtn.addEventListener("click", assignDeveloperSeatProfile);
+      els.devApplyCellWeightBtn.addEventListener("click", applyDeveloperCellWeight);
+      els.devSaveRuleBtn.addEventListener("click", saveDeveloperRuleFromForm);
+      els.devRefreshCoverageBtn.addEventListener("click", refreshDeveloperCoverageText);
+      els.devExportPackBtn.addEventListener("click", exportDeveloperPackJson);
+      els.devImportPackBtn.addEventListener("click", importDeveloperPackJson);
+
+      document.addEventListener("keydown", handleDeveloperHotkey);
+      refreshDeveloperModal();
+      if (enabledByUrl) {
+        openDeveloperModal();
+      } else {
+        closeDeveloperModal();
+      }
+    }
+
+    function seatAtOffset(startSeat, offset) {
+      const wrapped = startSeat + offset;
+      return ((wrapped % SEAT_COUNT) + SEAT_COUNT) % SEAT_COUNT;
+    }
+
+    function getPlayerBySeat(seat) {
+      return state.players.find((player) => player.seat === seat) || null;
+    }
+
+    function effectiveStackBbFromConfig() {
+      const match = String(state.config.stacks || "").match(/(\d+)/);
+      if (!match) return DEFAULT_EFFECTIVE_STACK_BB;
+      const parsed = Number(match[1]);
+      if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_EFFECTIVE_STACK_BB;
+      return parsed;
+    }
+
+    function effectiveStackChipsFromConfig() {
+      return effectiveStackBbFromConfig() * BIG_BLIND_CHIPS;
+    }
+
+    function createPlayerState(seat, stackChips) {
+      return {
+        seat,
+        name: `Seat ${seat + 1}`,
+        profile: DEFAULT_PLAYER_PROFILE,
+        position: "",
+        stackStart: stackChips,
+        stack: stackChips,
+        committedStreet: 0,
+        committedHand: 0,
+        status: "active"
+      };
+    }
+
+    function syncPlayerStacksToEffectiveInput() {
+      if (!state.players.length) return;
+      const stackChips = effectiveStackChipsFromConfig();
+      state.players.forEach((player) => {
+        player.stackStart = stackChips;
+        if (state.stage === "start") {
+          player.stack = stackChips;
+        }
+      });
+    }
+
+    function computePositionsFromButton(buttonSeat) {
+      const seatToPosition = {};
+      TABLE_POSITIONS_6MAX.forEach((position, idx) => {
+        const seat = seatAtOffset(buttonSeat, idx);
+        seatToPosition[seat] = position;
+      });
+      return seatToPosition;
+    }
+
+    function rotateButton() {
+      state.tableState.buttonSeat = seatAtOffset(state.tableState.buttonSeat, 1);
+      return state.tableState.buttonSeat;
+    }
+
+    function findSeatByPosition(position) {
+      const found = state.players.find((player) => player.position === position);
+      return found ? found.seat : -1;
+    }
+
+    function initHiddenRangesForHand() {
+      const bySeat = {};
+      state.players.forEach((player) => {
+        bySeat[player.seat] = {
+          profile: profileKey(player.profile),
+          combos: buildSeatRangeFromProfile(player.profile),
+          timeline: []
+        };
+      });
+      state.hiddenRanges.bySeat = bySeat;
+    }
+
+    function initHandSeatsAndPositions({ rotateButtonFirst = false } = {}) {
+      if (rotateButtonFirst) {
+        rotateButton();
+      }
+      const seatToPosition = computePositionsFromButton(state.tableState.buttonSeat);
+      state.players.forEach((player) => {
+        player.position = seatToPosition[player.seat] || "";
+        player.committedStreet = 0;
+        player.committedHand = 0;
+        player.status = player.stack > 0 ? "active" : "allin";
+      });
+
+      state.tableState.street = "preflop";
+      state.tableState.pot = 0;
+      state.tableState.toCall = 0;
+      state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+      state.tableState.actionSeat = findSeatByPosition("UTG");
+      state.tableState.pendingActionSeats = [];
+      state.tableState.betInputTo = BIG_BLIND_CHIPS;
+      state.tableState.headsUpLocked = false;
+      state.tableState.lastAggressorSeat = -1;
+      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.pendingHeadsUpAggressorSeat = -1;
+      state.tableState.heroSeat = findSeatByPosition("BTN");
+      if (state.tableState.heroSeat < 0) {
+        state.tableState.heroSeat = 0;
+      }
+      initHiddenRangesForHand();
+    }
+
+    function initializeTableEngineState({ resetStacks = true } = {}) {
+      const stackChips = effectiveStackChipsFromConfig();
+      if (!state.players.length) {
+        state.players = Array.from({ length: SEAT_COUNT }, (_unused, seat) =>
+          createPlayerState(seat, stackChips)
+        );
+      }
+
+      if (resetStacks) {
+        state.players.forEach((player) => {
+          player.stackStart = stackChips;
+          player.stack = stackChips;
+        });
+      }
+
+      initHandSeatsAndPositions({ rotateButtonFirst: false });
+      state.actionLog = [];
+      state.coverageGaps = [];
+      recomputePotAndToCall();
+      recomputeMinRaiseTo();
+    }
+
+    function seatsStillInHand() {
+      return state.players.filter((player) => player.status !== "folded").map((player) => player.seat);
+    }
+
+    function firstActiveSeatFrom(startSeat) {
+      for (let offset = 0; offset < SEAT_COUNT; offset += 1) {
+        const seat = seatAtOffset(startSeat, offset);
+        const player = getPlayerBySeat(seat);
+        if (player && player.status === "active") {
+          return seat;
+        }
+      }
+      return -1;
+    }
+
+    function firstActionSeatForStreet(street) {
+      if (street === "preflop") {
+        const bbSeat = findSeatByPosition("BB");
+        if (bbSeat < 0) return -1;
+        return firstActiveSeatFrom(seatAtOffset(bbSeat, 1));
+      }
+      return firstActiveSeatFrom(seatAtOffset(state.tableState.buttonSeat, 1));
+    }
+
+    function activeActionSeatsInOrderFrom(startSeat) {
+      const ordered = [];
+      for (let offset = 0; offset < SEAT_COUNT; offset += 1) {
+        const seat = seatAtOffset(startSeat, offset);
+        const player = getPlayerBySeat(seat);
+        if (player && player.status === "active") {
+          ordered.push(seat);
+        }
+      }
+      return ordered;
+    }
+
+    function resetPendingActionSeatsFrom(startSeat, excludedSeats = []) {
+      if (!Number.isInteger(startSeat) || startSeat < 0) {
+        state.tableState.pendingActionSeats = [];
+        state.tableState.actionSeat = -1;
+        return [];
+      }
+
+      const excluded = new Set(excludedSeats.filter((seat) => Number.isInteger(seat) && seat >= 0));
+      const ordered = activeActionSeatsInOrderFrom(startSeat).filter((seat) => !excluded.has(seat));
+      state.tableState.pendingActionSeats = ordered;
+      state.tableState.actionSeat = ordered.length ? ordered[0] : -1;
+      return ordered;
+    }
+
+    function sanitizePendingActionSeats() {
+      const validActive = new Set(
+        state.players
+          .filter((player) => player.status === "active")
+          .map((player) => player.seat)
+      );
+      const deduped = [];
+      const seen = new Set();
+      state.tableState.pendingActionSeats.forEach((seat) => {
+        if (!validActive.has(seat) || seen.has(seat)) return;
+        seen.add(seat);
+        deduped.push(seat);
+      });
+      state.tableState.pendingActionSeats = deduped;
+      if (!deduped.includes(state.tableState.actionSeat)) {
+        state.tableState.actionSeat = deduped.length ? deduped[0] : -1;
+      }
+      return deduped;
+    }
+
+    function removePendingActionSeat(seat) {
+      state.tableState.pendingActionSeats = state.tableState.pendingActionSeats.filter((entry) => entry !== seat);
+      sanitizePendingActionSeats();
+    }
+
+    function nextPendingActionSeatFrom(currentSeat) {
+      sanitizePendingActionSeats();
+      const pending = state.tableState.pendingActionSeats;
+      if (!pending.length) {
+        state.tableState.actionSeat = -1;
+        return -1;
+      }
+
+      for (let offset = 1; offset <= SEAT_COUNT; offset += 1) {
+        const seat = seatAtOffset(currentSeat, offset);
+        if (pending.includes(seat)) {
+          state.tableState.actionSeat = seat;
+          return seat;
+        }
+      }
+
+      state.tableState.actionSeat = pending[0];
+      return pending[0];
+    }
+
+    function isBettingRoundComplete() {
+      sanitizePendingActionSeats();
+      return state.tableState.pendingActionSeats.length === 0;
+    }
+
+    function isHandWonByFold() {
+      const contenders = state.players.filter((player) => player.status !== "folded");
+      return contenders.length <= 1;
+    }
+
+    function isRealisticLiveMode() {
+      return state.featureFlags.realisticTableMode && state.mode === "live";
+    }
+
+    function getHeroPlayer() {
+      return getPlayerBySeat(state.tableState.heroSeat);
+    }
+
+    function isAggressiveProfile(profile) {
+      const key = profileKey(profile);
+      return key === "Aggressive Fish" || key === "Reg" || key === "Pro" || key === "Whale";
+    }
+
+    function chooseAutoActionForSeat(seat) {
+      const player = getPlayerBySeat(seat);
+      const legal = getLegalActions(seat);
+      if (!player) return { action: "check", sizeChips: 0 };
+
+      if (legal.toCall > 0) {
+        if (
+          legal.raise &&
+          isAggressiveProfile(player.profile) &&
+          legal.minRaiseTo <= legal.maxCommit &&
+          legal.toCall <= BIG_BLIND_CHIPS * 6
+        ) {
+          return { action: "raise", sizeChips: legal.minRaiseTo };
+        }
+
+        if (legal.call) {
+          const maxConservativeCall = Math.max(BIG_BLIND_CHIPS * 4, Math.floor(player.stack * 0.25));
+          if (legal.toCall <= maxConservativeCall || player.stack <= BIG_BLIND_CHIPS * 2) {
+            return { action: "call", sizeChips: legal.toCall };
+          }
+        }
+
+        return { action: "fold", sizeChips: 0 };
+      }
+
+      if (legal.bet && isAggressiveProfile(player.profile) && ["flop", "turn", "river"].includes(state.tableState.street)) {
+        const halfPot = Math.max(BIG_BLIND_CHIPS, roundToWholeBb(state.tableState.pot / 2));
+        const target = Math.max(BIG_BLIND_CHIPS, Math.min(legal.maxCommit, halfPot));
+        return { action: "bet", sizeChips: target };
+      }
+
+      if (legal.check) return { action: "check", sizeChips: 0 };
+      if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      if (legal.bet) return { action: "bet", sizeChips: Math.min(legal.maxCommit, BIG_BLIND_CHIPS) };
+      return { action: "fold", sizeChips: 0 };
+    }
+
+    function advanceStreetFromRoundCompletion() {
+      if (state.stage === "hand") {
+        enterFlop();
+        return true;
+      }
+      if (state.stage === "flop") {
+        enterTurn();
+        return true;
+      }
+      if (state.stage === "turn") {
+        enterRiver();
+        return true;
+      }
+      if (state.stage === "river") {
+        keepRiver();
+        return true;
+      }
+      return false;
+    }
+
+    function finishHandBySinglePlayer() {
+      if (state.stage === "done") return;
+      state.stage = "done";
+      setTableStreetFromVisualStage(state.stage);
+      stopTimer(true);
+      hideTimeOverlay();
+      stopTableFlash();
+      addStreetMarker("done");
+    }
+
+    function runRealisticFlowUntilHeroTurn() {
+      if (!isRealisticLiveMode()) return;
+      let safety = 0;
+
+      while (safety < 80) {
+        safety += 1;
+        if (!["hand", "flop", "turn", "river"].includes(state.stage)) break;
+
+        if (isHandWonByFold()) {
+          finishHandBySinglePlayer();
+          break;
+        }
+
+        sanitizePendingActionSeats();
+        if (isBettingRoundComplete()) {
+          const advanced = advanceStreetFromRoundCompletion();
+          if (!advanced) break;
+          continue;
+        }
+
+        const actingSeat = state.tableState.actionSeat;
+        if (actingSeat < 0) break;
+        if (actingSeat === state.tableState.heroSeat) break;
+
+        const actor = getPlayerBySeat(actingSeat);
+        if (!actor || actor.status !== "active") {
+          removePendingActionSeat(actingSeat);
+          continue;
+        }
+
+        const autoAction = chooseAutoActionForSeat(actingSeat);
+        const applied = applyPlayerAction(actingSeat, autoAction.action, autoAction.sizeChips);
+        if (!applied) {
+          removePendingActionSeat(actingSeat);
+        }
+      }
+
+      refreshScene();
+    }
+
+    function maybeLockHeadsUp() {
+      const inHand = seatsStillInHand();
+      state.tableState.headsUpLocked = inHand.length <= 2;
+      return state.tableState.headsUpLocked;
+    }
+
+    function autoFoldRemainingPlayers(keepSeats) {
+      const keepSet = new Set((keepSeats || []).filter((seat) => Number.isInteger(seat) && seat >= 0));
+      state.players.forEach((player) => {
+        if (keepSet.has(player.seat)) return;
+        if (player.status === "active") {
+          player.status = "folded";
+          reweightRangeForAction({
+            seat: player.seat,
+            action: "fold",
+            sizeChips: 0,
+            reason: "auto-fold-heads-up-lock"
+          });
+        }
+      });
+      recomputePotAndToCall();
+      sanitizePendingActionSeats();
+      maybeLockHeadsUp();
+    }
+
+    function beginStreetRound(street) {
+      state.tableState.street = street;
+      state.players.forEach((player) => {
+        if (player.status !== "folded") {
+          player.committedStreet = 0;
+        }
+      });
+      state.tableState.toCall = 0;
+      state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+      state.tableState.lastAggressorSeat = -1;
+      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.pendingHeadsUpAggressorSeat = -1;
+      state.tableState.actionSeat = firstActionSeatForStreet(street);
+      state.tableState.betInputTo = BIG_BLIND_CHIPS;
+      resetPendingActionSeatsFrom(state.tableState.actionSeat);
+      recomputePotAndToCall();
+      recomputeMinRaiseTo();
+      maybeLockHeadsUp();
+      applyKnownCardBlockers([...state.hand, ...state.board]);
+    }
+
+    function beginTableHandForDeal() {
+      initHandSeatsAndPositions({ rotateButtonFirst: state.tableState.handNumber > 0 });
+      state.tableState.handNumber += 1;
+      state.actionLog = [];
+      state.coverageGaps = [];
+      postBlinds510();
+      resetPendingActionSeatsFrom(state.tableState.actionSeat);
+      maybeLockHeadsUp();
+      applyKnownCardBlockers(state.hand);
+    }
+
+    function setTableStreetFromVisualStage(stage) {
+      if (stage === "flop" || stage === "turn" || stage === "river") {
+        state.tableState.street = stage;
+        return;
+      }
+      if (stage === "done") {
+        state.tableState.street = "showdown";
+        state.tableState.actionSeat = -1;
+        state.tableState.pendingActionSeats = [];
+        return;
+      }
+      state.tableState.street = "preflop";
+      if (stage === "start") {
+        state.tableState.actionSeat = -1;
+        state.tableState.pendingActionSeats = [];
+      }
+    }
+
+    function postBlindForSeat(seat, blindAmountChips) {
+      const player = getPlayerBySeat(seat);
+      if (!player || player.status !== "active") return 0;
+      const amount = Math.max(0, Math.min(blindAmountChips, player.stack));
+      if (amount === 0) return 0;
+      player.stack -= amount;
+      player.committedStreet += amount;
+      player.committedHand += amount;
+      if (player.stack === 0) {
+        player.status = "allin";
+      }
+      return amount;
+    }
+
+    function postBlinds510() {
+      const sbSeat = findSeatByPosition("SB");
+      const bbSeat = findSeatByPosition("BB");
+      if (sbSeat < 0 || bbSeat < 0) return;
+
+      postBlindForSeat(sbSeat, SMALL_BLIND_CHIPS);
+      postBlindForSeat(bbSeat, BIG_BLIND_CHIPS);
+      recomputePotAndToCall();
+
+      state.tableState.minRaiseTo = state.tableState.toCall + BIG_BLIND_CHIPS;
+      state.tableState.lastAggressorSeat = bbSeat;
+      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.actionSeat = seatAtOffset(bbSeat, 1);
+      state.tableState.betInputTo = state.tableState.minRaiseTo;
+    }
+
+    function roundToWholeBb(chips) {
+      const numeric = Number(chips);
+      if (!Number.isFinite(numeric) || numeric <= 0) return 0;
+      return Math.round(numeric / BIG_BLIND_CHIPS) * BIG_BLIND_CHIPS;
+    }
+
+    function recomputePotAndToCall() {
+      let pot = 0;
+      let toCall = 0;
+      state.players.forEach((player) => {
+        pot += player.committedHand;
+        if (player.status !== "folded") {
+          toCall = Math.max(toCall, player.committedStreet);
+        }
+      });
+      state.tableState.pot = pot;
+      state.tableState.toCall = toCall;
+    }
+
+    function recomputeMinRaiseTo() {
+      const toCall = state.tableState.toCall;
+      if (toCall <= 0) {
+        state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+        return;
+      }
+      const raiseSize =
+        Number.isFinite(state.tableState.lastFullRaiseSize) && state.tableState.lastFullRaiseSize > 0
+          ? state.tableState.lastFullRaiseSize
+          : BIG_BLIND_CHIPS;
+      state.tableState.minRaiseTo = toCall + raiseSize;
+    }
+
+    function getLegalActions(seat) {
+      const player = getPlayerBySeat(seat);
+      if (!player || player.status !== "active") {
+        return {
+          fold: false,
+          check: false,
+          call: false,
+          bet: false,
+          raise: false,
+          allIn: false,
+          toCall: 0,
+          minRaiseTo: 0,
+          maxCommit: 0
+        };
+      }
+
+      const toCall = Math.max(0, state.tableState.toCall - player.committedStreet);
+      const maxCommit = player.committedStreet + player.stack;
+      const canCheck = toCall === 0;
+      const canCall = toCall > 0 && player.stack > 0;
+      const canBet = toCall === 0 && player.stack > 0;
+      const canRaise =
+        toCall > 0 &&
+        player.stack > toCall &&
+        maxCommit >= state.tableState.minRaiseTo &&
+        maxCommit > state.tableState.toCall;
+
+      return {
+        fold: true,
+        check: canCheck,
+        call: canCall,
+        bet: canBet,
+        raise: canRaise,
+        allIn: player.stack > 0,
+        toCall,
+        minRaiseTo: state.tableState.minRaiseTo,
+        maxCommit
+      };
+    }
+
+    function applyCommittedChips(player, targetStreetCommit) {
+      const safeTarget = Math.max(player.committedStreet, Math.min(targetStreetCommit, player.committedStreet + player.stack));
+      const delta = safeTarget - player.committedStreet;
+      if (delta <= 0) return 0;
+      player.stack -= delta;
+      player.committedStreet += delta;
+      player.committedHand += delta;
+      if (player.stack === 0) {
+        player.status = "allin";
+      }
+      return delta;
+    }
+
+    function applyPlayerAction(seat, action, sizeChips = 0) {
+      const player = getPlayerBySeat(seat);
+      if (!player || player.status !== "active") return false;
+
+      const legal = getLegalActions(seat);
+      const toCall = legal.toCall;
+      const priorToCall = state.tableState.toCall;
+      let actionCommit = 0;
+      let targetStreetCommit = player.committedStreet;
+      let aggressiveRaiseCreated = false;
+
+      if (action === "fold") {
+        player.status = "folded";
+      } else if (action === "check") {
+        if (!legal.check) return false;
+      } else if (action === "call") {
+        if (!legal.call) return false;
+        targetStreetCommit = player.committedStreet + toCall;
+        actionCommit = applyCommittedChips(player, targetStreetCommit);
+      } else if (action === "bet") {
+        if (!legal.bet) return false;
+        const desired = Math.max(BIG_BLIND_CHIPS, roundToWholeBb(sizeChips));
+        targetStreetCommit = Math.min(legal.maxCommit, desired);
+        actionCommit = applyCommittedChips(player, targetStreetCommit);
+        if (targetStreetCommit > priorToCall) {
+          state.tableState.lastFullRaiseSize = targetStreetCommit - priorToCall;
+          state.tableState.lastAggressorSeat = seat;
+          aggressiveRaiseCreated = true;
+        }
+      } else if (action === "raise") {
+        if (!legal.raise) return false;
+        const desired = roundToWholeBb(sizeChips);
+        const minRaiseTo = state.tableState.minRaiseTo;
+        const capped = Math.min(legal.maxCommit, desired);
+        if (capped < minRaiseTo && legal.maxCommit > minRaiseTo) return false;
+        targetStreetCommit = Math.max(priorToCall, capped);
+        if (targetStreetCommit <= priorToCall) return false;
+        actionCommit = applyCommittedChips(player, targetStreetCommit);
+        const raiseSize = targetStreetCommit - priorToCall;
+        if (raiseSize >= state.tableState.lastFullRaiseSize) {
+          state.tableState.lastFullRaiseSize = raiseSize;
+        }
+        state.tableState.lastAggressorSeat = seat;
+        aggressiveRaiseCreated = true;
+      } else if (action === "all-in") {
+        if (!legal.allIn) return false;
+        targetStreetCommit = legal.maxCommit;
+        if (targetStreetCommit <= player.committedStreet) return false;
+        actionCommit = applyCommittedChips(player, targetStreetCommit);
+        if (targetStreetCommit > priorToCall) {
+          const raiseSize = targetStreetCommit - priorToCall;
+          if (raiseSize >= state.tableState.lastFullRaiseSize) {
+            state.tableState.lastFullRaiseSize = raiseSize;
+          }
+          state.tableState.lastAggressorSeat = seat;
+          aggressiveRaiseCreated = true;
+        }
+      } else {
+        return false;
+      }
+
+      if (aggressiveRaiseCreated) {
+        state.tableState.pendingHeadsUpAggressorSeat = seat;
+        resetPendingActionSeatsFrom(seatAtOffset(seat, 1), [seat]);
+      } else if (action !== "call") {
+        state.tableState.pendingHeadsUpAggressorSeat = -1;
+        removePendingActionSeat(seat);
+      } else {
+        removePendingActionSeat(seat);
+      }
+
+      if (
+        action === "call" &&
+        toCall > 0 &&
+        state.tableState.pendingHeadsUpAggressorSeat >= 0 &&
+        seat !== state.tableState.pendingHeadsUpAggressorSeat
+      ) {
+        autoFoldRemainingPlayers([state.tableState.pendingHeadsUpAggressorSeat, seat]);
+      }
+
+      let ruleSizeChips = 0;
+      if (action === "call") {
+        ruleSizeChips = toCall;
+      } else if (action === "bet" || action === "raise" || action === "all-in") {
+        ruleSizeChips = Math.max(actionCommit, Number(sizeChips) || 0);
+      }
+      reweightRangeForAction({
+        seat,
+        action,
+        sizeChips: ruleSizeChips,
+        reason: "player-action"
+      });
+
+      recomputePotAndToCall();
+      recomputeMinRaiseTo();
+      maybeLockHeadsUp();
+      sanitizePendingActionSeats();
+      if (state.tableState.pendingActionSeats.length) {
+        nextPendingActionSeatFrom(seat);
+      } else {
+        state.tableState.actionSeat = -1;
+      }
+
+      state.actionLog.push({
+        hand_number: state.tableState.handNumber,
+        street: state.tableState.street,
+        seat,
+        position: player.position || "",
+        action,
+        amount_chips: actionCommit,
+        committed_street_chips: player.committedStreet,
+        pot_after_chips: state.tableState.pot
+      });
+      return true;
     }
 
     function applyLayoutMode(mode) {
@@ -2798,11 +4729,16 @@
       } else {
         state.hand = generatePlayableHand();
       }
+      beginTableHandForDeal();
       state.board = [];
       state.stage = "hand";
       renderSessionQueue();
-      refreshScene();
       addStreetMarker("hand");
+      if (isRealisticLiveMode()) {
+        runRealisticFlowUntilHeroTurn();
+      } else {
+        refreshScene();
+      }
     }
 
     function startOver() {
@@ -2819,6 +4755,7 @@
       state.session.active = false;
       state.session.index = 0;
       state.stage = "start";
+      initializeTableEngineState({ resetStacks: true });
       renderConfigSelections();
       renderSessionQueue();
       refreshScene();
@@ -2830,6 +4767,7 @@
 
       if (state.stage === "done") {
         state.stage = "river";
+        setTableStreetFromVisualStage(state.stage);
         refreshScene();
         startTimerForStreet();
         return;
@@ -2838,6 +4776,7 @@
       if (state.stage === "river") {
         state.board = state.board.slice(0, 4);
         state.stage = "turn";
+        setTableStreetFromVisualStage(state.stage);
         refreshScene();
         startTimerForStreet();
         return;
@@ -2846,6 +4785,7 @@
       if (state.stage === "turn") {
         state.board = state.board.slice(0, 3);
         state.stage = "flop";
+        setTableStreetFromVisualStage(state.stage);
         refreshScene();
         startTimerForStreet();
         return;
@@ -2855,6 +4795,7 @@
         stopTimer(true);
         state.board = [];
         state.stage = "hand";
+        setTableStreetFromVisualStage(state.stage);
         refreshScene();
         return;
       }
@@ -2865,6 +4806,7 @@
         state.board = [];
         state.deck = [];
         state.stage = "start";
+        setTableStreetFromVisualStage(state.stage);
         refreshScene();
       }
     }
@@ -2885,6 +4827,7 @@
         state.board = [dealCard(), dealCard(), dealCard()];
       }
       state.stage = "flop";
+      beginStreetRound("flop");
       refreshScene();
       startTimerForStreet();
       addStreetMarker("flop");
@@ -2912,6 +4855,7 @@
         state.board = [...flop, dealCard()];
       }
       state.stage = "turn";
+      beginStreetRound("turn");
       refreshScene();
       startTimerForStreet();
       addStreetMarker("turn");
@@ -2934,6 +4878,7 @@
         state.board = [...four, dealCard()];
       }
       state.stage = "river";
+      beginStreetRound("river");
       refreshScene();
       startTimerForStreet();
       addStreetMarker("river");
@@ -2941,6 +4886,7 @@
 
     function keepRiver() {
       state.stage = "done";
+      setTableStreetFromVisualStage(state.stage);
       stopTimer(true);
       hideTimeOverlay();
       stopTableFlash();
@@ -3917,6 +5863,176 @@
       }
     }
 
+    function realisticSizingBounds(legal) {
+      if (!legal.bet && !legal.raise) return null;
+      let minTo = legal.raise ? legal.minRaiseTo : BIG_BLIND_CHIPS;
+      let maxTo = legal.maxCommit;
+      if (maxTo < minTo) {
+        minTo = maxTo;
+      }
+
+      let targetTo = Number(state.tableState.betInputTo) || minTo;
+      targetTo = roundToWholeBb(targetTo);
+      if (maxTo <= BIG_BLIND_CHIPS) {
+        targetTo = maxTo;
+      }
+      if (targetTo < minTo) targetTo = minTo;
+      if (targetTo > maxTo) targetTo = maxTo;
+      state.tableState.betInputTo = targetTo;
+
+      const step = maxTo <= BIG_BLIND_CHIPS ? SMALL_BLIND_CHIPS : BIG_BLIND_CHIPS;
+      return { minTo, maxTo, targetTo, step };
+    }
+
+    function applyHeroRealisticAction(action) {
+      const hero = getHeroPlayer();
+      if (!hero || hero.status !== "active") {
+        runRealisticFlowUntilHeroTurn();
+        return;
+      }
+
+      const legal = getLegalActions(hero.seat);
+      let size = 0;
+      if (action === "call") {
+        size = legal.toCall;
+      } else if (action === "bet" || action === "raise") {
+        const bounds = realisticSizingBounds(legal);
+        if (!bounds) return;
+        size = bounds.targetTo;
+      } else if (action === "all-in") {
+        size = legal.maxCommit;
+      }
+
+      const ok = applyPlayerAction(hero.seat, action, size);
+      if (!ok) {
+        window.alert("That action is not legal in the current state.");
+        return;
+      }
+      runRealisticFlowUntilHeroTurn();
+    }
+
+    function buildRealisticActionButtons(legal) {
+      const buttons = [];
+      if (legal.toCall > 0) {
+        buttons.push({ text: "Fold", primary: false, onClick: () => applyHeroRealisticAction("fold") });
+      }
+      if (legal.check) {
+        buttons.push({ text: "Check", primary: legal.toCall === 0, onClick: () => applyHeroRealisticAction("check") });
+      }
+      if (legal.call) {
+        buttons.push({
+          text: `Call ${legal.toCall}`,
+          primary: true,
+          onClick: () => applyHeroRealisticAction("call")
+        });
+      }
+      if (legal.bet) {
+        buttons.push({
+          text: `Bet To ${state.tableState.betInputTo}`,
+          primary: false,
+          onClick: () => applyHeroRealisticAction("bet")
+        });
+      }
+      if (legal.raise) {
+        buttons.push({
+          text: `Raise To ${state.tableState.betInputTo}`,
+          primary: false,
+          onClick: () => applyHeroRealisticAction("raise")
+        });
+      }
+      if (legal.allIn) {
+        buttons.push({
+          text: `All-in ${legal.maxCommit}`,
+          primary: false,
+          onClick: () => applyHeroRealisticAction("all-in")
+        });
+      }
+      return buttons;
+    }
+
+    function appendRealisticSizingControl(legal) {
+      const bounds = realisticSizingBounds(legal);
+      if (!bounds) return;
+
+      const wrap = document.createElement("div");
+      wrap.className = "action-size-wrap";
+
+      const label = document.createElement("span");
+      label.textContent = "Action Size";
+
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = String(bounds.minTo);
+      slider.max = String(bounds.maxTo);
+      slider.step = String(bounds.step);
+      slider.value = String(bounds.targetTo);
+
+      const number = document.createElement("input");
+      number.type = "number";
+      number.min = String(bounds.minTo);
+      number.max = String(bounds.maxTo);
+      number.step = String(bounds.step);
+      number.value = String(bounds.targetTo);
+
+      const readout = document.createElement("span");
+      readout.className = "action-size-readout";
+      readout.textContent = `${Math.round(bounds.targetTo / BIG_BLIND_CHIPS)}bb`;
+
+      const applyValue = (rawValue) => {
+        let next = roundToWholeBb(rawValue);
+        if (bounds.maxTo <= BIG_BLIND_CHIPS) {
+          next = bounds.maxTo;
+        }
+        if (next < bounds.minTo) next = bounds.minTo;
+        if (next > bounds.maxTo) next = bounds.maxTo;
+        state.tableState.betInputTo = next;
+        slider.value = String(next);
+        number.value = String(next);
+        readout.textContent = `${Math.round(next / BIG_BLIND_CHIPS)}bb`;
+      };
+
+      slider.addEventListener("input", () => applyValue(slider.value));
+      number.addEventListener("change", () => applyValue(number.value));
+
+      wrap.appendChild(label);
+      wrap.appendChild(slider);
+      wrap.appendChild(number);
+      wrap.appendChild(readout);
+      els.controls.prepend(wrap);
+    }
+
+    function setRealisticControls() {
+      if (state.stage === "done") {
+        setControls([{ text: "Deal", primary: true, onClick: dealHand }]);
+        return;
+      }
+
+      const hero = getHeroPlayer();
+      if (!hero) {
+        setControls([{ text: "Deal", primary: true, onClick: dealHand }]);
+        return;
+      }
+
+      const actionSeat = state.tableState.actionSeat;
+      const heroCanAct = hero.status === "active" && actionSeat === hero.seat;
+      if (!heroCanAct) {
+        setControls([
+          { text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn },
+          { text: "New Hand", primary: false, onClick: dealHand }
+        ]);
+        return;
+      }
+
+      const legal = getLegalActions(hero.seat);
+      const buttons = buildRealisticActionButtons(legal);
+      if (!buttons.length) {
+        setControls([{ text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }]);
+        return;
+      }
+      setControls(buttons);
+      appendRealisticSizingControl(legal);
+    }
+
     function refreshScene() {
       renderBoard();
       renderHand();
@@ -3926,11 +6042,18 @@
         els.startSplash.style.display = "block";
         setControls([{ text: "Deal", primary: true, onClick: dealHand }]);
         updateTimerPauseButton();
-        renderConfigSelections();
+        renderStatusLine();
         return;
       }
 
       els.startSplash.style.display = "none";
+
+      if (isRealisticLiveMode() && ["hand", "flop", "turn", "river", "done"].includes(state.stage)) {
+        setRealisticControls();
+        updateTimerPauseButton();
+        renderStatusLine();
+        return;
+      }
 
       if (state.stage === "hand") {
         setControls([
@@ -3938,7 +6061,7 @@
           { text: state.mode === "replay" ? "Edit Hand" : "New Hand", primary: false, onClick: dealHand }
         ]);
         updateTimerPauseButton();
-        renderConfigSelections();
+        renderStatusLine();
         return;
       }
 
@@ -3948,7 +6071,7 @@
           { text: state.mode === "replay" ? "Edit Flop" : "New Flop", primary: false, onClick: enterFlop }
         ]);
         updateTimerPauseButton();
-        renderConfigSelections();
+        renderStatusLine();
         return;
       }
 
@@ -3958,7 +6081,7 @@
           { text: state.mode === "replay" ? "Edit Turn" : "New Turn", primary: false, onClick: enterTurn }
         ]);
         updateTimerPauseButton();
-        renderConfigSelections();
+        renderStatusLine();
         return;
       }
 
@@ -3968,7 +6091,7 @@
           { text: state.mode === "replay" ? "Edit River" : "New River", primary: false, onClick: enterRiver }
         ]);
         updateTimerPauseButton();
-        renderConfigSelections();
+        renderStatusLine();
         return;
       }
 
@@ -3980,7 +6103,7 @@
       }
 
       updateTimerPauseButton();
-      renderConfigSelections();
+      renderStatusLine();
     }
 
     init();
