@@ -31,20 +31,27 @@
     }
 
     .app {
-      width: min(1200px, 100%);
+      width: min(1500px, 100%);
       min-height: 100vh;
       margin: 0 auto;
       padding: 18px 20px 22px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 14px;
     }
 
     .topbar {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
@@ -74,22 +81,6 @@
     }
 
     .timer-wrap label {
-      font-weight: 700;
-      color: var(--text);
-      font-size: 14px;
-    }
-
-    .layout-wrap {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #202020;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 10px 12px;
-    }
-
-    .layout-wrap label {
       font-weight: 700;
       color: var(--text);
       font-size: 14px;
@@ -166,25 +157,82 @@
       box-shadow: 0 0 0 2px rgba(200, 95, 0, 0.22);
     }
 
-    .table {
-      position: relative;
-      flex: 1;
+    .table-stage {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr) 260px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .table-rail {
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      border: 2px solid var(--orange);
-      border-radius: 16px;
-      padding: 24px 14px 14px;
+      gap: 12px;
+    }
+
+    .rail-panel {
+      border: 1px solid #333;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(36, 36, 36, 0.96) 0%, rgba(24, 24, 24, 0.96) 100%);
+      padding: 12px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+    }
+
+    .rail-panel.disabled {
+      opacity: 0.46;
+      filter: grayscale(0.2);
+    }
+
+    .rail-title {
+      margin-bottom: 8px;
+      color: #fff5e8;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+
+    .table {
+      position: relative;
+      min-height: 700px;
+      padding: 6px;
+      border-radius: 44% / 28%;
       background:
-        radial-gradient(120% 100% at 50% 20%, #0b6b0b 0%, var(--felt) 45%, #003200 100%);
+        radial-gradient(120% 120% at 50% 20%, #4d2a0b 0%, #2a1507 36%, #140b05 100%);
+      box-shadow:
+        inset 0 0 0 2px rgba(255, 214, 165, 0.2),
+        0 22px 40px rgba(0, 0, 0, 0.32);
       overflow: hidden;
-      transition: background 120ms ease;
+      isolation: isolate;
     }
 
     .table.flash {
       background: var(--danger);
+    }
+
+    .table-shell {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      min-height: 688px;
+      border-radius: 43% / 27%;
+      background:
+        radial-gradient(110% 110% at 50% 24%, #0e7f24 0%, #075e18 38%, #034611 72%, #02330c 100%);
+      border: 2px solid rgba(255, 228, 185, 0.18);
+      box-shadow:
+        inset 0 0 0 18px rgba(0, 0, 0, 0.08),
+        inset 0 0 80px rgba(0, 0, 0, 0.18);
+      overflow: hidden;
+    }
+
+    .table-shell::before {
+      content: "";
+      position: absolute;
+      inset: 54px 92px;
+      border-radius: 44% / 30%;
+      border: 1px solid rgba(239, 247, 226, 0.14);
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
+      pointer-events: none;
     }
 
     .manual-panel {
@@ -835,40 +883,45 @@
       }
     }
 
-    .countdown {
+    .table-timer {
       position: absolute;
-      top: 12px;
-      right: 14px;
+      top: 24px;
+      left: 30px;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+      max-width: 170px;
+    }
+
+    .countdown {
+      position: static;
       color: var(--white);
-      font-size: clamp(20px, 3vw, 34px);
+      font-size: clamp(18px, 2.4vw, 28px);
       font-weight: 800;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+      line-height: 1.05;
     }
 
     .table-config {
-      position: absolute;
-      z-index: 4;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      border-radius: 10px;
-      background: rgba(0, 0, 0, 0.28);
-      padding: 8px;
-      backdrop-filter: blur(2px);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+      position: static;
+      z-index: 1;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      padding: 0;
+      backdrop-filter: none;
+      box-shadow: none;
     }
 
     .table-config-left {
-      top: 10px;
-      left: 12px;
-      width: 196px;
       display: flex;
       flex-direction: column;
       gap: 6px;
     }
 
     .table-config-right {
-      top: 62px;
-      right: 12px;
-      width: 172px;
       display: flex;
       flex-direction: column;
       gap: 7px;
@@ -1020,41 +1073,36 @@
     }
 
     .board-title {
-      margin: 8px 0 0;
-      font-size: clamp(24px, 3.5vw, 38px);
-      color: var(--white);
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      display: none;
     }
 
     .status {
       min-height: 24px;
-      margin: 8px 0 0;
-      font-size: clamp(16px, 2.2vw, 22px);
-      color: var(--text);
+      margin: 2px 0 0;
+      font-size: clamp(14px, 1.9vw, 18px);
+      color: #f0f5e8;
       text-align: center;
-      font-weight: 500;
+      font-weight: 700;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+      max-width: 520px;
     }
 
     .seat-map {
-      position: relative;
-      width: min(760px, 100%);
-      height: 270px;
-      margin: 14px auto 0;
+      position: absolute;
+      inset: 0;
       pointer-events: none;
     }
 
     .seat-chip {
       position: absolute;
-      width: 132px;
-      min-height: 68px;
+      width: 138px;
+      min-height: 82px;
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 12px;
-      background: rgba(16, 16, 16, 0.58);
+      background: rgba(12, 14, 12, 0.66);
       box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
       backdrop-filter: blur(3px);
-      padding: 8px 10px;
+      padding: 9px 10px;
       display: flex;
       flex-direction: column;
       gap: 3px;
@@ -1080,12 +1128,12 @@
       border-color: rgba(126, 196, 115, 0.58);
     }
 
-    .seat-chip.top-left { top: 18%; left: 19%; }
-    .seat-chip.top-center { top: 10%; left: 50%; }
-    .seat-chip.top-right { top: 18%; left: 81%; }
-    .seat-chip.bottom-left { top: 68%; left: 18%; }
-    .seat-chip.bottom-right { top: 68%; left: 82%; }
-    .seat-chip.bottom-center { top: 88%; left: 50%; }
+    .seat-chip.top-left { top: 24%; left: 20%; }
+    .seat-chip.top-center { top: 14%; left: 51%; }
+    .seat-chip.top-right { top: 24%; left: 82%; }
+    .seat-chip.bottom-left { top: 69%; left: 16%; }
+    .seat-chip.bottom-right { top: 69%; left: 86%; }
+    .seat-chip.bottom-center { top: 84%; left: 51%; }
 
     .seat-chip-top,
     .seat-chip-meta {
@@ -1147,12 +1195,52 @@
       min-height: 14px;
     }
 
+    .seat-pocket {
+      position: absolute;
+      display: flex;
+      gap: 2px;
+      pointer-events: none;
+    }
+
+    .seat-pocket-card {
+      width: 16px;
+      height: 22px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.42);
+      background:
+        linear-gradient(135deg, #f2f2f2 0 25%, #c85f00 25% 50%, #f2f2f2 50% 75%, #c85f00 75% 100%);
+      background-size: 8px 8px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.24);
+    }
+
+    .seat-chip.top-left .seat-pocket { right: 8px; bottom: 8px; }
+    .seat-chip.top-center .seat-pocket { left: 50%; bottom: 8px; transform: translateX(-50%); }
+    .seat-chip.top-right .seat-pocket { left: 8px; bottom: 8px; }
+    .seat-chip.bottom-left .seat-pocket { right: 8px; top: 8px; }
+    .seat-chip.bottom-right .seat-pocket { left: 8px; top: 8px; }
+    .seat-chip.bottom-center .seat-pocket { left: 50%; top: 8px; transform: translateX(-50%); }
+
+    .table-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: min(520px, 60%);
+      text-align: center;
+    }
+
     .cards {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
       min-height: 162px;
       padding: 4px 6px;
     }
@@ -1579,6 +1667,12 @@
       transform: translateY(-1px);
     }
 
+    button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     button.primary {
       color: #151515;
       background: var(--orange);
@@ -1708,8 +1802,8 @@
     }
 
     body.layout-compact .table {
-      padding: 16px 10px 10px;
-      min-height: 330px;
+      padding: 6px;
+      min-height: 700px;
     }
 
     body.layout-compact .countdown {
@@ -1717,20 +1811,16 @@
     }
 
     body.layout-compact .table-config {
-      padding: 6px;
+      padding: 0;
     }
 
     body.layout-compact .table-config-left {
-      width: 170px;
-      top: 8px;
-      left: 8px;
+      width: auto;
       gap: 5px;
     }
 
     body.layout-compact .table-config-right {
-      width: 154px;
-      top: 50px;
-      right: 8px;
+      width: auto;
     }
 
     body.layout-compact .config-btn {
@@ -1958,45 +2048,25 @@
     }
   </style>
 </head>
-<body>
+<body class="layout-compact">
   <main class="app">
     <header class="topbar">
       <h1 class="title">RTP Drillz</h1>
-      <div class="timer-wrap">
-        <div class="timer-row">
-          <label for="timerSelect">Timer / street</label>
-          <select id="timerSelect">
-            <option>None</option>
-            <option>10s</option>
-            <option>15s</option>
-            <option>30s</option>
-            <option>45s</option>
-            <option>60s</option>
-            <option>90s</option>
+      <div class="topbar-right">
+        <div class="mode-wrap">
+          <label for="modeSelect">Mode</label>
+          <select id="modeSelect">
+            <option value="live">Live Drill</option>
+            <option value="replay">Hand Replay</option>
           </select>
         </div>
-        <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
-      </div>
-      <div class="layout-wrap">
-        <label for="layoutSelect">Layout</label>
-        <select id="layoutSelect">
-          <option value="standard">Standard</option>
-          <option value="compact">Compact</option>
-        </select>
-      </div>
-      <div class="mode-wrap">
-        <label for="modeSelect">Mode</label>
-        <select id="modeSelect">
-          <option value="live">Live Drill</option>
-          <option value="replay">Hand Replay</option>
-        </select>
-      </div>
-      <div class="capture-wrap">
-        <label for="captureSelect">Capture</label>
-        <select id="captureSelect">
-          <option value="off">Off</option>
-          <option value="on">On</option>
-        </select>
+        <div class="capture-wrap">
+          <label for="captureSelect">Capture</label>
+          <select id="captureSelect">
+            <option value="off">Off</option>
+            <option value="on">On</option>
+          </select>
+        </div>
       </div>
     </header>
 
@@ -2032,91 +2102,121 @@
       <div id="sessionList" class="session-list"></div>
     </section>
 
-    <section id="table" class="table">
-      <div id="countdown" class="countdown">Time left: --:--</div>
-      <div id="timeOverlay" class="time-overlay">TIME!</div>
-      <div class="table-config table-config-left">
-        <div class="config-row row-three">
-          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="SRP">SRP</button>
-          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="3BP">3BP</button>
-          <button class="config-btn" type="button" data-config-group="spotType" data-config-value="4BP">4BP</button>
-        </div>
-        <div class="config-row row-two">
-          <button class="config-btn" type="button" data-config-group="position" data-config-value="IP">IP</button>
-          <button class="config-btn" type="button" data-config-group="position" data-config-value="OOP">OOP</button>
-        </div>
-        <div class="config-row row-two">
-          <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="play">Play Pre</button>
-          <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="skip">Skip To Flop</button>
-        </div>
-      </div>
-      <div class="table-config table-config-right">
-        <div class="stack-title">Blinds</div>
-        <div class="blind-row">
-          <label class="blind-field" for="smallBlindInput">
-            <span>SB</span>
-            <input id="smallBlindInput" type="number" min="1" step="1" value="5" />
-          </label>
-          <label class="blind-field" for="bigBlindInput">
-            <span>BB</span>
-            <input id="bigBlindInput" type="number" min="2" step="1" value="10" />
-          </label>
-        </div>
-        <div class="stack-title">Effective Stacks</div>
-        <div class="stack-grid">
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="50BB">50BB</button>
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="100BB">100BB</button>
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="150BB">150BB</button>
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="200BB">200BB</button>
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="300BB">300BB</button>
-          <button class="config-btn" type="button" data-config-group="stacks" data-config-value="500BB+">500BB+</button>
-        </div>
-        <button id="stackEditorToggle" class="stack-editor-toggle" type="button">Edit Seat Stacks</button>
-        <div id="stackEditor" class="stack-editor">
-          <div class="stack-editor-row">
-            <div id="stackLabel0" class="stack-editor-label">Hero</div>
-            <label class="stack-editor-field" for="stackInput0">
-              <input id="stackInput0" type="number" min="0" step="1" data-stack-seat="0" />
-            </label>
-          </div>
-          <div class="stack-editor-row">
-            <div id="stackLabel1" class="stack-editor-label">Seat 2</div>
-            <label class="stack-editor-field" for="stackInput1">
-              <input id="stackInput1" type="number" min="0" step="1" data-stack-seat="1" />
-            </label>
-          </div>
-          <div class="stack-editor-row">
-            <div id="stackLabel2" class="stack-editor-label">Seat 3</div>
-            <label class="stack-editor-field" for="stackInput2">
-              <input id="stackInput2" type="number" min="0" step="1" data-stack-seat="2" />
-            </label>
-          </div>
-          <div class="stack-editor-row">
-            <div id="stackLabel3" class="stack-editor-label">Seat 4</div>
-            <label class="stack-editor-field" for="stackInput3">
-              <input id="stackInput3" type="number" min="0" step="1" data-stack-seat="3" />
-            </label>
-          </div>
-          <div class="stack-editor-row">
-            <div id="stackLabel4" class="stack-editor-label">Seat 5</div>
-            <label class="stack-editor-field" for="stackInput4">
-              <input id="stackInput4" type="number" min="0" step="1" data-stack-seat="4" />
-            </label>
-          </div>
-          <div class="stack-editor-row">
-            <div id="stackLabel5" class="stack-editor-label">Seat 6</div>
-            <label class="stack-editor-field" for="stackInput5">
-              <input id="stackInput5" type="number" min="0" step="1" data-stack-seat="5" />
-            </label>
+    <section class="table-stage">
+      <aside id="leftRail" class="table-rail table-rail-left">
+        <div class="timer-wrap rail-panel">
+          <div class="timer-row">
+            <label for="timerSelect">Timer</label>
+            <select id="timerSelect">
+              <option>None</option>
+              <option>10s</option>
+              <option>15s</option>
+              <option>30s</option>
+              <option>45s</option>
+              <option>60s</option>
+              <option>90s</option>
+            </select>
           </div>
         </div>
-      </div>
-      <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
+        <div id="setupRail" class="table-config table-config-left rail-panel">
+          <div class="rail-title">Spot Setup</div>
+          <div class="config-row row-three">
+            <button class="config-btn" type="button" data-config-group="spotType" data-config-value="SRP">SRP</button>
+            <button class="config-btn" type="button" data-config-group="spotType" data-config-value="3BP">3BP</button>
+            <button class="config-btn" type="button" data-config-group="spotType" data-config-value="4BP">4BP</button>
+          </div>
+          <div class="config-row row-two">
+            <button class="config-btn" type="button" data-config-group="position" data-config-value="IP">IP</button>
+            <button class="config-btn" type="button" data-config-group="position" data-config-value="OOP">OOP</button>
+          </div>
+          <div class="config-row row-two">
+            <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="play">Play Pre</button>
+            <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="skip">Skip To Flop</button>
+          </div>
+        </div>
+      </aside>
 
-      <h3 class="board-title">Board</h3>
-      <div id="boardCards" class="cards"></div>
-      <p id="status" class="status">&nbsp;</p>
-      <div id="seatMap" class="seat-map"></div>
+      <section id="table" class="table">
+        <div class="table-shell">
+          <div id="timeOverlay" class="time-overlay">TIME!</div>
+          <div class="table-timer">
+            <div id="countdown" class="countdown">Time left: --:--</div>
+            <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
+          </div>
+          <div id="seatMap" class="seat-map"></div>
+          <div class="table-center">
+            <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
+            <h3 class="board-title">Board</h3>
+            <div id="boardCards" class="cards"></div>
+            <p id="status" class="status">&nbsp;</p>
+          </div>
+        </div>
+      </section>
+
+      <aside id="rightRail" class="table-rail table-rail-right">
+        <div id="stackRail" class="table-config table-config-right rail-panel">
+          <div class="rail-title">Stacks + Blinds</div>
+          <div class="stack-title">Blinds</div>
+          <div class="blind-row">
+            <label class="blind-field" for="smallBlindInput">
+              <span>SB</span>
+              <input id="smallBlindInput" type="number" min="1" step="1" value="5" />
+            </label>
+            <label class="blind-field" for="bigBlindInput">
+              <span>BB</span>
+              <input id="bigBlindInput" type="number" min="2" step="1" value="10" />
+            </label>
+          </div>
+          <div class="stack-title">Effective Stacks</div>
+          <div class="stack-grid">
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="50BB">50BB</button>
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="100BB">100BB</button>
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="150BB">150BB</button>
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="200BB">200BB</button>
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="300BB">300BB</button>
+            <button class="config-btn" type="button" data-config-group="stacks" data-config-value="500BB+">500BB+</button>
+          </div>
+          <button id="stackEditorToggle" class="stack-editor-toggle" type="button">Edit Seat Stacks</button>
+          <div id="stackEditor" class="stack-editor">
+            <div class="stack-editor-row">
+              <div id="stackLabel0" class="stack-editor-label">Hero</div>
+              <label class="stack-editor-field" for="stackInput0">
+                <input id="stackInput0" type="number" min="0" step="1" data-stack-seat="0" />
+              </label>
+            </div>
+            <div class="stack-editor-row">
+              <div id="stackLabel1" class="stack-editor-label">Seat 2</div>
+              <label class="stack-editor-field" for="stackInput1">
+                <input id="stackInput1" type="number" min="0" step="1" data-stack-seat="1" />
+              </label>
+            </div>
+            <div class="stack-editor-row">
+              <div id="stackLabel2" class="stack-editor-label">Seat 3</div>
+              <label class="stack-editor-field" for="stackInput2">
+                <input id="stackInput2" type="number" min="0" step="1" data-stack-seat="2" />
+              </label>
+            </div>
+            <div class="stack-editor-row">
+              <div id="stackLabel3" class="stack-editor-label">Seat 4</div>
+              <label class="stack-editor-field" for="stackInput3">
+                <input id="stackInput3" type="number" min="0" step="1" data-stack-seat="3" />
+              </label>
+            </div>
+            <div class="stack-editor-row">
+              <div id="stackLabel4" class="stack-editor-label">Seat 5</div>
+              <label class="stack-editor-field" for="stackInput4">
+                <input id="stackInput4" type="number" min="0" step="1" data-stack-seat="4" />
+              </label>
+            </div>
+            <div class="stack-editor-row">
+              <div id="stackLabel5" class="stack-editor-label">Seat 6</div>
+              <label class="stack-editor-field" for="stackInput5">
+                <input id="stackInput5" type="number" min="0" step="1" data-stack-seat="5" />
+              </label>
+            </div>
+          </div>
+        </div>
+      </aside>
     </section>
 
     <section class="hero-wrap">
@@ -2387,7 +2487,6 @@
     const RANKS = "23456789TJQKA".split("");
     const SUITS = "shdc".split("");
     const TIMER_KEY = "rtpDrillzTimerChoice";
-    const LAYOUT_KEY = "rtpDrillzLayoutMode";
     const MODE_KEY = "rtpDrillzModeChoice";
     const CAPTURE_KEY = "rtpDrillzCaptureMode";
     const TIMER_MAP = {
@@ -2529,7 +2628,6 @@
         bigBlind: DEFAULT_BIG_BLIND_CHIPS
       },
       timerChoice: "None",
-      layoutMode: "standard",
       timeLeft: 0,
       timerId: null,
       timerPausedByUser: false,
@@ -2608,9 +2706,12 @@
     const els = {
       timerSelect: document.getElementById("timerSelect"),
       timerPauseBtn: document.getElementById("timerPauseBtn"),
-      layoutSelect: document.getElementById("layoutSelect"),
       modeSelect: document.getElementById("modeSelect"),
       captureSelect: document.getElementById("captureSelect"),
+      leftRail: document.getElementById("leftRail"),
+      rightRail: document.getElementById("rightRail"),
+      setupRail: document.getElementById("setupRail"),
+      stackRail: document.getElementById("stackRail"),
       smallBlindInput: document.getElementById("smallBlindInput"),
       bigBlindInput: document.getElementById("bigBlindInput"),
       stackEditorToggle: document.getElementById("stackEditorToggle"),
@@ -2727,12 +2828,6 @@
       if (savedTimer && Object.prototype.hasOwnProperty.call(TIMER_MAP, savedTimer)) {
         state.timerChoice = savedTimer;
       }
-      const savedLayout = localStorage.getItem(LAYOUT_KEY);
-      if (savedLayout === "compact" || savedLayout === "standard") {
-        state.layoutMode = savedLayout;
-      } else if (window.innerHeight < 900) {
-        state.layoutMode = "compact";
-      }
       const savedMode = localStorage.getItem(MODE_KEY);
       if (savedMode === "live" || savedMode === "replay") {
         state.mode = savedMode;
@@ -2752,12 +2847,10 @@
       sanitizeBlindConfig();
       localStorage.setItem(REALISTIC_MODE_KEY, state.featureFlags.realisticTableMode ? "1" : "0");
       els.timerSelect.value = state.timerChoice;
-      els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
       els.captureSelect.value = state.captureMode;
       syncBlindInputs();
       els.sessionNameInput.value = state.session.name;
-      applyLayoutMode(state.layoutMode);
       updateManualPanelVisibility();
       applyCaptureMode(state.captureMode, false);
       initializeProfilePackState();
@@ -2779,12 +2872,6 @@
         updateTimerPauseButton();
       });
       els.timerPauseBtn.addEventListener("click", toggleTimerPause);
-      els.layoutSelect.addEventListener("change", () => {
-        const mode = els.layoutSelect.value === "compact" ? "compact" : "standard";
-        state.layoutMode = mode;
-        localStorage.setItem(LAYOUT_KEY, mode);
-        applyLayoutMode(mode);
-      });
       els.modeSelect.addEventListener("change", () => {
         state.mode = els.modeSelect.value === "replay" ? "replay" : "live";
         localStorage.setItem(MODE_KEY, state.mode);
@@ -2850,6 +2937,7 @@
       const show = state.mode === "replay";
       els.manualPanel.classList.toggle("show", show);
       els.sessionPanel.classList.toggle("show", show);
+      updateRailAvailability();
       if (!show && handBuilderState.open) {
         closeHandBuilder(false);
       }
@@ -3604,6 +3692,14 @@
         const replayCards = replayHoleCardsForSeat(player.seat);
         if (state.mode === "replay" && replayCards.length) {
           cards.textContent = isShowdownRevealState() ? replayCards.join(" ") : "Cards locked";
+        }
+
+        if (player.status === "active" || player.status === "allin") {
+          const pocket = document.createElement("div");
+          pocket.className = "seat-pocket";
+          pocket.appendChild(Object.assign(document.createElement("div"), { className: "seat-pocket-card" }));
+          pocket.appendChild(Object.assign(document.createElement("div"), { className: "seat-pocket-card" }));
+          chip.appendChild(pocket);
         }
 
         chip.appendChild(top);
@@ -5449,8 +5545,22 @@
       return true;
     }
 
-    function applyLayoutMode(mode) {
-      document.body.classList.toggle("layout-compact", mode === "compact");
+    function updateRailAvailability() {
+      const replayMode = state.mode === "replay";
+      const disableSetup = replayMode;
+      [els.setupRail, els.stackRail].forEach((panel) => {
+        if (!panel) return;
+        panel.classList.toggle("disabled", disableSetup);
+      });
+      els.configButtons.forEach((btn) => {
+        btn.disabled = disableSetup;
+      });
+      els.smallBlindInput.disabled = disableSetup;
+      els.bigBlindInput.disabled = disableSetup;
+      els.stackEditorToggle.disabled = disableSetup;
+      els.stackInputs.forEach((input) => {
+        input.disabled = disableSetup;
+      });
     }
 
     function buildFullDeck() {
@@ -6791,9 +6901,10 @@
 
     function setControls(buttons) {
       els.controls.innerHTML = "";
-      buttons.forEach(({ text, primary, onClick }) => {
+      buttons.forEach(({ text, primary, onClick, actionId }) => {
         const btn = document.createElement("button");
         btn.textContent = text;
+        if (actionId) btn.dataset.actionId = actionId;
         if (primary) btn.classList.add("primary");
         btn.addEventListener("click", () => {
           ensureAudioContext();
@@ -6869,37 +6980,41 @@
     function buildRealisticActionButtons(legal) {
       const buttons = [];
       if (legal.toCall > 0) {
-        buttons.push({ text: "Fold", primary: false, onClick: () => applyHeroRealisticAction("fold") });
+        buttons.push({ text: "Fold", primary: false, onClick: () => applyHeroRealisticAction("fold"), actionId: "fold" });
       }
       if (legal.check) {
-        buttons.push({ text: "Check", primary: legal.toCall === 0, onClick: () => applyHeroRealisticAction("check") });
+        buttons.push({ text: "Check", primary: legal.toCall === 0, onClick: () => applyHeroRealisticAction("check"), actionId: "check" });
       }
       if (legal.call) {
         buttons.push({
           text: `Call ${legal.toCall}`,
           primary: true,
-          onClick: () => applyHeroRealisticAction("call")
+          onClick: () => applyHeroRealisticAction("call"),
+          actionId: "call"
         });
       }
       if (legal.bet) {
         buttons.push({
           text: `Bet To ${state.tableState.betInputTo}`,
           primary: false,
-          onClick: () => applyHeroRealisticAction("bet")
+          onClick: () => applyHeroRealisticAction("bet"),
+          actionId: "bet"
         });
       }
       if (legal.raise) {
         buttons.push({
           text: `Raise To ${state.tableState.betInputTo}`,
           primary: false,
-          onClick: () => applyHeroRealisticAction("raise")
+          onClick: () => applyHeroRealisticAction("raise"),
+          actionId: "raise"
         });
       }
       if (legal.allIn) {
         buttons.push({
           text: `All-in ${legal.maxCommit}`,
           primary: false,
-          onClick: () => applyHeroRealisticAction("all-in")
+          onClick: () => applyHeroRealisticAction("all-in"),
+          actionId: "all-in"
         });
       }
       return buttons;
@@ -6948,6 +7063,26 @@
         });
       };
 
+      const preferredAggressiveAction = (nextValue) => {
+        if (legal.allIn && nextValue >= legal.maxCommit) return "all-in";
+        if (legal.raise) return "raise";
+        if (legal.bet) return "bet";
+        return legal.call ? "call" : legal.check ? "check" : "";
+      };
+
+      const syncPrimaryAction = (nextValue) => {
+        const preferred = preferredAggressiveAction(nextValue);
+        Array.from(els.controls.querySelectorAll("button[data-action-id]")).forEach((btn) => {
+          btn.classList.toggle("primary", btn.dataset.actionId === preferred);
+        });
+      };
+
+      const triggerPreferredAction = () => {
+        const preferred = preferredAggressiveAction(Number(state.tableState.betInputTo) || bounds.targetTo);
+        const btn = els.controls.querySelector(`button[data-action-id="${preferred}"]`);
+        if (btn) btn.click();
+      };
+
       const applyValue = (rawValue) => {
         let next = roundToWholeBb(rawValue);
         if (bounds.maxTo <= bigBlindChips()) {
@@ -6960,10 +7095,19 @@
         number.value = String(next);
         readout.textContent = `${Math.round(next / bigBlindChips())}bb`;
         syncActionButtonLabels(next);
+        syncPrimaryAction(next);
       };
 
       slider.addEventListener("input", () => applyValue(slider.value));
+      number.addEventListener("input", () => applyValue(number.value));
       number.addEventListener("change", () => applyValue(number.value));
+      number.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          applyValue(number.value);
+          triggerPreferredAction();
+        }
+      });
 
       wrap.appendChild(label);
       wrap.appendChild(slider);
