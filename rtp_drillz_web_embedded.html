@@ -192,6 +192,12 @@
       text-transform: uppercase;
     }
 
+    .table-wrap {
+      position: relative;
+      overflow: visible;
+      padding-top: 22px;
+    }
+
     .table {
       position: relative;
       min-height: 642px;
@@ -885,8 +891,8 @@
 
     .table-timer {
       position: absolute;
-      top: -10px;
-      left: 12px;
+      top: 0;
+      left: 18px;
       z-index: 8;
       display: flex;
       flex-direction: column;
@@ -2070,6 +2076,10 @@
         font-size: 12px;
       }
 
+      .table-wrap {
+        padding-top: 18px;
+      }
+
       .table {
         padding: 20px 10px 12px;
       }
@@ -2225,23 +2235,25 @@
         </div>
       </aside>
 
-      <section id="table" class="table">
+      <div class="table-wrap">
         <div class="table-timer">
           <div id="countdown" class="countdown">Time left: --:--</div>
           <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
         </div>
-        <div class="table-shell">
-          <div id="timeOverlay" class="time-overlay">TIME!</div>
-          <div id="seatMap" class="seat-map"></div>
-          <div class="table-center">
-            <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
-            <h3 class="board-title">Board</h3>
-            <div id="boardCards" class="cards"></div>
-            <p id="potDisplay" class="pot-display">&nbsp;</p>
-            <p id="status" class="status">&nbsp;</p>
+        <section id="table" class="table">
+          <div class="table-shell">
+            <div id="timeOverlay" class="time-overlay">TIME!</div>
+            <div id="seatMap" class="seat-map"></div>
+            <div class="table-center">
+              <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
+              <h3 class="board-title">Board</h3>
+              <div id="boardCards" class="cards"></div>
+              <p id="potDisplay" class="pot-display">&nbsp;</p>
+              <p id="status" class="status">&nbsp;</p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <aside id="rightRail" class="table-rail table-rail-right">
         <div id="stackRail" class="table-config table-config-right rail-panel">
