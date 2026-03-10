@@ -53,7 +53,8 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
   await page.locator("nav#controls .action-size-wrap input[type='number']").fill("40");
   await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
   await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
-  await expect(page.locator("#status")).toContainText("Flop | Pot");
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+  await expect(page.locator("#potDisplay")).toContainText("Pot");
   await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
 });
 

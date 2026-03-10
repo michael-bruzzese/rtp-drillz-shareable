@@ -885,14 +885,19 @@
 
     .table-timer {
       position: absolute;
-      top: 16px;
-      left: 52px;
-      z-index: 5;
+      top: -10px;
+      left: 12px;
+      z-index: 8;
       display: flex;
       flex-direction: column;
       gap: 6px;
       align-items: flex-start;
-      max-width: 190px;
+      max-width: 220px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 214, 165, 0.3);
+      background: rgba(17, 17, 17, 0.84);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
     }
 
     .countdown {
@@ -1074,9 +1079,20 @@
       display: none;
     }
 
+    .pot-display {
+      min-height: 30px;
+      margin: 0;
+      color: var(--orange);
+      text-align: center;
+      font-size: clamp(20px, 2.8vw, 30px);
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
     .status {
       min-height: 24px;
-      margin: 2px 0 0;
+      margin: 10px 0 0;
       font-size: clamp(14px, 1.9vw, 18px);
       color: #f0f5e8;
       text-align: center;
@@ -1592,12 +1608,47 @@
       min-width: 300px;
     }
 
+    .hero-panel-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
     .hero-title {
-      margin: 0 0 8px;
-      text-align: center;
+      margin: 0;
+      text-align: left;
       color: var(--white);
       font-size: clamp(20px, 3vw, 30px);
       font-weight: 800;
+    }
+
+    .hero-utility-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      min-height: 36px;
+      min-width: 0;
+    }
+
+    .hero-utility-controls:empty {
+      display: none;
+    }
+
+    .hero-utility-controls button {
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      background: #202020;
+      color: #e8e0d4;
+      border: 1px solid #3c3c3c;
+    }
+
+    .hero-utility-controls button:hover {
+      background: #2d2d2d;
     }
 
     .controls {
@@ -1838,7 +1889,12 @@
     body.layout-compact .status {
       font-size: clamp(14px, 1.8vw, 18px);
       min-height: 20px;
-      margin-top: 4px;
+      margin-top: 10px;
+    }
+
+    body.layout-compact .pot-display {
+      min-height: 26px;
+      font-size: clamp(18px, 2.5vw, 26px);
     }
 
     body.layout-compact .cards {
@@ -1854,6 +1910,11 @@
     body.layout-compact .hero-layout {
       gap: 8px;
       align-items: flex-start;
+    }
+
+    body.layout-compact .hero-panel-head {
+      gap: 10px;
+      margin-bottom: 4px;
     }
 
     body.layout-compact .cam-panel {
@@ -1935,7 +1996,7 @@
     }
 
     body.layout-compact .hero-title {
-      margin-bottom: 6px;
+      margin-bottom: 0;
       font-size: clamp(18px, 2.8vw, 26px);
     }
 
@@ -1943,6 +2004,16 @@
       gap: 7px;
       min-height: 48px;
       margin-top: 0;
+    }
+
+    body.layout-compact .hero-utility-controls {
+      gap: 6px;
+      min-height: 32px;
+    }
+
+    body.layout-compact .hero-utility-controls button {
+      padding: 7px 8px;
+      font-size: 11px;
     }
 
     @media (max-width: 900px) {
@@ -2033,6 +2104,15 @@
 
       .hero-layout {
         flex-direction: column;
+      }
+
+      .hero-panel-head {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .hero-utility-controls {
+        justify-content: flex-start;
       }
 
       .cam-panel,
@@ -2146,17 +2226,18 @@
       </aside>
 
       <section id="table" class="table">
+        <div class="table-timer">
+          <div id="countdown" class="countdown">Time left: --:--</div>
+          <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
+        </div>
         <div class="table-shell">
           <div id="timeOverlay" class="time-overlay">TIME!</div>
-          <div class="table-timer">
-            <div id="countdown" class="countdown">Time left: --:--</div>
-            <button id="timerPauseBtn" class="timer-pause-btn" type="button" disabled>Pause Timer</button>
-          </div>
           <div id="seatMap" class="seat-map"></div>
           <div class="table-center">
             <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
             <h3 class="board-title">Board</h3>
             <div id="boardCards" class="cards"></div>
+            <p id="potDisplay" class="pot-display">&nbsp;</p>
             <p id="status" class="status">&nbsp;</p>
           </div>
         </div>
@@ -2289,7 +2370,10 @@
         </aside>
 
         <div class="hero-hand-panel">
-          <h3 class="hero-title">Hero Hand</h3>
+          <div class="hero-panel-head">
+            <h3 class="hero-title">Hero Hand</h3>
+            <nav id="heroUtilityControls" class="hero-utility-controls"></nav>
+          </div>
           <div id="handCards" class="cards"></div>
           <nav id="controls" class="controls"></nav>
         </div>
@@ -2758,9 +2842,11 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       timeOverlay: document.getElementById("timeOverlay"),
       startSplash: document.getElementById("startSplash"),
       boardCards: document.getElementById("boardCards"),
+      potDisplay: document.getElementById("potDisplay"),
       seatMap: document.getElementById("seatMap"),
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
+      heroUtilityControls: document.getElementById("heroUtilityControls"),
       status: document.getElementById("status"),
       configButtons: Array.from(document.querySelectorAll("[data-config-group]")),
       webcamPreview: document.getElementById("webcamPreview"),
@@ -3629,6 +3715,9 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       if (state.mode === "live") {
         labels.push(state.config.preflopFlow === "skip" ? "Skip Pre" : "Play Pre");
       }
+      if (els.potDisplay) {
+        els.potDisplay.innerHTML = "&nbsp;";
+      }
       els.status.textContent = labels.length ? labels.join(" | ") : "\u00a0";
     }
 
@@ -3743,8 +3832,11 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const heroToCall = hero ? getLegalActions(hero.seat).toCall : 0;
       const actorLabel = actor ? `${actor.position || "NA"} ${actor.name}` : "Round complete";
       const heroLabel = hero ? `${hero.position || "NA"} ${hero.name}` : "Hero";
+      if (els.potDisplay) {
+        els.potDisplay.textContent = `Pot ${state.tableState.pot} (${formatStackBb(state.tableState.pot)})`;
+      }
       els.status.textContent =
-        `${stageLabel} | Pot ${state.tableState.pot} (${formatStackBb(state.tableState.pot)}) | Hero ${heroLabel} | To Call ${heroToCall} | Action ${actorLabel}`;
+        `${stageLabel} | Hero ${heroLabel} | To Call ${heroToCall} | Action ${actorLabel}`;
     }
 
     function clamp01(value) {
@@ -6911,8 +7003,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       });
     }
 
-    function setControls(buttons) {
-      els.controls.innerHTML = "";
+    function renderControlButtons(container, buttons) {
+      container.innerHTML = "";
       buttons.forEach(({ text, primary, onClick, actionId }) => {
         const btn = document.createElement("button");
         btn.textContent = text;
@@ -6922,23 +7014,29 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           ensureAudioContext();
           onClick();
         });
-        els.controls.appendChild(btn);
+        container.appendChild(btn);
       });
+    }
 
+    function buildBaseUtilityButtons() {
+      const utilityButtons = [];
       if (state.stage !== "start") {
-        const backBtn = document.createElement("button");
-        backBtn.textContent = "Go Back a Street";
-        backBtn.addEventListener("click", () => {
-          ensureAudioContext();
-          goBackStreet();
+        utilityButtons.push({
+          text: "Go Back a Street",
+          primary: false,
+          onClick: () => {
+            ensureAudioContext();
+            goBackStreet();
+          }
         });
-        els.controls.appendChild(backBtn);
-
-        const resetBtn = document.createElement("button");
-        resetBtn.textContent = "Start Over";
-        resetBtn.addEventListener("click", startOver);
-        els.controls.appendChild(resetBtn);
+        utilityButtons.push({ text: "Start Over", primary: false, onClick: startOver });
       }
+      return utilityButtons;
+    }
+
+    function setControls(buttons, utilityButtons = []) {
+      renderControlButtons(els.controls, buttons);
+      renderControlButtons(els.heroUtilityControls, buildBaseUtilityButtons().concat(utilityButtons));
     }
 
     function realisticSizingBounds(legal) {
@@ -7144,7 +7242,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const heroCanAct = hero.status === "active" && actionSeat === hero.seat;
       if (!heroCanAct) {
         setControls([
-          { text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn },
+          { text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }
+        ], [
           { text: "New Hand", primary: false, onClick: dealHand }
         ]);
         return;
@@ -7156,18 +7255,20 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         setControls([{ text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }]);
         return;
       }
-      setControls(buttons);
-      appendRealisticSizingControl(legal);
+      const utilityButtons = [];
 
       if (state.stage === "flop" || state.stage === "turn" || state.stage === "river") {
-        const streetBtn = document.createElement("button");
-        streetBtn.textContent =
-          state.mode === "replay"
-            ? `Edit ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`
-            : `New ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`;
-        streetBtn.addEventListener("click", () => redealStreet(state.stage));
-        els.controls.appendChild(streetBtn);
+        utilityButtons.push({
+          text:
+            state.mode === "replay"
+              ? `Edit ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`
+              : `New ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`,
+          primary: false,
+          onClick: () => redealStreet(state.stage)
+        });
       }
+      setControls(buttons, utilityButtons);
+      appendRealisticSizingControl(legal);
     }
 
     function refreshScene() {
@@ -7194,7 +7295,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
       if (state.stage === "hand") {
         setControls([
-          { text: "Deal Flop", primary: true, onClick: enterFlop },
+          { text: "Deal Flop", primary: true, onClick: enterFlop }
+        ], [
           { text: state.mode === "replay" ? "Edit Hand" : "New Hand", primary: false, onClick: dealHand }
         ]);
         updateTimerPauseButton();
@@ -7204,7 +7306,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
       if (state.stage === "flop") {
         setControls([
-          { text: "Deal Turn", primary: true, onClick: enterTurn },
+          { text: "Deal Turn", primary: true, onClick: enterTurn }
+        ], [
           { text: state.mode === "replay" ? "Edit Flop" : "New Flop", primary: false, onClick: enterFlop }
         ]);
         updateTimerPauseButton();
@@ -7214,7 +7317,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
       if (state.stage === "turn") {
         setControls([
-          { text: "Deal River", primary: true, onClick: enterRiver },
+          { text: "Deal River", primary: true, onClick: enterRiver }
+        ], [
           { text: state.mode === "replay" ? "Edit Turn" : "New Turn", primary: false, onClick: enterTurn }
         ]);
         updateTimerPauseButton();
@@ -7224,7 +7328,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
       if (state.stage === "river") {
         setControls([
-          { text: "Deal", primary: true, onClick: keepRiver },
+          { text: "Deal", primary: true, onClick: keepRiver }
+        ], [
           { text: state.mode === "replay" ? "Edit River" : "New River", primary: false, onClick: enterRiver }
         ]);
         updateTimerPauseButton();
@@ -7234,7 +7339,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
       if (state.stage === "done") {
         setControls([
-          { text: "Deal", primary: true, onClick: dealHand },
+          { text: "Deal", primary: true, onClick: dealHand }
+        ], [
           { text: state.mode === "replay" ? "Edit River" : "New River", primary: false, onClick: enterRiver }
         ]);
       }

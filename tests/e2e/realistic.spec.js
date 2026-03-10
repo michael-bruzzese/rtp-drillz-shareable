@@ -5,15 +5,16 @@ const REALISTIC_APP_URL = "/rtp_drillz_web_embedded.html?realistic=1";
 async function dealIntoRealisticPreflop(page) {
   await page.goto(REALISTIC_APP_URL);
   await page.locator("nav#controls button.primary").click();
-  await expect(page.locator("#status")).toContainText("Preflop | Pot");
+  await expect(page.locator("#status")).toContainText("Preflop | Hero");
+  await expect(page.locator("#potDisplay")).toContainText("Pot");
   await expect(page.locator("nav#controls button", { hasText: /^Deal Flop$/ })).toHaveCount(0);
 }
 
 test("realistic mode shows legal hero actions and hides legacy deal controls", async ({ page }) => {
   await dealIntoRealisticPreflop(page);
 
-  const statusText = await page.locator("#status").innerText();
-  const potMatch = statusText.match(/Pot (\d+)/);
+  const potText = await page.locator("#potDisplay").innerText();
+  const potMatch = potText.match(/Pot (\d+)/);
   expect(potMatch).not.toBeNull();
   expect(Number(potMatch[1])).toBeGreaterThanOrEqual(15);
 
@@ -49,9 +50,9 @@ test("hero preflop call auto-progresses to flop realistic decision point", async
 
   await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
 
-  await expect(page.locator("#status")).toContainText("Flop | Pot");
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+  await expect(page.locator("#potDisplay")).toContainText("Pot");
   await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
   await expect(page.locator("nav#controls button", { hasText: /^Deal Turn$/ })).toHaveCount(0);
   await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(1);
 });
-
