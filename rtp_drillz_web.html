@@ -195,7 +195,7 @@
     .table-wrap {
       position: relative;
       overflow: visible;
-      padding-top: 22px;
+      padding-top: 68px;
     }
 
     .table {
@@ -892,27 +892,31 @@
     .table-timer {
       position: absolute;
       top: 0;
-      left: 18px;
-      z-index: 8;
+      left: 50%;
+      z-index: 20;
+      transform: translateX(-50%);
       display: flex;
       flex-direction: column;
       gap: 6px;
-      align-items: flex-start;
-      max-width: 220px;
-      padding: 8px 10px;
+      align-items: center;
+      min-width: 260px;
+      max-width: min(320px, calc(100% - 24px));
+      padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 214, 165, 0.3);
-      background: rgba(17, 17, 17, 0.84);
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 214, 165, 0.45);
+      background: rgba(17, 17, 17, 0.94);
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.34);
+      text-align: center;
     }
 
     .countdown {
       position: static;
       color: var(--white);
-      font-size: clamp(18px, 2.4vw, 28px);
+      font-size: clamp(20px, 2.6vw, 30px);
       font-weight: 800;
       text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
       line-height: 1.05;
+      white-space: nowrap;
     }
 
     .table-config {
@@ -1644,8 +1648,8 @@
     }
 
     .hero-utility-controls button {
-      padding: 8px 10px;
-      font-size: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
       font-weight: 700;
       border-radius: 8px;
       background: #202020;
@@ -1862,7 +1866,7 @@
     }
 
     body.layout-compact .countdown {
-      font-size: clamp(16px, 2.1vw, 24px);
+      font-size: clamp(18px, 2.3vw, 26px);
     }
 
     body.layout-compact .table-config {
@@ -2018,8 +2022,8 @@
     }
 
     body.layout-compact .hero-utility-controls button {
-      padding: 7px 8px;
-      font-size: 11px;
+      padding: 9px 12px;
+      font-size: 13px;
     }
 
     @media (max-width: 900px) {
@@ -2077,7 +2081,7 @@
       }
 
       .table-wrap {
-        padding-top: 18px;
+        padding-top: 60px;
       }
 
       .table {
@@ -2751,6 +2755,7 @@
         actionSeat: 0,
         pendingActionSeats: [],
         betInputTo: DEFAULT_BIG_BLIND_CHIPS,
+        heroActionLocked: false,
         headsUpLocked: false,
         lastAggressorSeat: -1,
         lastFullRaiseSize: DEFAULT_BIG_BLIND_CHIPS,
@@ -4392,10 +4397,7 @@
           return true;
         },
         actHero: (action, sizeChips) => {
-          if (Number.isFinite(Number(sizeChips))) {
-            state.tableState.betInputTo = roundToWholeBb(Number(sizeChips));
-          }
-          applyHeroRealisticAction(action);
+          applyHeroRealisticAction(action, Number.isFinite(Number(sizeChips)) ? Number(sizeChips) : null);
           return true;
         },
         runTable: () => {
@@ -4880,6 +4882,7 @@
       state.tableState.actionSeat = findSeatByPosition("UTG");
       state.tableState.pendingActionSeats = [];
       state.tableState.betInputTo = bigBlindChips();
+      state.tableState.heroActionLocked = false;
       state.tableState.headsUpLocked = false;
       state.tableState.lastAggressorSeat = -1;
       state.tableState.lastFullRaiseSize = bigBlindChips();
@@ -7019,6 +7022,9 @@
         btn.textContent = text;
         if (actionId) btn.dataset.actionId = actionId;
         if (primary) btn.classList.add("primary");
+        if (container === els.controls && state.tableState.heroActionLocked) {
+          btn.disabled = true;
+        }
         btn.addEventListener("click", () => {
           ensureAudioContext();
           onClick();
@@ -7048,28 +7054,47 @@
       renderControlButtons(els.heroUtilityControls, buildBaseUtilityButtons().concat(utilityButtons));
     }
 
-    function realisticSizingBounds(legal) {
-      if (!legal.bet && !legal.raise) return null;
+    function sizingStepForLegalActions(legal) {
+      return legal.maxCommit <= bigBlindChips() ? smallBlindChips() : bigBlindChips();
+    }
+
+    function coerceActionTarget(rawValue, legal) {
       let minTo = legal.raise ? legal.minRaiseTo : bigBlindChips();
-      let maxTo = legal.maxCommit;
+      const maxTo = legal.maxCommit;
       if (maxTo < minTo) {
         minTo = maxTo;
       }
 
-      let targetTo = Number(state.tableState.betInputTo) || minTo;
-      targetTo = roundToWholeBb(targetTo);
+      let targetTo = Number(rawValue);
+      if (!Number.isFinite(targetTo) || targetTo <= 0) {
+        targetTo = Number(state.tableState.betInputTo) || minTo;
+      }
+
+      const step = sizingStepForLegalActions(legal);
       if (maxTo <= bigBlindChips()) {
         targetTo = maxTo;
+      } else if (targetTo <= minTo) {
+        targetTo = minTo;
+      } else {
+        targetTo = minTo + Math.ceil((targetTo - minTo) / step) * step;
       }
+
       if (targetTo < minTo) targetTo = minTo;
       if (targetTo > maxTo) targetTo = maxTo;
-      state.tableState.betInputTo = targetTo;
-
-      const step = maxTo <= bigBlindChips() ? smallBlindChips() : bigBlindChips();
       return { minTo, maxTo, targetTo, step };
     }
 
-    function applyHeroRealisticAction(action) {
+    function realisticSizingBounds(legal) {
+      if (!legal.bet && !legal.raise) return null;
+      const { minTo, maxTo, targetTo, step } = coerceActionTarget(state.tableState.betInputTo, legal);
+      state.tableState.betInputTo = targetTo;
+      return { minTo, maxTo, targetTo, step };
+    }
+
+    function applyHeroRealisticAction(action, explicitSizeChips = null) {
+      if (state.tableState.heroActionLocked) {
+        return;
+      }
       const hero = getHeroPlayer();
       if (!hero || hero.status !== "active") {
         runRealisticFlowUntilHeroTurn();
@@ -7081,15 +7106,24 @@
       if (action === "call") {
         size = legal.toCall;
       } else if (action === "bet" || action === "raise") {
-        const bounds = realisticSizingBounds(legal);
-        if (!bounds) return;
+        const numberInput = els.controls.querySelector(".action-size-wrap input[type='number']");
+        const rawValue =
+          Number.isFinite(Number(explicitSizeChips))
+            ? Number(explicitSizeChips)
+            : numberInput
+              ? numberInput.value
+              : state.tableState.betInputTo;
+        const bounds = coerceActionTarget(rawValue, legal);
+        state.tableState.betInputTo = bounds.targetTo;
         size = bounds.targetTo;
       } else if (action === "all-in") {
         size = legal.maxCommit;
       }
 
+      state.tableState.heroActionLocked = true;
       const ok = applyPlayerAction(hero.seat, action, size);
       if (!ok) {
+        state.tableState.heroActionLocked = false;
         window.alert("That action is not legal in the current state.");
         return;
       }
@@ -7202,13 +7236,8 @@
         if (btn) btn.click();
       };
 
-      const applyValue = (rawValue) => {
-        let next = roundToWholeBb(rawValue);
-        if (bounds.maxTo <= bigBlindChips()) {
-          next = bounds.maxTo;
-        }
-        if (next < bounds.minTo) next = bounds.minTo;
-        if (next > bounds.maxTo) next = bounds.maxTo;
+      const applyCommittedValue = (rawValue) => {
+        const { targetTo: next } = coerceActionTarget(rawValue, legal);
         state.tableState.betInputTo = next;
         slider.value = String(next);
         number.value = String(next);
@@ -7217,16 +7246,31 @@
         syncPrimaryAction(next);
       };
 
-      slider.addEventListener("input", () => applyValue(slider.value));
-      number.addEventListener("input", () => applyValue(number.value));
-      number.addEventListener("change", () => applyValue(number.value));
+      const previewTypedValue = (rawValue) => {
+        const raw = Number(rawValue);
+        if (!Number.isFinite(raw) || raw <= 0) return;
+        const preview = Math.min(bounds.maxTo, Math.max(raw, bounds.minTo));
+        readout.textContent = `${Math.round(preview / bigBlindChips())}bb`;
+        syncActionButtonLabels(preview);
+        syncPrimaryAction(preview);
+      };
+
+      slider.addEventListener("input", () => applyCommittedValue(slider.value));
+      number.addEventListener("input", () => previewTypedValue(number.value));
+      number.addEventListener("change", () => applyCommittedValue(number.value));
+      number.addEventListener("blur", () => applyCommittedValue(number.value));
       number.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
           event.preventDefault();
-          applyValue(number.value);
+          applyCommittedValue(number.value);
           triggerPreferredAction();
         }
       });
+
+      if (state.tableState.heroActionLocked) {
+        slider.disabled = true;
+        number.disabled = true;
+      }
 
       wrap.appendChild(label);
       wrap.appendChild(slider);
@@ -7281,6 +7325,7 @@
     }
 
     function refreshScene() {
+      state.tableState.heroActionLocked = false;
       renderBoard();
       renderHand();
       renderReplayReadyState();

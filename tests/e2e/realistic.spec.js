@@ -31,10 +31,11 @@ test("realistic sizing controls keep slider and numeric input in sync", async ({
   const sliderInput = page.locator("nav#controls .action-size-wrap input[type='range']");
   const readout = page.locator("nav#controls .action-size-wrap .action-size-readout");
 
-  await numberInput.fill("150");
+  await numberInput.fill("155");
   await numberInput.press("Tab");
-  await expect(sliderInput).toHaveValue("150");
-  await expect(readout).toHaveText("15bb");
+  await expect(numberInput).toHaveValue("160");
+  await expect(sliderInput).toHaveValue("160");
+  await expect(readout).toHaveText("16bb");
 
   await sliderInput.evaluate((el) => {
     el.value = "200";
