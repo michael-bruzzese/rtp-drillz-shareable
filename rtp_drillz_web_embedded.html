@@ -159,22 +159,22 @@
 
     .table-stage {
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 260px;
-      gap: 16px;
+      grid-template-columns: 188px minmax(0, 1fr) 188px;
+      gap: 12px;
       align-items: stretch;
     }
 
     .table-rail {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .rail-panel {
       border: 1px solid #333;
       border-radius: 14px;
       background: linear-gradient(180deg, rgba(36, 36, 36, 0.96) 0%, rgba(24, 24, 24, 0.96) 100%);
-      padding: 12px;
+      padding: 10px;
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
     }
 
@@ -194,9 +194,9 @@
 
     .table {
       position: relative;
-      min-height: 700px;
-      padding: 6px;
-      border-radius: 44% / 28%;
+      min-height: 642px;
+      padding: 4px;
+      border-radius: 48% / 24%;
       background:
         radial-gradient(120% 120% at 50% 20%, #4d2a0b 0%, #2a1507 36%, #140b05 100%);
       box-shadow:
@@ -214,8 +214,8 @@
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: 688px;
-      border-radius: 43% / 27%;
+      min-height: 634px;
+      border-radius: 47% / 23%;
       background:
         radial-gradient(110% 110% at 50% 24%, #0e7f24 0%, #075e18 38%, #034611 72%, #02330c 100%);
       border: 2px solid rgba(255, 228, 185, 0.18);
@@ -228,8 +228,8 @@
     .table-shell::before {
       content: "";
       position: absolute;
-      inset: 54px 92px;
-      border-radius: 44% / 30%;
+      inset: 50px 74px;
+      border-radius: 48% / 28%;
       border: 1px solid rgba(239, 247, 226, 0.14);
       background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
       pointer-events: none;
@@ -885,14 +885,14 @@
 
     .table-timer {
       position: absolute;
-      top: 24px;
-      left: 30px;
+      top: 16px;
+      left: 52px;
       z-index: 5;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
       align-items: flex-start;
-      max-width: 170px;
+      max-width: 190px;
     }
 
     .countdown {
@@ -941,23 +941,20 @@
       gap: 6px;
     }
 
-    .config-row.row-three {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
+    .config-row.row-three,
     .config-row.row-two {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
     }
 
     .stack-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 6px;
     }
 
     .blind-row {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: minmax(0, 1fr);
       gap: 6px;
     }
 
@@ -1012,7 +1009,8 @@
     .config-btn {
       border: 1px solid #4a4a4a;
       border-radius: 8px;
-      padding: 7px 4px;
+      width: 100%;
+      padding: 8px 6px;
       font-size: 12px;
       font-weight: 800;
       color: var(--white);
@@ -1095,8 +1093,8 @@
 
     .seat-chip {
       position: absolute;
-      width: 138px;
-      min-height: 82px;
+      width: 132px;
+      min-height: 78px;
       border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 12px;
       background: rgba(12, 14, 12, 0.66);
@@ -1128,11 +1126,11 @@
       border-color: rgba(126, 196, 115, 0.58);
     }
 
-    .seat-chip.top-left { top: 24%; left: 20%; }
+    .seat-chip.top-left { top: 24%; left: 18%; }
     .seat-chip.top-center { top: 14%; left: 51%; }
-    .seat-chip.top-right { top: 24%; left: 82%; }
-    .seat-chip.bottom-left { top: 69%; left: 16%; }
-    .seat-chip.bottom-right { top: 69%; left: 86%; }
+    .seat-chip.top-right { top: 24%; left: 84%; }
+    .seat-chip.bottom-left { top: 69%; left: 14%; }
+    .seat-chip.bottom-right { top: 69%; left: 88%; }
     .seat-chip.bottom-center { top: 84%; left: 51%; }
 
     .seat-chip-top,
@@ -1230,8 +1228,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      width: min(520px, 60%);
+      gap: 8px;
+      width: min(520px, 54%);
       text-align: center;
     }
 
@@ -1241,7 +1239,7 @@
       justify-content: center;
       flex-wrap: wrap;
       gap: 12px;
-      min-height: 162px;
+      min-height: 150px;
       padding: 4px 6px;
     }
 
@@ -1249,27 +1247,27 @@
       border-radius: 14px;
       background: linear-gradient(180deg, #242424 0%, #181818 100%);
       border: 1px solid #333;
-      padding: 14px 16px 16px;
+      padding: 10px 12px 12px;
     }
 
     .hero-layout {
       display: flex;
-      gap: 14px;
+      gap: 10px;
       align-items: stretch;
       justify-content: center;
       flex-wrap: wrap;
     }
 
     .cam-panel {
-      width: min(340px, 100%);
-      min-width: 280px;
+      width: min(320px, 100%);
+      min-width: 250px;
       border: 1px solid #3a3a3a;
       border-radius: 12px;
       background: #1f1f1f;
-      padding: 10px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     body.capture-off .cam-panel {
@@ -1595,10 +1593,10 @@
     }
 
     .hero-title {
-      margin: 2px 0 10px;
+      margin: 0 0 8px;
       text-align: center;
       color: var(--white);
-      font-size: clamp(22px, 3.2vw, 34px);
+      font-size: clamp(20px, 3vw, 30px);
       font-weight: 800;
     }
 
@@ -1607,9 +1605,9 @@
       justify-content: center;
       align-items: center;
       flex-wrap: wrap;
-      gap: 10px;
-      min-height: 60px;
-      margin-top: 6px;
+      gap: 8px;
+      min-height: 54px;
+      margin-top: 2px;
     }
 
     .action-size-wrap {
@@ -1720,8 +1718,8 @@
     }
 
     body.layout-compact .app {
-      padding: 12px 14px 14px;
-      gap: 8px;
+      padding: 10px 12px 12px;
+      gap: 6px;
     }
 
     body.layout-compact .topbar {
@@ -1802,12 +1800,12 @@
     }
 
     body.layout-compact .table {
-      padding: 6px;
-      min-height: 700px;
+      padding: 4px;
+      min-height: 642px;
     }
 
     body.layout-compact .countdown {
-      font-size: clamp(18px, 2.4vw, 28px);
+      font-size: clamp(16px, 2.1vw, 24px);
     }
 
     body.layout-compact .table-config {
@@ -1825,7 +1823,7 @@
 
     body.layout-compact .config-btn {
       font-size: 11px;
-      padding: 6px 3px;
+      padding: 7px 5px;
     }
 
     body.layout-compact .stack-title {
@@ -1845,26 +1843,26 @@
 
     body.layout-compact .cards {
       gap: 8px;
-      min-height: 132px;
+      min-height: 124px;
       padding: 2px 4px;
     }
 
     body.layout-compact .hero-wrap {
-      padding: 10px 12px 12px;
+      padding: 8px 10px 10px;
     }
 
     body.layout-compact .hero-layout {
-      gap: 10px;
+      gap: 8px;
       align-items: flex-start;
     }
 
     body.layout-compact .cam-panel {
-      width: min(290px, 100%);
-      min-width: 220px;
-      padding: 8px;
+      width: min(264px, 100%);
+      min-width: 210px;
+      padding: 7px;
       gap: 6px;
       position: sticky;
-      top: 8px;
+      top: 6px;
       align-self: flex-start;
     }
 
@@ -1923,17 +1921,28 @@
     }
 
     body.layout-compact .timeline-list {
-      max-height: 110px;
+      max-height: 90px;
     }
 
     body.layout-compact .card {
-      height: 120px;
+      height: 112px;
     }
 
     body.layout-compact .card-fallback {
-      height: 120px;
-      width: 84px;
+      height: 112px;
+      width: 78px;
       font-size: 22px;
+    }
+
+    body.layout-compact .hero-title {
+      margin-bottom: 6px;
+      font-size: clamp(18px, 2.8vw, 26px);
+    }
+
+    body.layout-compact .controls {
+      gap: 7px;
+      min-height: 48px;
+      margin-top: 0;
     }
 
     @media (max-width: 900px) {
