@@ -463,6 +463,42 @@
       flex-wrap: wrap;
     }
 
+    .builder-optional {
+      border: 1px solid #343434;
+      border-radius: 12px;
+      background: #171717;
+      padding: 8px 10px 10px;
+    }
+
+    .builder-optional summary {
+      cursor: pointer;
+      color: #f2f2f2;
+      font-size: 13px;
+      font-weight: 800;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .builder-optional summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .builder-optional-hint {
+      color: #a8a8a8;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .builder-optional-grid {
+      margin-top: 10px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
     .builder-slot {
       border: 1px solid #4a4a4a;
       border-radius: 8px;
@@ -866,6 +902,60 @@
       gap: 6px;
     }
 
+    .blind-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .blind-field,
+    .stack-editor-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .blind-field input,
+    .stack-editor-field input {
+      width: 100%;
+      border: 1px solid #4a4a4a;
+      border-radius: 8px;
+      background: rgba(33, 33, 33, 0.9);
+      color: var(--white);
+      padding: 7px 8px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .stack-editor-toggle {
+      width: 100%;
+    }
+
+    .stack-editor {
+      display: none;
+      gap: 6px;
+    }
+
+    .stack-editor.show {
+      display: grid;
+    }
+
+    .stack-editor-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 90px;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .stack-editor-label {
+      color: #dbdbdb;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
     .config-btn {
       border: 1px solid #4a4a4a;
       border-radius: 8px;
@@ -945,6 +1035,116 @@
       text-align: center;
       font-weight: 500;
       text-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    .seat-map {
+      position: relative;
+      width: min(760px, 100%);
+      height: 270px;
+      margin: 14px auto 0;
+      pointer-events: none;
+    }
+
+    .seat-chip {
+      position: absolute;
+      width: 132px;
+      min-height: 68px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      background: rgba(16, 16, 16, 0.58);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(3px);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transform: translate(-50%, -50%);
+      text-align: center;
+    }
+
+    .seat-chip.hero {
+      border-color: rgba(200, 95, 0, 0.74);
+      background: rgba(66, 34, 8, 0.72);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(200, 95, 0, 0.26) inset;
+    }
+
+    .seat-chip.actor {
+      box-shadow: 0 0 0 2px rgba(255, 209, 153, 0.22), 0 10px 20px rgba(0, 0, 0, 0.28);
+    }
+
+    .seat-chip.folded {
+      opacity: 0.45;
+    }
+
+    .seat-chip.allin {
+      border-color: rgba(126, 196, 115, 0.58);
+    }
+
+    .seat-chip.top-left { top: 18%; left: 19%; }
+    .seat-chip.top-center { top: 10%; left: 50%; }
+    .seat-chip.top-right { top: 18%; left: 81%; }
+    .seat-chip.bottom-left { top: 68%; left: 18%; }
+    .seat-chip.bottom-right { top: 68%; left: 82%; }
+    .seat-chip.bottom-center { top: 88%; left: 50%; }
+
+    .seat-chip-top,
+    .seat-chip-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .seat-chip-name {
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .seat-chip-pos,
+    .seat-chip-badge {
+      border-radius: 999px;
+      padding: 2px 6px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+
+    .seat-chip-pos {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ececec;
+    }
+
+    .seat-chip-badge {
+      background: rgba(200, 95, 0, 0.18);
+      color: #ffd7b2;
+    }
+
+    .seat-chip-stack {
+      color: #fff4e7;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .seat-chip-detail {
+      color: #c9c9c9;
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    .seat-chip-status {
+      color: #ffddb9;
+      font-size: 10px;
+      font-weight: 700;
+      min-height: 12px;
+    }
+
+    .seat-chip-cards {
+      color: #f3e1cf;
+      font-size: 11px;
+      font-weight: 700;
+      min-height: 14px;
     }
 
     .cards {
@@ -1677,6 +1877,10 @@
         grid-template-columns: repeat(1, minmax(0, 1fr));
       }
 
+      .builder-optional-grid {
+        grid-template-columns: 1fr;
+      }
+
       .builder-grid {
         grid-template-columns: repeat(13, minmax(0, 1fr));
         gap: 3px;
@@ -1713,6 +1917,19 @@
 
       .table-config-right {
         margin-top: 6px;
+      }
+
+      .seat-map {
+        height: auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .seat-chip {
+        position: static;
+        transform: none;
+        width: 100%;
       }
 
       .hero-layout {
@@ -1829,11 +2046,22 @@
           <button class="config-btn" type="button" data-config-group="position" data-config-value="OOP">OOP</button>
         </div>
         <div class="config-row row-two">
-          <button class="config-btn" type="button" data-config-group="role" data-config-value="PFR">PFR</button>
-          <button class="config-btn" type="button" data-config-group="role" data-config-value="PFC">PFC</button>
+          <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="play">Play Pre</button>
+          <button class="config-btn" type="button" data-config-group="preflopFlow" data-config-value="skip">Skip To Flop</button>
         </div>
       </div>
       <div class="table-config table-config-right">
+        <div class="stack-title">Blinds</div>
+        <div class="blind-row">
+          <label class="blind-field" for="smallBlindInput">
+            <span>SB</span>
+            <input id="smallBlindInput" type="number" min="1" step="1" value="5" />
+          </label>
+          <label class="blind-field" for="bigBlindInput">
+            <span>BB</span>
+            <input id="bigBlindInput" type="number" min="2" step="1" value="10" />
+          </label>
+        </div>
         <div class="stack-title">Effective Stacks</div>
         <div class="stack-grid">
           <button class="config-btn" type="button" data-config-group="stacks" data-config-value="50BB">50BB</button>
@@ -1843,12 +2071,52 @@
           <button class="config-btn" type="button" data-config-group="stacks" data-config-value="300BB">300BB</button>
           <button class="config-btn" type="button" data-config-group="stacks" data-config-value="500BB+">500BB+</button>
         </div>
+        <button id="stackEditorToggle" class="stack-editor-toggle" type="button">Edit Seat Stacks</button>
+        <div id="stackEditor" class="stack-editor">
+          <div class="stack-editor-row">
+            <div id="stackLabel0" class="stack-editor-label">Hero</div>
+            <label class="stack-editor-field" for="stackInput0">
+              <input id="stackInput0" type="number" min="0" step="1" data-stack-seat="0" />
+            </label>
+          </div>
+          <div class="stack-editor-row">
+            <div id="stackLabel1" class="stack-editor-label">Seat 2</div>
+            <label class="stack-editor-field" for="stackInput1">
+              <input id="stackInput1" type="number" min="0" step="1" data-stack-seat="1" />
+            </label>
+          </div>
+          <div class="stack-editor-row">
+            <div id="stackLabel2" class="stack-editor-label">Seat 3</div>
+            <label class="stack-editor-field" for="stackInput2">
+              <input id="stackInput2" type="number" min="0" step="1" data-stack-seat="2" />
+            </label>
+          </div>
+          <div class="stack-editor-row">
+            <div id="stackLabel3" class="stack-editor-label">Seat 4</div>
+            <label class="stack-editor-field" for="stackInput3">
+              <input id="stackInput3" type="number" min="0" step="1" data-stack-seat="3" />
+            </label>
+          </div>
+          <div class="stack-editor-row">
+            <div id="stackLabel4" class="stack-editor-label">Seat 5</div>
+            <label class="stack-editor-field" for="stackInput4">
+              <input id="stackInput4" type="number" min="0" step="1" data-stack-seat="4" />
+            </label>
+          </div>
+          <div class="stack-editor-row">
+            <div id="stackLabel5" class="stack-editor-label">Seat 6</div>
+            <label class="stack-editor-field" for="stackInput5">
+              <input id="stackInput5" type="number" min="0" step="1" data-stack-seat="5" />
+            </label>
+          </div>
+        </div>
       </div>
       <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
 
       <h3 class="board-title">Board</h3>
       <div id="boardCards" class="cards"></div>
       <p id="status" class="status">&nbsp;</p>
+      <div id="seatMap" class="seat-map"></div>
     </section>
 
     <section class="hero-wrap">
@@ -1974,6 +2242,50 @@
         </div>
       </div>
 
+      <details id="builderVillains" class="builder-optional">
+        <summary>
+          <span>Optional Villain Hole Cards</span>
+          <span class="builder-optional-hint">Replay only. Hidden until showdown.</span>
+        </summary>
+        <div class="builder-optional-grid">
+          <div class="builder-group">
+            <div id="builderSeatLabel1" class="builder-group-title" data-builder-seat-label="1">Seat 2</div>
+            <div class="builder-group-slots">
+              <button type="button" class="builder-slot" data-builder-slot="seat1card1"><div class="builder-slot-card"></div></button>
+              <button type="button" class="builder-slot" data-builder-slot="seat1card2"><div class="builder-slot-card"></div></button>
+            </div>
+          </div>
+          <div class="builder-group">
+            <div id="builderSeatLabel2" class="builder-group-title" data-builder-seat-label="2">Seat 3</div>
+            <div class="builder-group-slots">
+              <button type="button" class="builder-slot" data-builder-slot="seat2card1"><div class="builder-slot-card"></div></button>
+              <button type="button" class="builder-slot" data-builder-slot="seat2card2"><div class="builder-slot-card"></div></button>
+            </div>
+          </div>
+          <div class="builder-group">
+            <div id="builderSeatLabel3" class="builder-group-title" data-builder-seat-label="3">Seat 4</div>
+            <div class="builder-group-slots">
+              <button type="button" class="builder-slot" data-builder-slot="seat3card1"><div class="builder-slot-card"></div></button>
+              <button type="button" class="builder-slot" data-builder-slot="seat3card2"><div class="builder-slot-card"></div></button>
+            </div>
+          </div>
+          <div class="builder-group">
+            <div id="builderSeatLabel4" class="builder-group-title" data-builder-seat-label="4">Seat 5</div>
+            <div class="builder-group-slots">
+              <button type="button" class="builder-slot" data-builder-slot="seat4card1"><div class="builder-slot-card"></div></button>
+              <button type="button" class="builder-slot" data-builder-slot="seat4card2"><div class="builder-slot-card"></div></button>
+            </div>
+          </div>
+          <div class="builder-group">
+            <div id="builderSeatLabel5" class="builder-group-title" data-builder-seat-label="5">Seat 6</div>
+            <div class="builder-group-slots">
+              <button type="button" class="builder-slot" data-builder-slot="seat5card1"><div class="builder-slot-card"></div></button>
+              <button type="button" class="builder-slot" data-builder-slot="seat5card2"><div class="builder-slot-card"></div></button>
+            </div>
+          </div>
+        </div>
+      </details>
+
       <div class="builder-actions">
         <button id="builderClearSlotBtn" type="button">Clear Slot</button>
         <button id="builderClearAllBtn" type="button">Clear All</button>
@@ -2090,10 +2402,15 @@
     const MAX_RECORDING_MS = 10 * 60 * 1000;
     const MAX_SESSION_HANDS = 10;
     const SEAT_COUNT = 6;
-    const SMALL_BLIND_CHIPS = 5;
-    const BIG_BLIND_CHIPS = 10;
+    const DEFAULT_SMALL_BLIND_CHIPS = 5;
+    const DEFAULT_BIG_BLIND_CHIPS = 10;
     const DEFAULT_EFFECTIVE_STACK_BB = 100;
+    const DEFAULT_PREFLOP_FLOW = "play";
+    const HERO_FIXED_SEAT = 0;
+    const DEFAULT_SKIP_OPEN_TO_BB = 4;
+    const DEFAULT_SKIP_3BET_TO_BB = 10;
     const TABLE_POSITIONS_6MAX = ["BTN", "SB", "BB", "UTG", "HJ", "CO"];
+    const SEAT_VISUAL_CLASS = ["bottom-center", "bottom-left", "top-left", "top-center", "top-right", "bottom-right"];
     const PLAYER_PROFILES = [
       "Passive Fish",
       "Fish",
@@ -2183,7 +2500,17 @@
         flop2: "",
         flop3: "",
         turn: "",
-        river: ""
+        river: "",
+        seat1card1: "",
+        seat1card2: "",
+        seat2card1: "",
+        seat2card2: "",
+        seat3card1: "",
+        seat3card2: "",
+        seat4card1: "",
+        seat4card2: "",
+        seat5card1: "",
+        seat5card2: ""
       },
       session: {
         name: "",
@@ -2196,7 +2523,10 @@
         spotType: "",
         position: "",
         role: "",
-        stacks: ""
+        stacks: "",
+        preflopFlow: DEFAULT_PREFLOP_FLOW,
+        smallBlind: DEFAULT_SMALL_BLIND_CHIPS,
+        bigBlind: DEFAULT_BIG_BLIND_CHIPS
       },
       timerChoice: "None",
       layoutMode: "standard",
@@ -2214,20 +2544,25 @@
         street: "preflop",
         pot: 0,
         toCall: 0,
-        minRaiseTo: BIG_BLIND_CHIPS,
+        minRaiseTo: DEFAULT_BIG_BLIND_CHIPS,
         actionSeat: 0,
         pendingActionSeats: [],
-        betInputTo: BIG_BLIND_CHIPS,
+        betInputTo: DEFAULT_BIG_BLIND_CHIPS,
         headsUpLocked: false,
         lastAggressorSeat: -1,
-        lastFullRaiseSize: BIG_BLIND_CHIPS,
-        pendingHeadsUpAggressorSeat: -1
+        lastFullRaiseSize: DEFAULT_BIG_BLIND_CHIPS,
+        pendingHeadsUpAggressorSeat: -1,
+        preflopScript: [],
+        preflopScriptName: "",
+        stackEditorOpen: false,
+        streetSnapshots: {}
       },
       players: [],
       hiddenRanges: {
         bySeat: {}
       },
       actionLog: [],
+      replayHoleCardsBySeat: {},
       coverageGaps: [],
       profilePacks: {},
       activeProfilePackName: "",
@@ -2276,6 +2611,11 @@
       layoutSelect: document.getElementById("layoutSelect"),
       modeSelect: document.getElementById("modeSelect"),
       captureSelect: document.getElementById("captureSelect"),
+      smallBlindInput: document.getElementById("smallBlindInput"),
+      bigBlindInput: document.getElementById("bigBlindInput"),
+      stackEditorToggle: document.getElementById("stackEditorToggle"),
+      stackEditor: document.getElementById("stackEditor"),
+      stackInputs: Array.from(document.querySelectorAll("[data-stack-seat]")),
       manualPanel: document.getElementById("manualPanel"),
       sessionPanel: document.getElementById("sessionPanel"),
       inputHandBtn: document.getElementById("inputHandBtn"),
@@ -2291,7 +2631,9 @@
       sessionMeta: document.getElementById("sessionMeta"),
       sessionList: document.getElementById("sessionList"),
       handBuilderModal: document.getElementById("handBuilderModal"),
+      builderVillains: document.getElementById("builderVillains"),
       builderSlots: Array.from(document.querySelectorAll("[data-builder-slot]")),
+      builderSeatLabels: Array.from(document.querySelectorAll("[data-builder-seat-label]")),
       builderDeckGrid: document.getElementById("builderDeckGrid"),
       builderCloseBtn: document.getElementById("builderCloseBtn"),
       builderClearSlotBtn: document.getElementById("builderClearSlotBtn"),
@@ -2303,6 +2645,7 @@
       timeOverlay: document.getElementById("timeOverlay"),
       startSplash: document.getElementById("startSplash"),
       boardCards: document.getElementById("boardCards"),
+      seatMap: document.getElementById("seatMap"),
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
       status: document.getElementById("status"),
@@ -2354,6 +2697,31 @@
       devPackJson: document.getElementById("devPackJson")
     };
 
+    function smallBlindChips() {
+      const parsed = Number(state.config.smallBlind);
+      if (!Number.isFinite(parsed) || parsed <= 0) return DEFAULT_SMALL_BLIND_CHIPS;
+      return Math.max(1, Math.round(parsed));
+    }
+
+    function bigBlindChips() {
+      const parsed = Number(state.config.bigBlind);
+      if (!Number.isFinite(parsed) || parsed <= smallBlindChips()) {
+        return Math.max(DEFAULT_BIG_BLIND_CHIPS, smallBlindChips() * 2);
+      }
+      return Math.max(smallBlindChips() + 1, Math.round(parsed));
+    }
+
+    function syncBlindInputs() {
+      els.smallBlindInput.value = String(smallBlindChips());
+      els.bigBlindInput.value = String(bigBlindChips());
+    }
+
+    function sanitizeBlindConfig() {
+      state.config.smallBlind = smallBlindChips();
+      state.config.bigBlind = bigBlindChips();
+      syncBlindInputs();
+    }
+
     function init() {
       const savedTimer = localStorage.getItem(TIMER_KEY);
       if (savedTimer && Object.prototype.hasOwnProperty.call(TIMER_MAP, savedTimer)) {
@@ -2377,14 +2745,17 @@
       if (savedRealistic === "1" || savedRealistic === "0") {
         state.featureFlags.realisticTableMode = savedRealistic === "1";
       }
+      state.featureFlags.realisticTableMode = true;
       if (isRealisticModeRequestedFromUrl()) {
         state.featureFlags.realisticTableMode = true;
       }
+      sanitizeBlindConfig();
       localStorage.setItem(REALISTIC_MODE_KEY, state.featureFlags.realisticTableMode ? "1" : "0");
       els.timerSelect.value = state.timerChoice;
       els.layoutSelect.value = state.layoutMode;
       els.modeSelect.value = state.mode;
       els.captureSelect.value = state.captureMode;
+      syncBlindInputs();
       els.sessionNameInput.value = state.session.name;
       applyLayoutMode(state.layoutMode);
       updateManualPanelVisibility();
@@ -2392,6 +2763,7 @@
       initializeProfilePackState();
       initializeTableEngineState({ resetStacks: true });
       registerInternalRangeAuthoringApi();
+      registerInternalTestApi();
       initDeveloperRangeModal();
 
       els.timerSelect.addEventListener("change", () => {
@@ -2418,6 +2790,22 @@
         localStorage.setItem(MODE_KEY, state.mode);
         updateManualPanelVisibility();
         refreshScene();
+      });
+      els.smallBlindInput.addEventListener("change", () => {
+        state.config.smallBlind = Number(els.smallBlindInput.value) || DEFAULT_SMALL_BLIND_CHIPS;
+        sanitizeBlindConfig();
+        initializeTableEngineState({ resetStacks: true });
+        refreshScene();
+      });
+      els.bigBlindInput.addEventListener("change", () => {
+        state.config.bigBlind = Number(els.bigBlindInput.value) || DEFAULT_BIG_BLIND_CHIPS;
+        sanitizeBlindConfig();
+        initializeTableEngineState({ resetStacks: true });
+        refreshScene();
+      });
+      els.stackEditorToggle.addEventListener("click", () => {
+        state.tableState.stackEditorOpen = !state.tableState.stackEditorOpen;
+        renderStackEditor();
       });
       els.captureSelect.addEventListener("change", () => {
         applyCaptureMode(els.captureSelect.value, true);
@@ -2448,7 +2836,9 @@
 
       initManualBuilder();
       bindConfigControls();
+      bindStackEditorInputs();
       renderConfigSelections();
+      renderStackEditor();
       renderSessionQueue();
       renderTimeline();
       void refreshPreflightStatus();
@@ -2504,8 +2894,24 @@
       updateRecordingUi();
     }
 
-    function manualFieldOrder() {
+    function manualCoreFieldOrder() {
       return ["hand1", "hand2", "flop1", "flop2", "flop3", "turn", "river"];
+    }
+
+    function villainSeatOrder() {
+      return [1, 2, 3, 4, 5];
+    }
+
+    function seatManualFieldNames(seat) {
+      return [`seat${seat}card1`, `seat${seat}card2`];
+    }
+
+    function villainManualFieldOrder() {
+      return villainSeatOrder().flatMap((seat) => seatManualFieldNames(seat));
+    }
+
+    function manualFieldOrder() {
+      return [...manualCoreFieldOrder(), ...villainManualFieldOrder()];
     }
 
     function builderDeckCardOrder() {
@@ -2529,7 +2935,7 @@
     }
 
     function firstEmptyManualField(values) {
-      return manualFieldOrder().find((field) => !values[field]) || "hand1";
+      return manualCoreFieldOrder().find((field) => !values[field]) || "hand1";
     }
 
     function manualCardDisplay(card) {
@@ -2555,7 +2961,12 @@
       const flop = `${manualCardDisplay(state.manual.flop1)} ${manualCardDisplay(state.manual.flop2)} ${manualCardDisplay(state.manual.flop3)}`;
       const turn = manualCardDisplay(state.manual.turn);
       const river = manualCardDisplay(state.manual.river);
-      els.manualSummary.textContent = `Hero Hole Cards: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}`;
+      const lockedVillainSeats = villainSeatOrder().filter((seat) => {
+        const [field1, field2] = seatManualFieldNames(seat);
+        return Boolean(state.manual[field1] && state.manual[field2]);
+      }).length;
+      const villainText = lockedVillainSeats ? ` | Villains Locked: ${lockedVillainSeats} seat${lockedVillainSeats > 1 ? "s" : ""}` : "";
+      els.manualSummary.textContent = `Hero Hole Cards: ${hero} | Flop: ${flop} | Turn: ${turn} | River: ${river}${villainText}`;
       renderReplayReadyState();
     }
 
@@ -2603,11 +3014,53 @@
       const flop = `${manualCardDisplay(manual.flop1)} ${manualCardDisplay(manual.flop2)} ${manualCardDisplay(manual.flop3)}`;
       const turn = manualCardDisplay(manual.turn);
       const river = manualCardDisplay(manual.river);
-      return `Hero Hole Cards ${hero} | Flop ${flop} | Turn ${turn} | River ${river}`;
+      const lockedVillainSeats = villainSeatOrder().filter((seat) => {
+        const [field1, field2] = seatManualFieldNames(seat);
+        return Boolean(manual[field1] && manual[field2]);
+      }).length;
+      const villainText = lockedVillainSeats ? ` | Villains ${lockedVillainSeats}` : "";
+      return `Hero Hole Cards ${hero} | Flop ${flop} | Turn ${turn} | River ${river}${villainText}`;
     }
 
     function hasHeroCards(manual) {
       return Boolean(manual.hand1 && manual.hand2);
+    }
+
+    function buildReplayHoleCardsBySeat(manual, { requirePairs = false } = {}) {
+      const source = manual || state.manual;
+      const bySeat = {};
+      for (const seat of villainSeatOrder()) {
+        const [field1, field2] = seatManualFieldNames(seat);
+        const cards = [source[field1], source[field2]].filter(Boolean);
+        if (!cards.length) continue;
+        if (requirePairs && cards.length !== 2) {
+          return { errorSeat: seat };
+        }
+        bySeat[seat] = cards.slice();
+      }
+      return { bySeat };
+    }
+
+    function replayHoleCardsForSeat(seat) {
+      return Array.isArray(state.replayHoleCardsBySeat[seat]) ? state.replayHoleCardsBySeat[seat].slice() : [];
+    }
+
+    function allReplayReservedCards() {
+      return Object.values(state.replayHoleCardsBySeat || {}).flatMap((cards) => cards.slice());
+    }
+
+    function isShowdownRevealState() {
+      if (state.stage !== "done") return false;
+      return state.players.filter((player) => player.status !== "folded").length > 1;
+    }
+
+    function renderBuilderSeatLabels() {
+      els.builderSeatLabels.forEach((label) => {
+        const seat = Number(label.dataset.builderSeatLabel);
+        const player = getPlayerBySeat(seat);
+        if (!player) return;
+        label.textContent = `${player.name === "Hero" ? `Seat ${seat + 1}` : player.name} | ${player.position || `Seat ${seat + 1}`}`;
+      });
     }
 
     function loadSessionHandAt(index, resetStreet) {
@@ -2943,7 +3396,7 @@
       const used = new Set(
         manualFieldOrder().map((field) => handBuilderState.draft[field]).filter(Boolean)
       );
-      manualFieldOrder().forEach((field) => {
+      manualCoreFieldOrder().forEach((field) => {
         if (handBuilderState.draft[field]) return;
         const picked = randomAvailableCard(used);
         if (!picked) return;
@@ -2959,6 +3412,8 @@
       handBuilderState.open = true;
       els.handBuilderModal.classList.add("show");
       els.handBuilderModal.setAttribute("aria-hidden", "false");
+      els.builderVillains.open = villainManualFieldOrder().some((field) => Boolean(handBuilderState.draft[field]));
+      renderBuilderSeatLabels();
       renderBuilderSlots();
     }
 
@@ -3004,6 +3459,7 @@
       });
 
       renderManualSummary();
+      renderBuilderSeatLabels();
     }
 
     function bindConfigControls() {
@@ -3017,7 +3473,46 @@
             syncPlayerStacksToEffectiveInput();
           }
           renderConfigSelections();
+          renderStackEditor();
+          refreshScene();
         });
+      });
+    }
+
+    function bindStackEditorInputs() {
+      els.stackInputs.forEach((input) => {
+        input.addEventListener("change", () => {
+          const seat = Number(input.dataset.stackSeat);
+          if (!Number.isFinite(seat)) return;
+          const player = getPlayerBySeat(seat);
+          if (!player) return;
+          const stackChips = Math.max(0, Math.round(Number(input.value) || 0));
+          player.stackStart = stackChips;
+          if (state.stage === "start") {
+            player.stack = stackChips;
+            player.status = stackChips > 0 ? "active" : "allin";
+          }
+          renderStackEditor();
+          renderSeatMap();
+          renderStatusLine();
+        });
+      });
+    }
+
+    function renderStackEditor() {
+      els.stackEditor.classList.toggle("show", Boolean(state.tableState.stackEditorOpen));
+      els.stackEditorToggle.textContent = state.tableState.stackEditorOpen ? "Hide Seat Stacks" : "Edit Seat Stacks";
+      els.stackInputs.forEach((input) => {
+        const seat = Number(input.dataset.stackSeat);
+        const player = getPlayerBySeat(seat);
+        if (!player) return;
+        input.value = String(Math.max(0, Math.round(player.stackStart)));
+        const label = document.getElementById(`stackLabel${seat}`);
+        if (!label) return;
+        const bits = [];
+        if (seat === state.tableState.heroSeat) bits.push("Hero");
+        bits.push(player.position || `Seat ${seat + 1}`);
+        label.textContent = bits.join(" | ");
       });
     }
 
@@ -3030,13 +3525,101 @@
         btn.setAttribute("aria-pressed", selected ? "true" : "false");
       });
 
-      const labels = [state.config.spotType, state.config.position, state.config.role].filter(Boolean);
+      const labels = [state.config.spotType, state.config.position];
+      if (state.mode === "live") {
+        labels.push(state.config.preflopFlow === "skip" ? "Skip Pre" : "Play Pre");
+      }
       els.status.textContent = labels.length ? labels.join(" | ") : "\u00a0";
+    }
+
+    function formatStackBb(chips) {
+      return `${(Math.max(0, chips) / bigBlindChips()).toFixed(1)}bb`;
+    }
+
+    function seatStatusText(player) {
+      if (!player) return "";
+      if (player.status === "folded") return "Folded";
+      if (player.status === "allin") return "All-in";
+      if (player.committedStreet > 0) {
+        return `In ${formatStackBb(player.committedStreet)}`;
+      }
+      return "";
+    }
+
+    function renderSeatMap() {
+      if (!els.seatMap) return;
+      els.seatMap.innerHTML = "";
+      state.players.forEach((player) => {
+        const chip = document.createElement("div");
+        chip.className = `seat-chip ${SEAT_VISUAL_CLASS[player.seat] || "top-center"}`;
+        if (player.seat === state.tableState.heroSeat) chip.classList.add("hero");
+        if (player.seat === state.tableState.actionSeat) chip.classList.add("actor");
+        if (player.status === "folded") chip.classList.add("folded");
+        if (player.status === "allin") chip.classList.add("allin");
+
+        const top = document.createElement("div");
+        top.className = "seat-chip-top";
+
+        const name = document.createElement("span");
+        name.className = "seat-chip-name";
+        name.textContent = player.seat === state.tableState.heroSeat ? "Hero" : player.name;
+
+        const pos = document.createElement("span");
+        pos.className = "seat-chip-pos";
+        pos.textContent = player.position || "NA";
+
+        top.appendChild(name);
+        top.appendChild(pos);
+
+        const meta = document.createElement("div");
+        meta.className = "seat-chip-meta";
+
+        if (player.seat === state.tableState.buttonSeat) {
+          const dealer = document.createElement("span");
+          dealer.className = "seat-chip-badge";
+          dealer.textContent = "BTN";
+          meta.appendChild(dealer);
+        }
+        if (player.seat === state.tableState.actionSeat) {
+          const acting = document.createElement("span");
+          acting.className = "seat-chip-badge";
+          acting.textContent = "Acting";
+          meta.appendChild(acting);
+        }
+
+        const stack = document.createElement("div");
+        stack.className = "seat-chip-stack";
+        stack.textContent = `${Math.round(player.stack)} (${formatStackBb(player.stack)})`;
+
+        const detail = document.createElement("div");
+        detail.className = "seat-chip-detail";
+        detail.textContent = `Start ${Math.round(player.stackStart)} | Hand ${Math.round(player.committedHand)}`;
+
+        const status = document.createElement("div");
+        status.className = "seat-chip-status";
+        status.textContent = seatStatusText(player);
+
+        const cards = document.createElement("div");
+        cards.className = "seat-chip-cards";
+        const replayCards = replayHoleCardsForSeat(player.seat);
+        if (state.mode === "replay" && replayCards.length) {
+          cards.textContent = isShowdownRevealState() ? replayCards.join(" ") : "Cards locked";
+        }
+
+        chip.appendChild(top);
+        chip.appendChild(meta);
+        chip.appendChild(stack);
+        chip.appendChild(detail);
+        chip.appendChild(status);
+        chip.appendChild(cards);
+        els.seatMap.appendChild(chip);
+      });
     }
 
     function renderStatusLine() {
       renderConfigSelections();
-      if (!isRealisticLiveMode()) return;
+      renderSeatMap();
+      if (!isTableEngineMode()) return;
 
       const stageLabelMap = {
         start: "Start",
@@ -3053,7 +3636,7 @@
       const actorLabel = actor ? `${actor.position || "NA"} ${actor.name}` : "Round complete";
       const heroLabel = hero ? `${hero.position || "NA"} ${hero.name}` : "Hero";
       els.status.textContent =
-        `${stageLabel} | Pot ${state.tableState.pot} | Hero ${heroLabel} | To Call ${heroToCall} | Action ${actorLabel}`;
+        `${stageLabel} | Pot ${state.tableState.pot} (${formatStackBb(state.tableState.pot)}) | Hero ${heroLabel} | To Call ${heroToCall} | Action ${actorLabel}`;
     }
 
     function clamp01(value) {
@@ -3435,8 +4018,8 @@
     function roundSizeBucketBb(sizeChips) {
       const chips = Number(sizeChips);
       if (!Number.isFinite(chips) || chips <= 0) return 0;
-      if (chips === SMALL_BLIND_CHIPS) return 0.5;
-      return Math.max(1, Math.round(chips / BIG_BLIND_CHIPS));
+      if (chips === smallBlindChips()) return 0.5;
+      return Math.max(1, Math.round(chips / bigBlindChips()));
     }
 
     function findActionRule({ profileName, street, position, action, sizeBucketBb }) {
@@ -3568,6 +4151,71 @@
         coverageGaps: () => clonePlainObject(state.coverageGaps),
         openUi: () => openDeveloperModal(),
         closeUi: () => closeDeveloperModal()
+      };
+    }
+
+    function registerInternalTestApi() {
+      window.__rtpTestHooks = {
+        configure: (nextConfig = {}) => {
+          Object.assign(state.config, nextConfig || {});
+          sanitizeBlindConfig();
+          initializeTableEngineState({ resetStacks: true });
+          updateManualPanelVisibility();
+          renderConfigSelections();
+          refreshScene();
+          return true;
+        },
+        setMode: (mode) => {
+          state.mode = mode === "replay" ? "replay" : "live";
+          els.modeSelect.value = state.mode;
+          updateManualPanelVisibility();
+          refreshScene();
+          return state.mode;
+        },
+        setHeroHand: (cards) => {
+          if (Array.isArray(cards) && cards.length === 2) {
+            state.hand = cards.map((card) => formatCard(card));
+          }
+          return state.hand.slice();
+        },
+        dealHand: () => {
+          dealHand();
+          return true;
+        },
+        actHero: (action, sizeChips) => {
+          if (Number.isFinite(Number(sizeChips))) {
+            state.tableState.betInputTo = roundToWholeBb(Number(sizeChips));
+          }
+          applyHeroRealisticAction(action);
+          return true;
+        },
+        runTable: () => {
+          runRealisticFlowUntilHeroTurn();
+          return true;
+        },
+        snapshot: () => ({
+          stage: state.stage,
+          mode: state.mode,
+          config: clonePlainObject(state.config),
+          tableState: clonePlainObject({
+            ...state.tableState,
+            streetSnapshots: Object.keys(state.tableState.streetSnapshots || {})
+          }),
+          heroSeat: state.tableState.heroSeat,
+          heroPosition: getHeroPlayer() ? getHeroPlayer().position : "",
+          legalHero: getHeroPlayer() ? clonePlainObject(getLegalActions(state.tableState.heroSeat)) : null,
+          players: state.players.map((player) => ({
+            seat: player.seat,
+            name: player.name,
+            position: player.position,
+            stackStart: player.stackStart,
+            stack: player.stack,
+            committedStreet: player.committedStreet,
+            committedHand: player.committedHand,
+            status: player.status
+          })),
+          actionLog: clonePlainObject(state.actionLog)
+        })
       };
     }
 
@@ -3914,7 +4562,7 @@
     }
 
     function effectiveStackChipsFromConfig() {
-      return effectiveStackBbFromConfig() * BIG_BLIND_CHIPS;
+      return effectiveStackBbFromConfig() * bigBlindChips();
     }
 
     function createPlayerState(seat, stackChips) {
@@ -3938,8 +4586,11 @@
         player.stackStart = stackChips;
         if (state.stage === "start") {
           player.stack = stackChips;
+          player.status = stackChips > 0 ? "active" : "allin";
         }
       });
+      renderStackEditor();
+      renderSeatMap();
     }
 
     function computePositionsFromButton(buttonSeat) {
@@ -3951,14 +4602,45 @@
       return seatToPosition;
     }
 
-    function rotateButton() {
-      state.tableState.buttonSeat = seatAtOffset(state.tableState.buttonSeat, 1);
-      return state.tableState.buttonSeat;
-    }
-
     function findSeatByPosition(position) {
       const found = state.players.find((player) => player.position === position);
       return found ? found.seat : -1;
+    }
+
+    function desiredHeroPositionFromConfig() {
+      const spot = state.config.spotType || "SRP";
+      const position = state.config.position || "IP";
+      if (spot === "SRP" && position === "OOP") return "SB";
+      if (spot === "3BP" && position === "OOP") return "BB";
+      if (spot === "4BP" && position === "OOP") return "CO";
+      return "BTN";
+    }
+
+    function buttonSeatForHeroPosition(position) {
+      const index = TABLE_POSITIONS_6MAX.indexOf(position);
+      if (index < 0) return 0;
+      return seatAtOffset(HERO_FIXED_SEAT, -index);
+    }
+
+    function currentScenarioConfig() {
+      const spot = state.config.spotType || "SRP";
+      const position = state.config.position || "IP";
+      if (spot === "SRP" && position === "OOP") {
+        return { spot, position, heroPosition: "SB", villainPosition: "BB", name: "srp-oop" };
+      }
+      if (spot === "3BP" && position === "OOP") {
+        return { spot, position, heroPosition: "BB", villainPosition: "BTN", openerPosition: "BTN", name: "3bp-oop" };
+      }
+      if (spot === "4BP" && position === "IP") {
+        return { spot, position, heroPosition: "BTN", villainPosition: "CO", openerPosition: "CO", name: "4bp-ip" };
+      }
+      if (spot === "4BP" && position === "OOP") {
+        return { spot, position, heroPosition: "CO", villainPosition: "BTN", openerPosition: "CO", name: "4bp-oop" };
+      }
+      if (spot === "3BP" && position === "IP") {
+        return { spot, position, heroPosition: "BTN", villainPosition: "CO", openerPosition: "CO", name: "3bp-ip" };
+      }
+      return { spot: "SRP", position: "IP", heroPosition: "BTN", villainPosition: "BB", openerPosition: "BTN", name: "srp-ip" };
     }
 
     function initHiddenRangesForHand() {
@@ -3973,10 +4655,7 @@
       state.hiddenRanges.bySeat = bySeat;
     }
 
-    function initHandSeatsAndPositions({ rotateButtonFirst = false } = {}) {
-      if (rotateButtonFirst) {
-        rotateButton();
-      }
+    function initHandSeatsAndPositions() {
       const seatToPosition = computePositionsFromButton(state.tableState.buttonSeat);
       state.players.forEach((player) => {
         player.position = seatToPosition[player.seat] || "";
@@ -3988,19 +4667,31 @@
       state.tableState.street = "preflop";
       state.tableState.pot = 0;
       state.tableState.toCall = 0;
-      state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+      state.tableState.minRaiseTo = bigBlindChips();
       state.tableState.actionSeat = findSeatByPosition("UTG");
       state.tableState.pendingActionSeats = [];
-      state.tableState.betInputTo = BIG_BLIND_CHIPS;
+      state.tableState.betInputTo = bigBlindChips();
       state.tableState.headsUpLocked = false;
       state.tableState.lastAggressorSeat = -1;
-      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.lastFullRaiseSize = bigBlindChips();
       state.tableState.pendingHeadsUpAggressorSeat = -1;
-      state.tableState.heroSeat = findSeatByPosition("BTN");
-      if (state.tableState.heroSeat < 0) {
-        state.tableState.heroSeat = 0;
-      }
+      state.tableState.preflopScript = [];
+      state.tableState.preflopScriptName = "";
+      state.tableState.streetSnapshots = {};
+      state.tableState.heroSeat = HERO_FIXED_SEAT;
+      state.players.forEach((player) => {
+        player.name = player.seat === state.tableState.heroSeat ? "Hero" : `Seat ${player.seat + 1}`;
+      });
       initHiddenRangesForHand();
+    }
+
+    function configureScenarioSeats() {
+      const scenario = currentScenarioConfig();
+      state.tableState.heroSeat = HERO_FIXED_SEAT;
+      state.tableState.buttonSeat = buttonSeatForHeroPosition(scenario.heroPosition);
+      initHandSeatsAndPositions();
+      state.tableState.heroSeat = HERO_FIXED_SEAT;
+      return scenario;
     }
 
     function initializeTableEngineState({ resetStacks = true } = {}) {
@@ -4018,11 +4709,12 @@
         });
       }
 
-      initHandSeatsAndPositions({ rotateButtonFirst: false });
+      configureScenarioSeats();
       state.actionLog = [];
       state.coverageGaps = [];
       recomputePotAndToCall();
       recomputeMinRaiseTo();
+      renderStackEditor();
     }
 
     function seatsStillInHand() {
@@ -4130,12 +4822,103 @@
       return contenders.length <= 1;
     }
 
-    function isRealisticLiveMode() {
-      return state.featureFlags.realisticTableMode && state.mode === "live";
+    function isTableEngineMode() {
+      return state.featureFlags.realisticTableMode && (state.mode === "live" || state.mode === "replay");
     }
 
     function getHeroPlayer() {
       return getPlayerBySeat(state.tableState.heroSeat);
+    }
+
+    function createScriptStep(position, action, sizeFactory) {
+      return { position, action, sizeFactory: typeof sizeFactory === "function" ? sizeFactory : null };
+    }
+
+    function preflopOpenToThreeBb() {
+      return roundToWholeBb(bigBlindChips() * 3);
+    }
+
+    function heroCurrentPreflopCommit() {
+      const hero = getHeroPlayer();
+      return hero ? hero.committedStreet : 0;
+    }
+
+    function buildConfiguredPreflopScript() {
+      const scenario = currentScenarioConfig();
+      const steps = [];
+      const pushFoldLine = (positions) => {
+        positions.forEach((position) => steps.push(createScriptStep(position, "fold")));
+      };
+
+      if (scenario.name === "srp-ip") {
+        pushFoldLine(["UTG", "HJ", "CO"]);
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "call"));
+      } else if (scenario.name === "srp-oop") {
+        pushFoldLine(["UTG", "HJ", "CO", "BTN"]);
+        steps.push(createScriptStep("BB", "call"));
+      } else if (scenario.name === "3bp-ip") {
+        pushFoldLine(["UTG", "HJ"]);
+        steps.push(createScriptStep("CO", "raise", () => preflopOpenToThreeBb()));
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "fold"));
+        steps.push(createScriptStep("CO", "call"));
+      } else if (scenario.name === "3bp-oop") {
+        pushFoldLine(["UTG", "HJ", "CO"]);
+        steps.push(createScriptStep("BTN", "raise", () => preflopOpenToThreeBb()));
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BTN", "call"));
+      } else if (scenario.name === "4bp-ip") {
+        pushFoldLine(["UTG", "HJ"]);
+        steps.push(createScriptStep("CO", "raise", () => preflopOpenToThreeBb()));
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "fold"));
+        steps.push(createScriptStep("CO", "raise", () => roundToWholeBb(heroCurrentPreflopCommit() * 2.5)));
+      } else if (scenario.name === "4bp-oop") {
+        pushFoldLine(["UTG", "HJ"]);
+        steps.push(createScriptStep("BTN", "raise", () => roundToWholeBb(heroCurrentPreflopCommit() * 3)));
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "fold"));
+        steps.push(createScriptStep("BTN", "call"));
+      }
+
+      return { name: scenario.name, steps };
+    }
+
+    function findSeatForScriptPosition(position) {
+      return findSeatByPosition(position);
+    }
+
+    function nextPreflopScriptStep() {
+      while (state.tableState.preflopScript.length) {
+        const step = state.tableState.preflopScript[0];
+        const seat = findSeatForScriptPosition(step.position);
+        if (seat < 0) {
+          state.tableState.preflopScript.shift();
+          continue;
+        }
+        return { ...step, seat };
+      }
+      return null;
+    }
+
+    function consumeConfiguredPreflopStep() {
+      if (state.tableState.street !== "preflop" || state.stage !== "hand") return false;
+      const step = nextPreflopScriptStep();
+      if (!step) return false;
+      if (step.seat !== state.tableState.actionSeat) return false;
+      const player = getPlayerBySeat(step.seat);
+      state.tableState.preflopScript.shift();
+      if (!player || player.status !== "active") {
+        removePendingActionSeat(step.seat);
+        return true;
+      }
+      const size = step.sizeFactory ? step.sizeFactory() : 0;
+      const applied = applyPlayerAction(step.seat, step.action, size);
+      if (!applied) {
+        removePendingActionSeat(step.seat);
+      }
+      return true;
     }
 
     function isAggressiveProfile(profile) {
@@ -4153,14 +4936,14 @@
           legal.raise &&
           isAggressiveProfile(player.profile) &&
           legal.minRaiseTo <= legal.maxCommit &&
-          legal.toCall <= BIG_BLIND_CHIPS * 6
+          legal.toCall <= bigBlindChips() * 6
         ) {
           return { action: "raise", sizeChips: legal.minRaiseTo };
         }
 
         if (legal.call) {
-          const maxConservativeCall = Math.max(BIG_BLIND_CHIPS * 4, Math.floor(player.stack * 0.25));
-          if (legal.toCall <= maxConservativeCall || player.stack <= BIG_BLIND_CHIPS * 2) {
+          const maxConservativeCall = Math.max(bigBlindChips() * 4, Math.floor(player.stack * 0.25));
+          if (legal.toCall <= maxConservativeCall || player.stack <= bigBlindChips() * 2) {
             return { action: "call", sizeChips: legal.toCall };
           }
         }
@@ -4169,15 +4952,90 @@
       }
 
       if (legal.bet && isAggressiveProfile(player.profile) && ["flop", "turn", "river"].includes(state.tableState.street)) {
-        const halfPot = Math.max(BIG_BLIND_CHIPS, roundToWholeBb(state.tableState.pot / 2));
-        const target = Math.max(BIG_BLIND_CHIPS, Math.min(legal.maxCommit, halfPot));
+        const halfPot = Math.max(bigBlindChips(), roundToWholeBb(state.tableState.pot / 2));
+        const target = Math.max(bigBlindChips(), Math.min(legal.maxCommit, halfPot));
         return { action: "bet", sizeChips: target };
       }
 
       if (legal.check) return { action: "check", sizeChips: 0 };
       if (legal.call) return { action: "call", sizeChips: legal.toCall };
-      if (legal.bet) return { action: "bet", sizeChips: Math.min(legal.maxCommit, BIG_BLIND_CHIPS) };
+      if (legal.bet) return { action: "bet", sizeChips: Math.min(legal.maxCommit, bigBlindChips()) };
       return { action: "fold", sizeChips: 0 };
+    }
+
+    function heroPreflopAggressionCount() {
+      return state.actionLog.filter(
+        (entry) =>
+          entry.street === "preflop" &&
+          entry.seat === state.tableState.heroSeat &&
+          (entry.action === "bet" || entry.action === "raise" || entry.action === "all-in")
+      ).length;
+    }
+
+    function chooseDefaultHeroPreflopAction() {
+      const hero = getHeroPlayer();
+      if (!hero) return null;
+      const legal = getLegalActions(hero.seat);
+      const scenario = currentScenarioConfig();
+      const heroAggro = heroPreflopAggressionCount();
+      const openTo = roundToWholeBb(DEFAULT_SKIP_OPEN_TO_BB * bigBlindChips());
+      const threeBetTo = roundToWholeBb(DEFAULT_SKIP_3BET_TO_BB * bigBlindChips());
+
+      if (scenario.name === "srp-ip" || scenario.name === "srp-oop") {
+        if (legal.raise) return { action: "raise", sizeChips: openTo };
+        if (legal.check) return { action: "check", sizeChips: 0 };
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      }
+
+      if (scenario.name === "3bp-ip" || scenario.name === "3bp-oop") {
+        if (heroAggro === 0 && legal.raise) {
+          return { action: "raise", sizeChips: Math.max(threeBetTo, legal.minRaiseTo) };
+        }
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      }
+
+      if (scenario.name === "4bp-ip") {
+        if (heroAggro === 0 && legal.raise) {
+          return { action: "raise", sizeChips: Math.max(threeBetTo, legal.minRaiseTo) };
+        }
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      }
+
+      if (scenario.name === "4bp-oop") {
+        if (heroAggro === 0 && legal.raise) {
+          return { action: "raise", sizeChips: Math.max(openTo, legal.minRaiseTo) };
+        }
+        if (heroAggro === 1 && legal.raise) {
+          return {
+            action: "raise",
+            sizeChips: Math.max(roundToWholeBb(state.tableState.toCall * 2.5), legal.minRaiseTo)
+          };
+        }
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      }
+
+      if (legal.check) return { action: "check", sizeChips: 0 };
+      if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      if (legal.raise) return { action: "raise", sizeChips: legal.minRaiseTo };
+      return null;
+    }
+
+    function autoCompleteConfiguredPreflop() {
+      let safety = 0;
+      while (state.stage === "hand" && state.tableState.street === "preflop" && safety < 24) {
+        safety += 1;
+        if (state.tableState.actionSeat === state.tableState.heroSeat) {
+          const heroAction = chooseDefaultHeroPreflopAction();
+          if (!heroAction) break;
+          const ok = applyPlayerAction(state.tableState.heroSeat, heroAction.action, heroAction.sizeChips);
+          if (!ok) break;
+        }
+        runRealisticFlowUntilHeroTurn();
+        if (state.stage !== "hand") break;
+        if (state.tableState.actionSeat === state.tableState.heroSeat && state.config.preflopFlow !== "skip") {
+          break;
+        }
+      }
     }
 
     function advanceStreetFromRoundCompletion() {
@@ -4211,7 +5069,7 @@
     }
 
     function runRealisticFlowUntilHeroTurn() {
-      if (!isRealisticLiveMode()) return;
+      if (!isTableEngineMode()) return;
       let safety = 0;
 
       while (safety < 80) {
@@ -4237,6 +5095,10 @@
         const actor = getPlayerBySeat(actingSeat);
         if (!actor || actor.status !== "active") {
           removePendingActionSeat(actingSeat);
+          continue;
+        }
+
+        if (consumeConfiguredPreflopStep()) {
           continue;
         }
 
@@ -4283,12 +5145,12 @@
         }
       });
       state.tableState.toCall = 0;
-      state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+      state.tableState.minRaiseTo = bigBlindChips();
       state.tableState.lastAggressorSeat = -1;
-      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.lastFullRaiseSize = bigBlindChips();
       state.tableState.pendingHeadsUpAggressorSeat = -1;
       state.tableState.actionSeat = firstActionSeatForStreet(street);
-      state.tableState.betInputTo = BIG_BLIND_CHIPS;
+      state.tableState.betInputTo = bigBlindChips();
       resetPendingActionSeatsFrom(state.tableState.actionSeat);
       recomputePotAndToCall();
       recomputeMinRaiseTo();
@@ -4296,15 +5158,46 @@
       applyKnownCardBlockers([...state.hand, ...state.board]);
     }
 
+    function captureStreetSnapshot(street, boardBase) {
+      state.tableState.streetSnapshots[street] = {
+        stage: street,
+        boardBase: (boardBase || []).slice(),
+        players: clonePlainObject(state.players),
+        tableState: clonePlainObject({
+          ...state.tableState,
+          streetSnapshots: {}
+        })
+      };
+    }
+
+    function restoreStreetSnapshot(street) {
+      const snapshot = state.tableState.streetSnapshots[street];
+      if (!snapshot) return false;
+      const existingSnapshots = state.tableState.streetSnapshots;
+      state.players = clonePlainObject(snapshot.players);
+      state.tableState = {
+        ...clonePlainObject(snapshot.tableState),
+        streetSnapshots: existingSnapshots
+      };
+      state.stage = snapshot.stage;
+      state.board = snapshot.boardBase.slice();
+      renderStackEditor();
+      return true;
+    }
+
     function beginTableHandForDeal() {
-      initHandSeatsAndPositions({ rotateButtonFirst: state.tableState.handNumber > 0 });
+      const scripted = buildConfiguredPreflopScript();
+      configureScenarioSeats();
       state.tableState.handNumber += 1;
       state.actionLog = [];
       state.coverageGaps = [];
       postBlinds510();
+      state.tableState.preflopScript = scripted.steps.slice();
+      state.tableState.preflopScriptName = scripted.name;
       resetPendingActionSeatsFrom(state.tableState.actionSeat);
       maybeLockHeadsUp();
-      applyKnownCardBlockers(state.hand);
+      applyKnownCardBlockers([...state.hand, ...allReplayReservedCards()]);
+      renderStackEditor();
     }
 
     function setTableStreetFromVisualStage(stage) {
@@ -4344,13 +5237,13 @@
       const bbSeat = findSeatByPosition("BB");
       if (sbSeat < 0 || bbSeat < 0) return;
 
-      postBlindForSeat(sbSeat, SMALL_BLIND_CHIPS);
-      postBlindForSeat(bbSeat, BIG_BLIND_CHIPS);
+      postBlindForSeat(sbSeat, smallBlindChips());
+      postBlindForSeat(bbSeat, bigBlindChips());
       recomputePotAndToCall();
 
-      state.tableState.minRaiseTo = state.tableState.toCall + BIG_BLIND_CHIPS;
+      state.tableState.minRaiseTo = state.tableState.toCall + bigBlindChips();
       state.tableState.lastAggressorSeat = bbSeat;
-      state.tableState.lastFullRaiseSize = BIG_BLIND_CHIPS;
+      state.tableState.lastFullRaiseSize = bigBlindChips();
       state.tableState.actionSeat = seatAtOffset(bbSeat, 1);
       state.tableState.betInputTo = state.tableState.minRaiseTo;
     }
@@ -4358,7 +5251,7 @@
     function roundToWholeBb(chips) {
       const numeric = Number(chips);
       if (!Number.isFinite(numeric) || numeric <= 0) return 0;
-      return Math.round(numeric / BIG_BLIND_CHIPS) * BIG_BLIND_CHIPS;
+      return Math.round(numeric / bigBlindChips()) * bigBlindChips();
     }
 
     function recomputePotAndToCall() {
@@ -4377,13 +5270,13 @@
     function recomputeMinRaiseTo() {
       const toCall = state.tableState.toCall;
       if (toCall <= 0) {
-        state.tableState.minRaiseTo = BIG_BLIND_CHIPS;
+        state.tableState.minRaiseTo = bigBlindChips();
         return;
       }
       const raiseSize =
         Number.isFinite(state.tableState.lastFullRaiseSize) && state.tableState.lastFullRaiseSize > 0
           ? state.tableState.lastFullRaiseSize
-          : BIG_BLIND_CHIPS;
+          : bigBlindChips();
       state.tableState.minRaiseTo = toCall + raiseSize;
     }
 
@@ -4461,7 +5354,7 @@
         actionCommit = applyCommittedChips(player, targetStreetCommit);
       } else if (action === "bet") {
         if (!legal.bet) return false;
-        const desired = Math.max(BIG_BLIND_CHIPS, roundToWholeBb(sizeChips));
+        const desired = Math.max(bigBlindChips(), roundToWholeBb(sizeChips));
         targetStreetCommit = Math.min(legal.maxCommit, desired);
         actionCommit = applyCommittedChips(player, targetStreetCommit);
         if (targetStreetCommit > priorToCall) {
@@ -4627,6 +5520,7 @@
 
     function generatePlayableHand() {
       const deck = buildFullDeck();
+      const spotType = state.config.spotType || "SRP";
       while (true) {
         const idx1 = Math.floor(Math.random() * deck.length);
         let idx2 = Math.floor(Math.random() * deck.length);
@@ -4636,7 +5530,13 @@
 
         const c1 = deck[idx1];
         const c2 = deck[idx2];
-        if (isPlayableHand(c1, c2)) {
+        const strictEnough =
+          spotType === "4BP"
+            ? isPlayableHand(c1, c2) && (rankValue(c1[0]) >= 10 || rankValue(c2[0]) >= 10 || c1[0] === c2[0])
+            : spotType === "3BP"
+              ? isPlayableHand(c1, c2) && (rankValue(c1[0]) >= 9 || rankValue(c2[0]) >= 9 || c1[0] === c2[0])
+              : isPlayableHand(c1, c2);
+        if (strictEnough) {
           return [c1, c2].sort((a, b) => rankValue(b[0]) - rankValue(a[0]));
         }
       }
@@ -4725,17 +5625,27 @@
           "Hero hand"
         );
         if (!replayHand) return;
+        const replayVillains = buildReplayHoleCardsBySeat(state.manual, { requirePairs: true });
+        if (replayVillains.errorSeat) {
+          window.alert(`Seat ${replayVillains.errorSeat + 1} needs either 0 or 2 villain hole cards.`);
+          return;
+        }
         state.hand = replayHand;
+        state.replayHoleCardsBySeat = replayVillains.bySeat;
       } else {
         state.hand = generatePlayableHand();
+        state.replayHoleCardsBySeat = {};
       }
       beginTableHandForDeal();
       state.board = [];
       state.stage = "hand";
       renderSessionQueue();
       addStreetMarker("hand");
-      if (isRealisticLiveMode()) {
+      if (isTableEngineMode()) {
         runRealisticFlowUntilHeroTurn();
+        if (state.mode === "live" && state.config.preflopFlow === "skip" && state.stage === "hand") {
+          autoCompleteConfiguredPreflop();
+        }
       } else {
         refreshScene();
       }
@@ -4752,6 +5662,8 @@
       state.config.position = "";
       state.config.role = "";
       state.config.stacks = "";
+      state.config.preflopFlow = DEFAULT_PREFLOP_FLOW;
+      state.replayHoleCardsBySeat = {};
       state.session.active = false;
       state.session.index = 0;
       state.stage = "start";
@@ -4817,7 +5729,7 @@
         const replayFlop = resolveReplayCards(
           [state.manual.flop1, state.manual.flop2, state.manual.flop3],
           ["flop1", "flop2", "flop3"],
-          state.hand,
+          [...state.hand, ...allReplayReservedCards()],
           "Flop"
         );
         if (!replayFlop) return;
@@ -4828,9 +5740,13 @@
       }
       state.stage = "flop";
       beginStreetRound("flop");
+      captureStreetSnapshot("flop", []);
       refreshScene();
       startTimerForStreet();
       addStreetMarker("flop");
+      if (isTableEngineMode()) {
+        runRealisticFlowUntilHeroTurn();
+      }
 
       if (isCaptureEnabled() && recording.autoStartArmed && recording.mode === "idle") {
         recording.autoStartArmed = false;
@@ -4845,7 +5761,7 @@
         const replayTurn = resolveReplayCards(
           [state.manual.turn],
           ["turn"],
-          [...state.hand, ...flop],
+          [...state.hand, ...flop, ...allReplayReservedCards()],
           "Turn"
         );
         if (!replayTurn) return;
@@ -4856,9 +5772,13 @@
       }
       state.stage = "turn";
       beginStreetRound("turn");
+      captureStreetSnapshot("turn", flop);
       refreshScene();
       startTimerForStreet();
       addStreetMarker("turn");
+      if (isTableEngineMode()) {
+        runRealisticFlowUntilHeroTurn();
+      }
     }
 
     function enterRiver() {
@@ -4868,7 +5788,7 @@
         const replayRiver = resolveReplayCards(
           [state.manual.river],
           ["river"],
-          [...state.hand, ...four],
+          [...state.hand, ...four, ...allReplayReservedCards()],
           "River"
         );
         if (!replayRiver) return;
@@ -4879,9 +5799,41 @@
       }
       state.stage = "river";
       beginStreetRound("river");
+      captureStreetSnapshot("river", four);
       refreshScene();
       startTimerForStreet();
       addStreetMarker("river");
+      if (isTableEngineMode()) {
+        runRealisticFlowUntilHeroTurn();
+      }
+    }
+
+    function redealStreet(street) {
+      if (state.mode === "replay") {
+        if (street === "flop") enterFlop();
+        if (street === "turn") enterTurn();
+        if (street === "river") enterRiver();
+        return;
+      }
+      if (!restoreStreetSnapshot(street)) return;
+
+      if (street === "flop") {
+        resetDeck(state.hand);
+        state.board = [dealCard(), dealCard(), dealCard()];
+      } else if (street === "turn") {
+        resetDeck([...state.hand, ...state.board]);
+        state.board = [...state.board, dealCard()];
+      } else if (street === "river") {
+        resetDeck([...state.hand, ...state.board]);
+        state.board = [...state.board, dealCard()];
+      } else {
+        return;
+      }
+
+      applyKnownCardBlockers([...state.hand, ...state.board]);
+      refreshScene();
+      startTimerForStreet();
+      runRealisticFlowUntilHeroTurn();
     }
 
     function keepRiver() {
@@ -5011,7 +5963,10 @@
         spotType: state.config.spotType || "",
         position: state.config.position || "",
         role: state.config.role || "",
-        stacks: state.config.stacks || ""
+        stacks: state.config.stacks || "",
+        preflopFlow: state.config.preflopFlow || DEFAULT_PREFLOP_FLOW,
+        smallBlind: smallBlindChips(),
+        bigBlind: bigBlindChips()
       };
     }
 
@@ -5865,7 +6820,7 @@
 
     function realisticSizingBounds(legal) {
       if (!legal.bet && !legal.raise) return null;
-      let minTo = legal.raise ? legal.minRaiseTo : BIG_BLIND_CHIPS;
+      let minTo = legal.raise ? legal.minRaiseTo : bigBlindChips();
       let maxTo = legal.maxCommit;
       if (maxTo < minTo) {
         minTo = maxTo;
@@ -5873,14 +6828,14 @@
 
       let targetTo = Number(state.tableState.betInputTo) || minTo;
       targetTo = roundToWholeBb(targetTo);
-      if (maxTo <= BIG_BLIND_CHIPS) {
+      if (maxTo <= bigBlindChips()) {
         targetTo = maxTo;
       }
       if (targetTo < minTo) targetTo = minTo;
       if (targetTo > maxTo) targetTo = maxTo;
       state.tableState.betInputTo = targetTo;
 
-      const step = maxTo <= BIG_BLIND_CHIPS ? SMALL_BLIND_CHIPS : BIG_BLIND_CHIPS;
+      const step = maxTo <= bigBlindChips() ? smallBlindChips() : bigBlindChips();
       return { minTo, maxTo, targetTo, step };
     }
 
@@ -5976,11 +6931,26 @@
 
       const readout = document.createElement("span");
       readout.className = "action-size-readout";
-      readout.textContent = `${Math.round(bounds.targetTo / BIG_BLIND_CHIPS)}bb`;
+      readout.textContent = `${Math.round(bounds.targetTo / bigBlindChips())}bb`;
+
+      const syncActionButtonLabels = (nextValue) => {
+        const hero = getHeroPlayer();
+        if (!hero) return;
+        const nextLegal = getLegalActions(hero.seat);
+        Array.from(els.controls.querySelectorAll("button")).forEach((btn) => {
+          if (btn.textContent.startsWith("Bet To ")) {
+            btn.textContent = `Bet To ${nextValue}`;
+          } else if (btn.textContent.startsWith("Raise To ")) {
+            btn.textContent = `Raise To ${nextValue}`;
+          } else if (btn.textContent.startsWith("All-in ")) {
+            btn.textContent = `All-in ${nextLegal.maxCommit}`;
+          }
+        });
+      };
 
       const applyValue = (rawValue) => {
         let next = roundToWholeBb(rawValue);
-        if (bounds.maxTo <= BIG_BLIND_CHIPS) {
+        if (bounds.maxTo <= bigBlindChips()) {
           next = bounds.maxTo;
         }
         if (next < bounds.minTo) next = bounds.minTo;
@@ -5988,7 +6958,8 @@
         state.tableState.betInputTo = next;
         slider.value = String(next);
         number.value = String(next);
-        readout.textContent = `${Math.round(next / BIG_BLIND_CHIPS)}bb`;
+        readout.textContent = `${Math.round(next / bigBlindChips())}bb`;
+        syncActionButtonLabels(next);
       };
 
       slider.addEventListener("input", () => applyValue(slider.value));
@@ -6031,6 +7002,16 @@
       }
       setControls(buttons);
       appendRealisticSizingControl(legal);
+
+      if (state.stage === "flop" || state.stage === "turn" || state.stage === "river") {
+        const streetBtn = document.createElement("button");
+        streetBtn.textContent =
+          state.mode === "replay"
+            ? `Edit ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`
+            : `New ${state.stage[0].toUpperCase()}${state.stage.slice(1)}`;
+        streetBtn.addEventListener("click", () => redealStreet(state.stage));
+        els.controls.appendChild(streetBtn);
+      }
     }
 
     function refreshScene() {
@@ -6048,7 +7029,7 @@
 
       els.startSplash.style.display = "none";
 
-      if (isRealisticLiveMode() && ["hand", "flop", "turn", "river", "done"].includes(state.stage)) {
+      if (isTableEngineMode() && ["hand", "flop", "turn", "river", "done"].includes(state.stage)) {
         setRealisticControls();
         updateTimerPauseButton();
         renderStatusLine();

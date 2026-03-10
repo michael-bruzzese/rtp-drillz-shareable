@@ -21,6 +21,11 @@ async function fillBuilderWithCards(page, cards) {
   }
 }
 
+async function fillBuilderSlot(page, slotName, card) {
+  await page.locator(`[data-builder-slot="${slotName}"]`).click();
+  await page.locator(`.builder-card-btn[data-card="${card}"]`).click();
+}
+
 async function applyBuilder(page) {
   await page.locator("#builderApplyBtn").click();
   await expect(page.locator("#handBuilderModal")).not.toHaveClass(/show/);
@@ -44,7 +49,12 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
 
   await page.locator("nav#controls button.primary").click();
   await expect(page.locator("#handCards .card-shell")).toHaveCount(2);
-  await expect(page.locator("nav#controls button.primary")).toContainText("Deal Flop");
+  await expect(page.locator("#seatMap .seat-chip")).toHaveCount(6);
+  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("40");
+  await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
+  await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
+  await expect(page.locator("#status")).toContainText("Flop | Pot");
+  await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
 });
 
 test("session queue supports naming, export/import, and next-hand progression", async ({ page }) => {
@@ -81,7 +91,9 @@ test("session queue supports naming, export/import, and next-hand progression", 
         flop2: "Jh",
         flop3: "Th",
         turn: "2c",
-        river: "3d"
+        river: "3d",
+        seat2card1: "Ac",
+        seat2card2: "Ad"
       },
       {
         hand1: "Ad",
@@ -109,18 +121,45 @@ test("session queue supports naming, export/import, and next-hand progression", 
 
   await page.locator("#startSessionBtn").click();
   await expect(page.locator("#manualSummary")).toContainText("Hero Hole Cards: As Kd");
+  await expect(page.locator("#manualSummary")).toContainText("Villains Locked: 1 seat");
   await expect(page.locator("#sessionMeta")).toContainText("Running 1/2");
 
-  // Play through one full hand, then deal again to advance to the next queued hand.
-  await page.locator("nav#controls button.primary").click(); // Deal -> hand
-  await page.locator("nav#controls button.primary").click(); // Deal Flop
-  await page.locator("nav#controls button.primary").click(); // Deal Turn
-  await page.locator("nav#controls button.primary").click(); // Deal River
-  await page.locator("nav#controls button.primary").click(); // Deal (river -> done)
+  // Fold preflop, then deal again to advance to the next queued hand.
+  await page.locator("nav#controls button.primary").click(); // Deal -> preflop
+  await page.locator("nav#controls button", { hasText: /^Fold$/ }).click();
+  await expect(page.locator("#status")).toContainText("Done");
   await page.locator("nav#controls button.primary").click(); // Deal (advance queue)
 
   await expect(page.locator("#manualSummary")).toContainText("Hero Hole Cards: Ad Qc");
   await expect(page.locator("#sessionMeta")).toContainText("Running 2/2");
+});
+
+test("replay keeps villain hole cards hidden until showdown", async ({ page }) => {
+  await page.goto(APP_URL);
+  await setMode(page, "replay");
+
+  await openHandBuilder(page);
+  await fillBuilderWithCards(page, CARD_SEQUENCE_ONE);
+  await page.locator("#builderVillains summary").click();
+  await fillBuilderSlot(page, "seat2card1", "Ac");
+  await fillBuilderSlot(page, "seat2card2", "Ad");
+  await applyBuilder(page);
+
+  await expect(page.locator("#manualSummary")).toContainText("Villains Locked: 1 seat");
+
+  await page.locator("nav#controls button.primary").click();
+  await expect(page.locator("#seatMap")).toContainText("Cards locked");
+  await expect(page.locator("#seatMap")).not.toContainText("Ac Ad");
+
+  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("40");
+  await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
+  await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).click();
+
+  await expect(page.locator("#status")).toContainText("Done");
+  await expect(page.locator("#seatMap")).toContainText("Ac Ad");
 });
 
 test("capture toggle switches UI mode cleanly", async ({ page }) => {

@@ -1,5 +1,19 @@
 # Changelog
 
+## 2026-03-10
+- Moved both `Live Drill` and `Hand Replay` onto the shared six-max table engine.
+- Added blind configuration inputs (`SB` / `BB`) and per-seat stack editing before the hand.
+- Added visible six-seat table HUD with button, acting-player, stack, and committed-chip state.
+- Replaced the old `PFR/PFC` row with `Play Pre` / `Skip To Flop` live-drill setup.
+- Added deterministic preflop scenario scripting for `SRP`, `3BP`, and `4BP`.
+- Added default preflop skip lines for live mode so drills can jump directly to flop action.
+- Added street snapshots so `New Flop`, `New Turn`, and `New River` restore pot/stacks before redealing.
+- Tightened hero hand generation slightly for `3BP` and `4BP` spots without removing all weaker combos.
+- Added replay-only optional villain hole-card entry inside the existing `Input Hand` modal.
+- Added showdown-only reveal of replay villain cards in the table HUD.
+- Added internal `window.__rtpTestHooks` helpers for table-engine verification.
+- Added Playwright engine coverage in `tests/e2e/engine.spec.js`.
+
 ## 2026-03-08
 - Added realistic table vertical slice behind URL flag (`?realistic=1`) while preserving default classic flow.
 - Added 6-max table-state engine foundations for live mode:

@@ -7,6 +7,8 @@ RTP Drillz is a poker study tool for range-based flop/turn/river drills.
 
 This is the **active primary codebase**.
 
+`Live Drill` and `Hand Replay` now both run on the shared six-max table engine.
+
 ## Files
 
 - `rtp_drillz_web_embedded.html`: single-file web app with embedded card images (deploy this file).
@@ -24,9 +26,18 @@ Open:
 
 - `http://127.0.0.1:8765/rtp_drillz_web_embedded.html`
 
+Current setup controls:
+
+- `SRP / 3BP / 4BP`
+- `IP / OOP`
+- `Play Pre / Skip To Flop`
+- blind inputs (`SB`, `BB`)
+- effective-stack presets plus per-seat stack editor
+- replay-only optional villain hole-card input inside the existing `Input Hand` modal
+
 Optional dev flags:
 
-- Realistic table slice: `?realistic=1`
+- Legacy realistic flag: `?realistic=1`
 - Hidden internal range tools: `?devtools=1` (or hotkey `Ctrl+Alt+Shift+D`)
 
 ## Rebuild Embedded HTML
@@ -50,3 +61,4 @@ Test files:
 
 - `tests/e2e/smoke.spec.js`
 - `tests/e2e/realistic.spec.js`
+- `tests/e2e/engine.spec.js`

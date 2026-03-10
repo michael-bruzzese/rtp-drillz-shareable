@@ -8,16 +8,19 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
 
 ## Current Feature Snapshot
 - Includes full core drill flow from RTP Drillz.
-- Realistic table vertical slice is available behind URL flag:
-  - Open with `?realistic=1` on `rtp_drillz_web_embedded.html`.
-  - Default app behavior remains classic flow when the flag is not used.
-- Realistic slice currently supports:
-  - 6-max seat/position rotation with fixed seat layout and rotating button.
-  - 5/10 blind posting and pot/stack action-state tracking.
-  - Hero decision controls: `Fold`, `Check`, `Call`, `Bet To`, `Raise To`, `All-in`.
-  - Bet sizing controls under hero actions (slider + numeric input, whole-BB increments).
-  - Temporary heads-up lock behavior: after an aggression + call line, remaining players auto-fold.
-  - Auto-villain action progression until hero's turn, with street auto-advance.
+- `Live Drill` and `Hand Replay` now share the same six-max table engine.
+- Shared table engine currently supports:
+  - fixed hero seat with dealer-button-driven position mapping
+  - configurable blinds via `SB` / `BB` inputs
+  - effective-stack presets plus per-seat stack editing before the hand
+  - pot, stack, and legal-action tracking across streets
+  - visible six-seat table HUD with button / acting-player / stack state
+  - hero decision controls: `Fold`, `Check`, `Call`, `Bet To`, `Raise To`, `All-in`
+  - bet sizing via slider + numeric input (whole-BB increments)
+  - deterministic preflop scenario scripting for `SRP`, `3BP`, and `4BP`
+  - `Play Pre` and `Skip To Flop` setup for live mode
+  - street snapshots so `New Flop`, `New Turn`, and `New River` rewind pot/stacks to street start before redealing
+- Current phase is still heads-up after the configured line resolves; multiway remains future work.
 - Capture mode toggle:
   - `Off`: no recorder clutter, no camera/mic prompt.
   - `On`: full recorder panel and workflow.
@@ -36,14 +39,18 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
   - flop -> hand
   - hand -> start
 - Table context selectors:
-  - Left: `SRP/3BP/4BP`, `IP/OOP`, `PFR/PFC` (single-select per row)
-  - Right: `Effective Stacks` single-select (`50BB` to `500BB+`)
-- Under-board status line now shows only left-side tags (`SRP | IP | PFR` style).
+  - Left: `SRP/3BP/4BP`, `IP/OOP`, `Play Pre/Skip To Flop`
+  - Right: blind inputs plus `Effective Stacks` presets and per-seat stack editor
+- Under-board status line now shows live table-state accounting instead of only static tags.
 - Tag selections persist until user changes them; `Start Over` clears all.
 - Hand mode selector:
   - `Live Drill` (random)
   - `Hand Replay` (manual)
 - `Hand Replay` uses visual `Input Hand` modal (52-card picker with slot-by-slot fill) instead of dropdowns.
+- `Hand Replay` now supports optional villain hole-card entry by seat inside the same modal:
+  - any subset of villain seats can be left blank
+  - entered villain cards stay hidden during play
+  - entered villain cards reveal only on showdown (not on fold-only hand endings)
 - Session queue (max 10 hands):
   - Named sessions
   - `Add Loaded Hand`, `Start Session`, `Clear Session`
@@ -54,6 +61,8 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
   - Internal hand-balloon profile editing modal (not user-visible by default).
   - Internal profile pack import/export and action-rule multiplier editing.
   - Hidden range engine runs behind the scenes and is excluded from session export.
+- Internal test hooks:
+  - `window.__rtpTestHooks` exposes configure / deal / act / snapshot helpers for engine verification.
 
 ## Key Files
 - `rtp_drillz_web.html` (source UI/logic, including recording code)
@@ -62,6 +71,7 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
 - `index.html`
 - `tests/e2e/smoke.spec.js` (Playwright smoke tests)
 - `tests/e2e/realistic.spec.js` (Playwright realistic-mode tests)
+- `tests/e2e/engine.spec.js` (engine-level accounting + legality coverage via test hooks)
 - `playwright.config.js` and `package.json` (test runner config)
 
 ## Rebuild + Deploy
@@ -78,8 +88,9 @@ git push
 ## Next Session Quick Start
 1. Read this file and `CHANGELOG.md`.
 2. Validate realistic mode manually:
-   - `http://127.0.0.1:8765/rtp_drillz_web_embedded.html?realistic=1`
-   - verify hero action controls + sizing + round progression.
+   - `http://127.0.0.1:8765/rtp_drillz_web_embedded.html`
+   - verify `SRP / 3BP / 4BP`, `IP / OOP`, blinds, stack editor, and preflop flow options.
+   - verify table HUD, stack accounting, and `New Flop / Turn / River` behavior.
 3. If needed, open hidden range tools:
    - `Ctrl+Alt+Shift+D` or `?devtools=1`
 4. Run tests:
