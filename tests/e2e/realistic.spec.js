@@ -172,14 +172,14 @@ test("live mode villain only checks and calls on flop turn and river", async ({ 
   ]);
 });
 
-test("open versus big blind 3-bet selector stays IP and deals hero facing the 3-bet", async ({ page }) => {
+test("3bp ip can still deal the button-open versus bb-3bet branch", async ({ page }) => {
   await page.goto(REALISTIC_APP_URL);
 
-  await page.locator('[data-config-group="position"][data-config-value="OOP"]').click();
-  await page.locator('[data-config-group="spotType"][data-config-value="OPENBB3B"]').click();
+  await page.evaluate(() => window.__rtpTestHooks.setScenarioRandomSequence([0.95]));
+  await page.locator('[data-config-group="spotType"][data-config-value="3BP"]').click();
+  await page.locator('[data-config-group="position"][data-config-value="IP"]').click();
 
-  await expect(page.locator('[data-config-group="position"][data-config-value="IP"]')).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator('[data-config-group="position"][data-config-value="OOP"]')).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator('[data-config-group="spotType"][data-config-value="OPENBB3B"]')).toHaveCount(0);
 
   await page.locator("nav#controls button.primary").click();
   await expect(page.locator("#status")).toContainText("Preflop | Hero BTN Hero");

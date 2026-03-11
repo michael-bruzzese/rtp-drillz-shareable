@@ -2329,7 +2329,6 @@
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="SRP">SRP</button>
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="3BP">3BP</button>
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="4BP">4BP</button>
-            <button class="config-btn" type="button" data-config-group="spotType" data-config-value="OPENBB3B">Open / BB 3B</button>
           </div>
           <div class="config-row row-two">
             <button class="config-btn" type="button" data-config-group="position" data-config-value="IP">IP</button>
@@ -2873,7 +2872,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         preflopScript: [],
         preflopScriptName: "",
         stackEditorOpen: false,
-        streetSnapshots: {}
+        streetSnapshots: {},
+        handScenario: null
       },
       players: [],
       hiddenRanges: {
@@ -2893,7 +2893,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         selectedHandClass: "",
         selectedCellId: "",
         selectedCellWeight: ""
-      }
+      },
+      testScenarioRandomQueue: []
     };
     let audioContext = null;
     let actionFeedbackCounter = 0;
@@ -3055,7 +3056,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const position = String(state.config.position || "").toUpperCase();
       const preflopFlow = String(state.config.preflopFlow || "").toLowerCase();
 
-      if (spotType && !["SRP", "3BP", "4BP", "OPENBB3B"].includes(spotType)) {
+      if (spotType && !["SRP", "3BP", "4BP"].includes(spotType)) {
         state.config.spotType = "SRP";
       }
       if (position && !["IP", "OOP"].includes(position)) {
@@ -3063,9 +3064,6 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       }
       if (preflopFlow && !["play", "skip"].includes(preflopFlow)) {
         state.config.preflopFlow = DEFAULT_PREFLOP_FLOW;
-      }
-      if ((state.config.spotType || "") === "OPENBB3B") {
-        state.config.position = "IP";
       }
     }
 
@@ -4629,6 +4627,10 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           }
           return state.hand.slice();
         },
+        setScenarioRandomSequence: (values) => {
+          state.testScenarioRandomQueue = Array.isArray(values) ? values.slice() : [];
+          return state.testScenarioRandomQueue.length;
+        },
         dealHand: () => {
           dealHand();
           return true;
@@ -5092,11 +5094,50 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       return seatAtOffset(HERO_FIXED_SEAT, -index);
     }
 
+    function nextScenarioRandomValue() {
+      if (Array.isArray(state.testScenarioRandomQueue) && state.testScenarioRandomQueue.length) {
+        const queued = Number(state.testScenarioRandomQueue.shift());
+        if (Number.isFinite(queued)) {
+          return Math.max(0, Math.min(0.999999, queued));
+        }
+      }
+      return Math.random();
+    }
+
+    function chooseThreeBetIpHandScenario() {
+      const openBeforeHero = nextScenarioRandomValue() < 0.8;
+      if (openBeforeHero) {
+        const openerCandidates = ["UTG", "HJ", "CO"];
+        const openerIndex = Math.min(
+          openerCandidates.length - 1,
+          Math.floor(nextScenarioRandomValue() * openerCandidates.length)
+        );
+        const openerPosition = openerCandidates[openerIndex];
+        return {
+          spot: "3BP",
+          position: "IP",
+          heroPosition: "BTN",
+          villainPosition: openerPosition,
+          openerPosition,
+          name: "3bp-ip"
+        };
+      }
+
+      return {
+        spot: "3BP",
+        position: "IP",
+        heroPosition: "BTN",
+        villainPosition: "BB",
+        openerPosition: "BTN",
+        name: "3bp-ip-bb-3bet"
+      };
+    }
+
     function currentScenarioConfig() {
       const spot = state.config.spotType || "SRP";
       const position = state.config.position || "IP";
-      if (spot === "OPENBB3B") {
-        return { spot, position: "IP", heroPosition: "BTN", villainPosition: "BB", openerPosition: "BTN", name: "open-bb-3bp" };
+      if (spot === "3BP" && position === "IP" && state.tableState.handScenario) {
+        return clonePlainObject(state.tableState.handScenario);
       }
       if (spot === "SRP" && position === "OOP") {
         return { spot, position, heroPosition: "BB", villainPosition: "BTN", openerPosition: "BTN", name: "srp-oop" };
@@ -5159,6 +5200,15 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       initHiddenRangesForHand();
     }
 
+    function resolveScenarioForNewHand() {
+      const spot = state.config.spotType || "SRP";
+      const position = state.config.position || "IP";
+      if (spot === "3BP" && position === "IP") {
+        return chooseThreeBetIpHandScenario();
+      }
+      return currentScenarioConfig();
+    }
+
     function configureScenarioSeats() {
       const scenario = currentScenarioConfig();
       state.tableState.heroSeat = HERO_FIXED_SEAT;
@@ -5185,6 +5235,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         restorePlayersToStackStart();
       }
 
+      state.tableState.handScenario = null;
       configureScenarioSeats();
       state.actionLog = [];
       state.coverageGaps = [];
@@ -5365,20 +5416,23 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         pushFoldLine(["UTG", "HJ", "CO"]);
         steps.push(createScriptStep("SB", "fold"));
         steps.push(createScriptStep("BB", "call"));
-      } else if (scenario.name === "open-bb-3bp") {
-        pushFoldLine(["UTG", "HJ", "CO"]);
-        steps.push(createScriptStep("SB", "fold"));
-        steps.push(createScriptStep("BB", "raise", () => Math.max(roundToWholeBb(bigBlindChips() * 10), heroCurrentPreflopCommit() + bigBlindChips() * 6)));
       } else if (scenario.name === "srp-oop") {
         pushFoldLine(["UTG", "HJ", "CO"]);
         steps.push(createScriptStep("BTN", "raise", () => preflopOpenToThreeBb()));
         steps.push(createScriptStep("SB", "fold"));
       } else if (scenario.name === "3bp-ip") {
-        pushFoldLine(["UTG", "HJ"]);
-        steps.push(createScriptStep("CO", "raise", () => preflopOpenToThreeBb()));
+        const openerOrder = ["UTG", "HJ", "CO"];
+        const openerIndex = Math.max(0, openerOrder.indexOf(scenario.openerPosition || "CO"));
+        pushFoldLine(openerOrder.slice(0, openerIndex));
+        steps.push(createScriptStep(openerOrder[openerIndex], "raise", () => preflopOpenToThreeBb()));
+        pushFoldLine(openerOrder.slice(openerIndex + 1));
         steps.push(createScriptStep("SB", "fold"));
         steps.push(createScriptStep("BB", "fold"));
-        steps.push(createScriptStep("CO", "call"));
+        steps.push(createScriptStep(openerOrder[openerIndex], "call"));
+      } else if (scenario.name === "3bp-ip-bb-3bet") {
+        pushFoldLine(["UTG", "HJ", "CO"]);
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "raise", () => Math.max(roundToWholeBb(bigBlindChips() * 10), heroCurrentPreflopCommit() + bigBlindChips() * 6)));
       } else if (scenario.name === "3bp-oop") {
         pushFoldLine(["UTG", "HJ", "CO"]);
         steps.push(createScriptStep("BTN", "raise", () => preflopOpenToThreeBb()));
@@ -5480,7 +5534,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
       const openTo = roundToWholeBb(DEFAULT_SKIP_OPEN_TO_BB * bigBlindChips());
       const threeBetTo = roundToWholeBb(DEFAULT_SKIP_3BET_TO_BB * bigBlindChips());
 
-      if (scenario.name === "open-bb-3bp") {
+      if (scenario.name === "3bp-ip-bb-3bet") {
         if (heroAggro === 0 && legal.raise) {
           return { action: "raise", sizeChips: openTo };
         }
@@ -5747,6 +5801,7 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
     }
 
     function beginTableHandForDeal() {
+      state.tableState.handScenario = resolveScenarioForNewHand();
       const scripted = buildConfiguredPreflopScript();
       restorePlayersToStackStart();
       configureScenarioSeats();

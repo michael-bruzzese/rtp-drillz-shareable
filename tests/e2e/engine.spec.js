@@ -105,46 +105,47 @@ test("engine preserves 4-bet IP structure and hero facing action", async ({ page
   expect(state.tableState.streetSnapshots).toContain("flop");
 });
 
-test("engine supports hero open versus big blind 3-bet play flow", async ({ page }) => {
+test("engine supports 3bp ip facing a random earlier-position opener", async ({ page }) => {
   await page.goto(APP_URL);
 
   await page.evaluate(() =>
     window.__rtpTestHooks.configure({
-      spotType: "OPENBB3B",
-      position: "OOP",
+      spotType: "3BP",
+      position: "IP",
       stacks: "100BB",
       preflopFlow: "play",
       smallBlind: 5,
       bigBlind: 10
     })
   );
+  await page.evaluate(() => window.__rtpTestHooks.setScenarioRandomSequence([0.2, 0.5]));
 
   await page.evaluate(() => window.__rtpTestHooks.dealHand());
   let state = await snapshot(page);
 
-  expect(state.config.position).toBe("IP");
   expect(state.stage).toBe("hand");
   expect(state.heroPosition).toBe("BTN");
   expect(state.tableState.actionSeat).toBe(state.heroSeat);
-  expect(state.tableState.pot).toBe(15);
+  expect(state.tableState.pot).toBe(45);
+  expect(state.players.find((player) => player.position === "HJ").committedStreet).toBe(30);
 
-  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 40));
+  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 90));
   state = await snapshot(page);
 
-  expect(state.stage).toBe("hand");
+  expect(state.stage).toBe("flop");
   expect(state.tableState.actionSeat).toBe(state.heroSeat);
-  expect(state.tableState.pot).toBe(145);
-  expect(state.legalHero.toCall).toBe(60);
-  expect(state.legalHero.call).toBe(true);
-  expect(state.players.find((player) => player.position === "BB").committedStreet).toBe(100);
+  expect(state.tableState.pot).toBe(195);
+  expect(state.legalHero.toCall).toBe(0);
+  expect(state.legalHero.check).toBe(true);
+  expect(state.players.find((player) => player.position === "HJ").committedHand).toBe(90);
 });
 
-test("engine auto-completes hero open versus big blind 3-bet skip flow to flop", async ({ page }) => {
+test("engine can still deal the button-open versus bb-3bet branch through 3bp ip skip flow", async ({ page }) => {
   await page.goto(APP_URL);
 
   await page.evaluate(() =>
     window.__rtpTestHooks.configure({
-      spotType: "OPENBB3B",
+      spotType: "3BP",
       position: "IP",
       stacks: "100BB",
       preflopFlow: "skip",
@@ -152,6 +153,7 @@ test("engine auto-completes hero open versus big blind 3-bet skip flow to flop",
       bigBlind: 10
     })
   );
+  await page.evaluate(() => window.__rtpTestHooks.setScenarioRandomSequence([0.95]));
 
   await page.evaluate(() => window.__rtpTestHooks.dealHand());
   const state = await snapshot(page);
@@ -162,6 +164,7 @@ test("engine auto-completes hero open versus big blind 3-bet skip flow to flop",
   expect(state.tableState.actionSeat).toBe(state.heroSeat);
   expect(state.legalHero.toCall).toBe(0);
   expect(state.legalHero.check).toBe(true);
+  expect(state.players.find((player) => player.position === "BB").committedHand).toBe(100);
 });
 
 test("blind changes reset to a fresh predeal state at 200bb", async ({ page }) => {
