@@ -180,6 +180,55 @@ test("replay keeps villain hole cards hidden until showdown", async ({ page }) =
   await expect(page.locator("#seatMap")).toContainText("Ac Ad");
 });
 
+test("replay fold endings keep villain hole cards hidden", async ({ page }) => {
+  await page.goto(APP_URL);
+  await setMode(page, "replay");
+
+  await openHandBuilder(page);
+  await fillBuilderWithCards(page, CARD_SEQUENCE_ONE);
+  await page.locator("#builderVillains summary").click();
+  await fillBuilderSlot(page, "seat2card1", "Ac");
+  await fillBuilderSlot(page, "seat2card2", "Ad");
+  await applyBuilder(page);
+
+  await page.locator("nav#controls button.primary").click();
+  await expect(page.locator("#seatMap")).toContainText("Cards locked");
+
+  await page.locator("nav#controls button", { hasText: /^Fold$/ }).click();
+
+  await expect(page.locator("#status")).toContainText("Done");
+  await expect(page.locator("#seatMap")).toContainText("Cards locked");
+  await expect(page.locator("#seatMap")).not.toContainText("Ac Ad");
+});
+
+test("replay checkdown reaches showdown and reveals villain hole cards", async ({ page }) => {
+  await page.goto(APP_URL);
+  await setMode(page, "replay");
+
+  await openHandBuilder(page);
+  await fillBuilderWithCards(page, CARD_SEQUENCE_ONE);
+  await page.locator("#builderVillains summary").click();
+  await fillBuilderSlot(page, "seat2card1", "Ac");
+  await fillBuilderSlot(page, "seat2card2", "Ad");
+  await applyBuilder(page);
+
+  await page.locator("nav#controls button.primary").click();
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+
+  await page.locator("nav#controls button", { hasText: /^Check$/ }).click();
+  await expect(page.locator("#status")).toContainText("Turn | Hero");
+
+  await page.locator("nav#controls button", { hasText: /^Check$/ }).click();
+  await expect(page.locator("#status")).toContainText("River | Hero");
+
+  await page.locator("nav#controls button", { hasText: /^Check$/ }).click();
+
+  await expect(page.locator("#status")).toContainText("Done");
+  await expect(page.locator("#boardCards .card-shell")).toHaveCount(5);
+  await expect(page.locator("#seatMap")).toContainText("Ac Ad");
+});
+
 test("capture toggle switches UI mode cleanly", async ({ page }) => {
   await page.goto(APP_URL);
 

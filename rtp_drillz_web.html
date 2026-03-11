@@ -956,6 +956,7 @@
       gap: 6px;
     }
 
+    .config-row.row-four,
     .config-row.row-three,
     .config-row.row-two {
       grid-template-columns: minmax(0, 1fr);
@@ -1269,6 +1270,63 @@
     .seat-chip.bottom-left .seat-pocket { right: 8px; top: 8px; }
     .seat-chip.bottom-right .seat-pocket { left: 8px; top: 8px; }
     .seat-chip.bottom-center .seat-pocket { left: 50%; top: 8px; transform: translateX(-50%); }
+
+    .seat-action-callout {
+      position: absolute;
+      left: 50%;
+      top: -12px;
+      transform: translate(-50%, -100%);
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: rgba(10, 12, 10, 0.92);
+      color: #fff4e7;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      pointer-events: none;
+      z-index: 5;
+      animation: actionCalloutFade 1.4s ease-out forwards;
+    }
+
+    .seat-action-callout.aggressive {
+      background: rgba(99, 39, 4, 0.96);
+      color: #ffe3c6;
+      border-color: rgba(255, 176, 92, 0.42);
+    }
+
+    .seat-action-callout.passive {
+      background: rgba(16, 35, 22, 0.94);
+      color: #def6dc;
+      border-color: rgba(126, 196, 115, 0.34);
+    }
+
+    .seat-action-callout.fold {
+      background: rgba(54, 18, 18, 0.94);
+      color: #ffd7d7;
+      border-color: rgba(231, 121, 121, 0.34);
+    }
+
+    @keyframes actionCalloutFade {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -88%);
+      }
+      14% {
+        opacity: 1;
+        transform: translate(-50%, -100%);
+      }
+      78% {
+        opacity: 1;
+        transform: translate(-50%, -104%);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -114%);
+      }
+    }
 
     .table-center {
       position: absolute;
@@ -2251,10 +2309,11 @@
         </div>
         <div id="setupRail" class="table-config table-config-left rail-panel">
           <div class="rail-title">Spot Setup</div>
-          <div class="config-row row-three">
+          <div class="config-row row-four">
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="SRP">SRP</button>
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="3BP">3BP</button>
             <button class="config-btn" type="button" data-config-group="spotType" data-config-value="4BP">4BP</button>
+            <button class="config-btn" type="button" data-config-group="spotType" data-config-value="OPENBB3B">Open / BB 3B</button>
           </div>
           <div class="config-row row-two">
             <button class="config-btn" type="button" data-config-group="position" data-config-value="IP">IP</button>
@@ -2663,6 +2722,7 @@
     const DEVTOOLS_ENABLED_KEY = "rtpDrillzDevToolsEnabled";
     const REALISTIC_MODE_KEY = "rtpDrillzRealisticMode";
     const MAX_COVERAGE_GAPS = 250;
+    const ACTION_FEEDBACK_DURATION_MS = 1400;
 
     const CARD_PREFIXES = [
       "",
@@ -2797,6 +2857,7 @@
       hiddenRanges: {
         bySeat: {}
       },
+      actionFeedbacks: [],
       actionLog: [],
       replayHoleCardsBySeat: {},
       coverageGaps: [],
@@ -2813,6 +2874,8 @@
       }
     };
     let audioContext = null;
+    let actionFeedbackCounter = 0;
+    const actionFeedbackTimers = new Map();
     let timerPausedByRecording = false;
     let webcamPreviewStream = null;
     const recording = {
@@ -2963,6 +3026,25 @@
       syncBlindInputs();
     }
 
+    function sanitizeScenarioConfig() {
+      const spotType = String(state.config.spotType || "").toUpperCase();
+      const position = String(state.config.position || "").toUpperCase();
+      const preflopFlow = String(state.config.preflopFlow || "").toLowerCase();
+
+      if (spotType && !["SRP", "3BP", "4BP", "OPENBB3B"].includes(spotType)) {
+        state.config.spotType = "SRP";
+      }
+      if (position && !["IP", "OOP"].includes(position)) {
+        state.config.position = "IP";
+      }
+      if (preflopFlow && !["play", "skip"].includes(preflopFlow)) {
+        state.config.preflopFlow = DEFAULT_PREFLOP_FLOW;
+      }
+      if ((state.config.spotType || "") === "OPENBB3B") {
+        state.config.position = "IP";
+      }
+    }
+
     function init() {
       const savedTimer = localStorage.getItem(TIMER_KEY);
       if (savedTimer && Object.prototype.hasOwnProperty.call(TIMER_MAP, savedTimer)) {
@@ -3021,14 +3103,14 @@
       els.smallBlindInput.addEventListener("change", () => {
         state.config.smallBlind = Number(els.smallBlindInput.value) || DEFAULT_SMALL_BLIND_CHIPS;
         sanitizeBlindConfig();
-        initializeTableEngineState({ resetStacks: true });
-        refreshScene();
+        state.config.stacks = "200BB";
+        resetToFreshPredeal({ resetStacks: true });
       });
       els.bigBlindInput.addEventListener("change", () => {
         state.config.bigBlind = Number(els.bigBlindInput.value) || DEFAULT_BIG_BLIND_CHIPS;
         sanitizeBlindConfig();
-        initializeTableEngineState({ resetStacks: true });
-        refreshScene();
+        state.config.stacks = "200BB";
+        resetToFreshPredeal({ resetStacks: true });
       });
       els.stackEditorToggle.addEventListener("click", () => {
         state.tableState.stackEditorOpen = !state.tableState.stackEditorOpen;
@@ -3297,14 +3379,7 @@
       state.manual = cloneManualValues(state.session.hands[index]);
       renderManualSummary();
       if (resetStreet) {
-        stopTimer(true);
-        hideTimeOverlay();
-        stopTableFlash();
-        state.hand = [];
-        state.board = [];
-        state.deck = [];
-        state.stage = "start";
-        refreshScene();
+        resetToFreshPredeal({ resetStacks: false });
       }
       renderSessionQueue();
     }
@@ -3697,8 +3772,14 @@
           const value = btn.dataset.configValue;
           if (!group || !value) return;
           state.config[group] = value;
+          sanitizeScenarioConfig();
           if (group === "stacks") {
-            syncPlayerStacksToEffectiveInput();
+            resetToFreshPredeal({ resetStacks: true });
+            return;
+          }
+          if (group === "spotType" || group === "position" || group === "preflopFlow") {
+            resetToFreshPredeal({ resetStacks: false });
+            return;
           }
           renderConfigSelections();
           renderStackEditor();
@@ -3763,6 +3844,59 @@
       els.status.textContent = labels.length ? labels.join(" | ") : "\u00a0";
     }
 
+    function clearActionFeedbacks({ cancelTimers = true } = {}) {
+      if (cancelTimers) {
+        actionFeedbackTimers.forEach((timerId) => clearTimeout(timerId));
+        actionFeedbackTimers.clear();
+      }
+      state.actionFeedbacks = [];
+    }
+
+    function actionFeedbackTone(action) {
+      if (action === "fold") return "fold";
+      if (action === "bet" || action === "raise" || action === "all-in") return "aggressive";
+      return "passive";
+    }
+
+    function formatActionFeedback(action, targetStreetCommit = 0) {
+      if (action === "check") return "Check";
+      if (action === "call") return "Call";
+      if (action === "fold") return "Fold";
+      if (action === "bet") return `Bet ${Math.round(targetStreetCommit)}`;
+      if (action === "raise") return `Raise ${Math.round(targetStreetCommit)}`;
+      if (action === "all-in") return `All-in ${Math.round(targetStreetCommit)}`;
+      return "";
+    }
+
+    function showActionFeedback(seat, action, targetStreetCommit = 0) {
+      if (!Number.isInteger(seat) || seat < 0) return;
+      const text = formatActionFeedback(action, targetStreetCommit);
+      if (!text) return;
+
+      const existing = state.actionFeedbacks.find((entry) => entry.seat === seat);
+      if (existing && actionFeedbackTimers.has(existing.id)) {
+        clearTimeout(actionFeedbackTimers.get(existing.id));
+        actionFeedbackTimers.delete(existing.id);
+      }
+
+      const id = actionFeedbackCounter + 1;
+      actionFeedbackCounter = id;
+      state.actionFeedbacks = state.actionFeedbacks.filter((entry) => entry.seat !== seat);
+      state.actionFeedbacks.push({
+        id,
+        seat,
+        text,
+        tone: actionFeedbackTone(action)
+      });
+
+      const timerId = setTimeout(() => {
+        actionFeedbackTimers.delete(id);
+        state.actionFeedbacks = state.actionFeedbacks.filter((entry) => entry.id !== id);
+        renderSeatMap();
+      }, ACTION_FEEDBACK_DURATION_MS);
+      actionFeedbackTimers.set(id, timerId);
+    }
+
     function formatStackBb(chips) {
       return `${(Math.max(0, chips) / bigBlindChips()).toFixed(1)}bb`;
     }
@@ -3811,6 +3945,12 @@
           dealer.textContent = "BTN";
           meta.appendChild(dealer);
         }
+        if ((state.stage === "start" || state.stage === "hand") && (player.position === "SB" || player.position === "BB")) {
+          const blind = document.createElement("span");
+          blind.className = "seat-chip-badge";
+          blind.textContent = player.position;
+          meta.appendChild(blind);
+        }
         if (player.seat === state.tableState.actionSeat) {
           const acting = document.createElement("span");
           acting.className = "seat-chip-badge";
@@ -3835,6 +3975,14 @@
         const replayCards = replayHoleCardsForSeat(player.seat);
         if (state.mode === "replay" && replayCards.length) {
           cards.textContent = isShowdownRevealState() ? replayCards.join(" ") : "Cards locked";
+        }
+
+        const actionFeedback = state.actionFeedbacks.find((entry) => entry.seat === player.seat);
+        if (actionFeedback) {
+          const callout = document.createElement("div");
+          callout.className = `seat-action-callout ${actionFeedback.tone}`;
+          callout.textContent = actionFeedback.text;
+          chip.appendChild(callout);
         }
 
         if (player.status === "active" || player.status === "allin") {
@@ -4406,7 +4554,8 @@
         configure: (nextConfig = {}) => {
           Object.assign(state.config, nextConfig || {});
           sanitizeBlindConfig();
-          initializeTableEngineState({ resetStacks: true });
+          sanitizeScenarioConfig();
+          resetToFreshPredeal({ resetStacks: true, render: false });
           updateManualPanelVisibility();
           renderConfigSelections();
           refreshScene();
@@ -4440,6 +4589,9 @@
         snapshot: () => ({
           stage: state.stage,
           mode: state.mode,
+          hand: state.hand.slice(),
+          board: state.board.slice(),
+          actionFeedbacks: clonePlainObject(state.actionFeedbacks),
           config: clonePlainObject(state.config),
           tableState: clonePlainObject({
             ...state.tableState,
@@ -4828,13 +4980,18 @@
       const stackChips = effectiveStackChipsFromConfig();
       state.players.forEach((player) => {
         player.stackStart = stackChips;
-        if (state.stage === "start") {
-          player.stack = stackChips;
-          player.status = stackChips > 0 ? "active" : "allin";
-        }
+        player.stack = stackChips;
+        player.status = stackChips > 0 ? "active" : "allin";
       });
       renderStackEditor();
       renderSeatMap();
+    }
+
+    function restorePlayersToStackStart() {
+      state.players.forEach((player) => {
+        const baseline = Math.max(0, Math.round(Number(player.stackStart) || 0));
+        player.stack = baseline;
+      });
     }
 
     function computePositionsFromButton(buttonSeat) {
@@ -4854,7 +5011,7 @@
     function desiredHeroPositionFromConfig() {
       const spot = state.config.spotType || "SRP";
       const position = state.config.position || "IP";
-      if (spot === "SRP" && position === "OOP") return "SB";
+      if (spot === "SRP" && position === "OOP") return "BB";
       if (spot === "3BP" && position === "OOP") return "BB";
       if (spot === "4BP" && position === "OOP") return "CO";
       return "BTN";
@@ -4869,8 +5026,11 @@
     function currentScenarioConfig() {
       const spot = state.config.spotType || "SRP";
       const position = state.config.position || "IP";
+      if (spot === "OPENBB3B") {
+        return { spot, position: "IP", heroPosition: "BTN", villainPosition: "BB", openerPosition: "BTN", name: "open-bb-3bp" };
+      }
       if (spot === "SRP" && position === "OOP") {
-        return { spot, position, heroPosition: "SB", villainPosition: "BB", name: "srp-oop" };
+        return { spot, position, heroPosition: "BB", villainPosition: "BTN", openerPosition: "BTN", name: "srp-oop" };
       }
       if (spot === "3BP" && position === "OOP") {
         return { spot, position, heroPosition: "BB", villainPosition: "BTN", openerPosition: "BTN", name: "3bp-oop" };
@@ -4952,14 +5112,50 @@
           player.stackStart = stackChips;
           player.stack = stackChips;
         });
+      } else {
+        restorePlayersToStackStart();
       }
 
       configureScenarioSeats();
       state.actionLog = [];
       state.coverageGaps = [];
+      postConfiguredBlinds({ previewOnly: true });
       recomputePotAndToCall();
       recomputeMinRaiseTo();
       renderStackEditor();
+    }
+
+    function resetToFreshPredeal({ resetStacks = false, clearConfig = false, resetSession = false, render = true } = {}) {
+      clearHeroDecisionLock();
+      stopTimer(true);
+      hideTimeOverlay();
+      stopTableFlash();
+      clearActionFeedbacks();
+
+      state.hand = [];
+      state.board = [];
+      state.deck = [];
+      state.replayHoleCardsBySeat = {};
+      state.stage = "start";
+
+      if (clearConfig) {
+        state.config.spotType = "";
+        state.config.position = "";
+        state.config.role = "";
+        state.config.stacks = "";
+        state.config.preflopFlow = DEFAULT_PREFLOP_FLOW;
+      }
+
+      if (resetSession) {
+        state.session.active = false;
+        state.session.index = 0;
+      }
+
+      initializeTableEngineState({ resetStacks });
+      if (!render) return;
+
+      renderSessionQueue();
+      refreshScene();
     }
 
     function seatsStillInHand() {
@@ -5099,9 +5295,14 @@
         pushFoldLine(["UTG", "HJ", "CO"]);
         steps.push(createScriptStep("SB", "fold"));
         steps.push(createScriptStep("BB", "call"));
+      } else if (scenario.name === "open-bb-3bp") {
+        pushFoldLine(["UTG", "HJ", "CO"]);
+        steps.push(createScriptStep("SB", "fold"));
+        steps.push(createScriptStep("BB", "raise", () => Math.max(roundToWholeBb(bigBlindChips() * 10), heroCurrentPreflopCommit() + bigBlindChips() * 6)));
       } else if (scenario.name === "srp-oop") {
-        pushFoldLine(["UTG", "HJ", "CO", "BTN"]);
-        steps.push(createScriptStep("BB", "call"));
+        pushFoldLine(["UTG", "HJ", "CO"]);
+        steps.push(createScriptStep("BTN", "raise", () => preflopOpenToThreeBb()));
+        steps.push(createScriptStep("SB", "fold"));
       } else if (scenario.name === "3bp-ip") {
         pushFoldLine(["UTG", "HJ"]);
         steps.push(createScriptStep("CO", "raise", () => preflopOpenToThreeBb()));
@@ -5237,6 +5438,13 @@
       const heroAggro = heroPreflopAggressionCount();
       const openTo = roundToWholeBb(DEFAULT_SKIP_OPEN_TO_BB * bigBlindChips());
       const threeBetTo = roundToWholeBb(DEFAULT_SKIP_3BET_TO_BB * bigBlindChips());
+
+      if (scenario.name === "open-bb-3bp") {
+        if (heroAggro === 0 && legal.raise) {
+          return { action: "raise", sizeChips: openTo };
+        }
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+      }
 
       if (scenario.name === "srp-ip" || scenario.name === "srp-oop") {
         if (legal.raise) return { action: "raise", sizeChips: openTo };
@@ -5432,6 +5640,7 @@
       const snapshot = state.tableState.streetSnapshots[street];
       if (!snapshot) return false;
       const existingSnapshots = state.tableState.streetSnapshots;
+      clearActionFeedbacks();
       state.players = clonePlainObject(snapshot.players);
       state.tableState = {
         ...clonePlainObject(snapshot.tableState),
@@ -5446,11 +5655,12 @@
 
     function beginTableHandForDeal() {
       const scripted = buildConfiguredPreflopScript();
+      restorePlayersToStackStart();
       configureScenarioSeats();
       state.tableState.handNumber += 1;
       state.actionLog = [];
       state.coverageGaps = [];
-      postBlinds510();
+      postConfiguredBlinds();
       state.tableState.preflopScript = scripted.steps.slice();
       state.tableState.preflopScriptName = scripted.name;
       resetPendingActionSeatsFrom(state.tableState.actionSeat);
@@ -5491,7 +5701,7 @@
       return amount;
     }
 
-    function postBlinds510() {
+    function postConfiguredBlinds({ previewOnly = false } = {}) {
       const sbSeat = findSeatByPosition("SB");
       const bbSeat = findSeatByPosition("BB");
       if (sbSeat < 0 || bbSeat < 0) return;
@@ -5503,7 +5713,8 @@
       state.tableState.minRaiseTo = state.tableState.toCall + bigBlindChips();
       state.tableState.lastAggressorSeat = bbSeat;
       state.tableState.lastFullRaiseSize = bigBlindChips();
-      state.tableState.actionSeat = seatAtOffset(bbSeat, 1);
+      state.tableState.actionSeat = previewOnly ? -1 : seatAtOffset(bbSeat, 1);
+      state.tableState.pendingActionSeats = [];
       state.tableState.betInputTo = state.tableState.minRaiseTo;
     }
 
@@ -5652,6 +5863,8 @@
       } else {
         return false;
       }
+
+      showActionFeedback(seat, action, targetStreetCommit);
 
       if (aggressiveRaiseCreated) {
         state.tableState.pendingHeadsUpAggressorSeat = seat;
@@ -5870,11 +6083,6 @@
     }
 
     function dealHand() {
-      clearHeroDecisionLock();
-      stopTimer(true);
-      hideTimeOverlay();
-      stopTableFlash();
-
       if (state.mode === "replay" && state.session.active) {
         if (!state.session.hands.length) {
           state.session.active = false;
@@ -5890,6 +6098,8 @@
           loadSessionHandAt(state.session.index, false);
         }
       }
+
+      resetToFreshPredeal({ resetStacks: false, render: false });
 
       if (state.mode === "replay") {
         const replayHand = resolveReplayCards(
@@ -5926,26 +6136,7 @@
     }
 
     function startOver() {
-      clearHeroDecisionLock();
-      stopTimer(true);
-      hideTimeOverlay();
-      stopTableFlash();
-      state.hand = [];
-      state.board = [];
-      state.deck = [];
-      state.config.spotType = "";
-      state.config.position = "";
-      state.config.role = "";
-      state.config.stacks = "";
-      state.config.preflopFlow = DEFAULT_PREFLOP_FLOW;
-      state.replayHoleCardsBySeat = {};
-      state.session.active = false;
-      state.session.index = 0;
-      state.stage = "start";
-      initializeTableEngineState({ resetStacks: true });
-      renderConfigSelections();
-      renderSessionQueue();
-      refreshScene();
+      resetToFreshPredeal({ resetStacks: true, clearConfig: true, resetSession: true });
     }
 
     function goBackStreet() {
@@ -7382,24 +7573,14 @@
 
       const actionSeat = state.tableState.actionSeat;
       const heroCanAct = hero.status === "active" && actionSeat === hero.seat;
-      if (!heroCanAct) {
-        setControls([
-          { text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }
-        ], [
-          { text: "New Hand", primary: false, onClick: dealHand }
-        ]);
-        return;
-      }
-
-      const legal = getLegalActions(hero.seat);
-      const buttons = buildRealisticActionButtons(legal);
-      if (!buttons.length) {
-        setControls([{ text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }]);
-        return;
-      }
       const utilityButtons = [];
-
-      if (state.stage === "flop" || state.stage === "turn" || state.stage === "river") {
+      if (state.stage === "hand") {
+        utilityButtons.push({
+          text: state.mode === "replay" ? "Edit Hand" : "New Hand",
+          primary: false,
+          onClick: dealHand
+        });
+      } else if (state.stage === "flop" || state.stage === "turn" || state.stage === "river") {
         utilityButtons.push({
           text:
             state.mode === "replay"
@@ -7408,6 +7589,20 @@
           primary: false,
           onClick: () => redealStreet(state.stage)
         });
+      }
+
+      if (!heroCanAct) {
+        setControls([
+          { text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }
+        ], utilityButtons);
+        return;
+      }
+
+      const legal = getLegalActions(hero.seat);
+      const buttons = buildRealisticActionButtons(legal);
+      if (!buttons.length) {
+        setControls([{ text: "Run Table", primary: true, onClick: runRealisticFlowUntilHeroTurn }], utilityButtons);
+        return;
       }
       setControls(buttons, utilityButtons);
       appendRealisticSizingControl(legal);

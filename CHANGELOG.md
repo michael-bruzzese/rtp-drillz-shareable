@@ -1,5 +1,29 @@
 # Changelog
 
+## 2026-03-11
+- Added a new `Open / BB 3B` preflop branch where hero opens the button, the small blind folds, and the big blind 3-bets back to hero.
+- Added silent selector auto-correction so `Open / BB 3B` always resolves to the intended `IP` branch.
+- Restored the realistic-mode preflop `New Hand` / reset utility control.
+- Added one shared fresh-predeal reset path for:
+  - `New Hand`
+  - blind-size changes
+  - effective-stack preset changes
+- Made blind-size changes reset all seats to `200bb` by default from the new big blind.
+- Made effective-stack preset changes overwrite manual stack edits and reset to a fresh predeal state.
+- Made setup selectors immediately drive predeal seat/button/blind preview state.
+- Corrected `SRP OOP` default mapping so hero is in the big blind facing a button open.
+- Added predeal/preflop `SB` / `BB` seat badges and made them disappear once the hand reaches the flop.
+- Added lightweight per-seat action callouts on the table.
+- Expanded Playwright coverage for:
+  - the new `Open / BB 3B` branch in both `play` and `skip` flows
+  - reset/new-hand behavior
+  - blind/preset reset behavior
+  - selector-driven seat/button synchronization
+  - predeal blind-marker lifecycle
+  - IP/OOP auto-check behavior across streets
+  - action callout rendering
+  - replay fold/checkdown/showdown paths
+
 ## 2026-03-10
 - Moved both `Live Drill` and `Hand Replay` onto the shared six-max table engine.
 - Added blind configuration inputs (`SB` / `BB`) and per-seat stack editing before the hand.

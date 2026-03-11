@@ -73,3 +73,227 @@ test("engine preserves 4-bet IP structure and hero facing action", async ({ page
   expect(state.legalHero.check).toBe(true);
   expect(state.tableState.streetSnapshots).toContain("flop");
 });
+
+test("engine supports hero open versus big blind 3-bet play flow", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "OPENBB3B",
+      position: "OOP",
+      stacks: "100BB",
+      preflopFlow: "play",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  let state = await snapshot(page);
+
+  expect(state.config.position).toBe("IP");
+  expect(state.stage).toBe("hand");
+  expect(state.heroPosition).toBe("BTN");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(state.tableState.pot).toBe(15);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("raise", 40));
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("hand");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(state.tableState.pot).toBe(145);
+  expect(state.legalHero.toCall).toBe(60);
+  expect(state.legalHero.call).toBe(true);
+  expect(state.players.find((player) => player.position === "BB").committedStreet).toBe(100);
+});
+
+test("engine auto-completes hero open versus big blind 3-bet skip flow to flop", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "OPENBB3B",
+      position: "IP",
+      stacks: "100BB",
+      preflopFlow: "skip",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  const state = await snapshot(page);
+
+  expect(state.stage).toBe("flop");
+  expect(state.heroPosition).toBe("BTN");
+  expect(state.tableState.pot).toBe(205);
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(state.legalHero.toCall).toBe(0);
+  expect(state.legalHero.check).toBe(true);
+});
+
+test("blind changes reset to a fresh predeal state at 200bb", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "SRP",
+      position: "IP",
+      stacks: "50BB",
+      preflopFlow: "skip",
+      smallBlind: 10,
+      bigBlind: 20
+    })
+  );
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+
+  await page.locator("#bigBlindInput").fill("25");
+  await page.locator("#bigBlindInput").press("Tab");
+
+  const state = await snapshot(page);
+
+  expect(state.stage).toBe("start");
+  expect(state.hand).toEqual([]);
+  expect(state.board).toEqual([]);
+  expect(state.config.bigBlind).toBe(25);
+  expect(state.config.stacks).toBe("200BB");
+  expect(state.tableState.actionSeat).toBe(-1);
+  expect(state.tableState.pot).toBe(35);
+  expect(state.actionLog).toEqual([]);
+  expect(state.players.every((player) => player.stackStart === 5000)).toBe(true);
+  expect(state.players.find((player) => player.position === "SB").stack).toBe(4990);
+  expect(state.players.find((player) => player.position === "BB").stack).toBe(4975);
+});
+
+test("effective stack preset reset overwrites manual stack edits", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "SRP",
+      position: "IP",
+      stacks: "100BB",
+      preflopFlow: "play",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  await page.locator("#stackEditorToggle").click();
+  await page.locator('[data-stack-seat="0"]').fill("777");
+  await page.locator('[data-stack-seat="0"]').press("Tab");
+
+  let state = await snapshot(page);
+  expect(state.players.find((player) => player.seat === 0).stackStart).toBe(777);
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  await expect(page.locator("#status")).toContainText("Preflop | Hero");
+
+  await page.locator('[data-config-group="stacks"][data-config-value="300BB"]').click();
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("start");
+  expect(state.hand).toEqual([]);
+  expect(state.board).toEqual([]);
+  expect(state.config.stacks).toBe("300BB");
+  expect(state.tableState.actionSeat).toBe(-1);
+  expect(state.tableState.pot).toBe(15);
+  expect(state.players.every((player) => player.stackStart === 3000)).toBe(true);
+  expect(state.players.find((player) => player.position === "SB").stack).toBe(2995);
+  expect(state.players.find((player) => player.position === "BB").stack).toBe(2990);
+});
+
+test("spot selectors immediately sync predeal hero seat, button, and blind preview", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "SRP",
+      position: "IP",
+      stacks: "100BB",
+      preflopFlow: "play",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  let state = await snapshot(page);
+  expect(state.stage).toBe("start");
+  expect(state.heroPosition).toBe("BTN");
+  expect(state.tableState.actionSeat).toBe(-1);
+  expect(state.tableState.pot).toBe(15);
+  expect(state.players.find((player) => player.position === "SB").stack).toBe(995);
+  expect(state.players.find((player) => player.position === "BB").stack).toBe(990);
+
+  await page.locator('[data-config-group="position"][data-config-value="OOP"]').click();
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("start");
+  expect(state.heroPosition).toBe("BB");
+  expect(state.tableState.actionSeat).toBe(-1);
+  expect(state.tableState.pot).toBe(15);
+  expect(state.players.find((player) => player.seat === state.heroSeat).stack).toBe(990);
+  expect(state.players.find((player) => player.position === "BTN").stack).toBe(1000);
+  expect(state.players.find((player) => player.position === "SB").stack).toBe(995);
+});
+
+test("ip lines auto-check through flop turn and river when villain is first to act", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "SRP",
+      position: "IP",
+      stacks: "100BB",
+      preflopFlow: "play",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  let state = await snapshot(page);
+
+  expect(state.stage).toBe("hand");
+  expect(state.heroPosition).toBe("BTN");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("call"));
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("flop");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(
+    state.actionLog.filter((entry) => entry.street === "flop" && entry.seat !== state.heroSeat && entry.action === "check")
+  ).toHaveLength(1);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("turn");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(
+    state.actionLog.filter((entry) => entry.street === "turn" && entry.seat !== state.heroSeat && entry.action === "check")
+  ).toHaveLength(1);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("river");
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  expect(
+    state.actionLog.filter((entry) => entry.street === "river" && entry.seat !== state.heroSeat && entry.action === "check")
+  ).toHaveLength(1);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("check"));
+  state = await snapshot(page);
+
+  expect(state.stage).toBe("done");
+  expect(state.tableState.pot).toBe(25);
+  expect(
+    state.actionLog.filter((entry) => entry.seat === state.heroSeat && entry.action === "check" && entry.street !== "preflop")
+  ).toHaveLength(3);
+});

@@ -2,6 +2,10 @@ const { test, expect } = require("@playwright/test");
 
 const REALISTIC_APP_URL = "/rtp_drillz_web_embedded.html?realistic=1";
 
+async function snapshot(page) {
+  return page.evaluate(() => window.__rtpTestHooks.snapshot());
+}
+
 async function dealIntoRealisticPreflop(page) {
   await page.goto(REALISTIC_APP_URL);
   await page.locator("nav#controls button.primary").click();
@@ -58,4 +62,61 @@ test("hero preflop call auto-progresses to flop realistic decision point", async
   await expect(page.locator("nav#controls button", { hasText: /^Deal Turn$/ })).toHaveCount(0);
   await expect(page.locator("nav#controls button", { hasText: /^Check$/ })).toHaveCount(1);
   await expect(page.locator("nav#controls button", { hasText: /^Call \d+$/ })).toHaveCount(0);
+});
+
+test("realistic mode keeps a preflop New Hand utility reset available", async ({ page }) => {
+  await dealIntoRealisticPreflop(page);
+
+  const before = await snapshot(page);
+  await expect(page.locator("#heroUtilityControls button", { hasText: /^New Hand$/ })).toHaveCount(1);
+
+  await page.locator("#heroUtilityControls button", { hasText: /^New Hand$/ }).click();
+
+  const after = await snapshot(page);
+  expect(after.stage).toBe("hand");
+  expect(after.board).toEqual([]);
+  expect(after.hand).toHaveLength(2);
+  expect(after.tableState.handNumber).toBeGreaterThan(before.tableState.handNumber);
+  await expect(page.locator("#status")).toContainText("Preflop | Hero");
+});
+
+test("predeal blind badges show before Deal and disappear on the flop", async ({ page }) => {
+  await page.goto(REALISTIC_APP_URL);
+
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^SB$/ })).toHaveCount(1);
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^BB$/ })).toHaveCount(1);
+
+  await page.locator("nav#controls button.primary").click();
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^SB$/ })).toHaveCount(1);
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^BB$/ })).toHaveCount(1);
+
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^SB$/ })).toHaveCount(0);
+  await expect(page.locator("#seatMap .seat-chip-badge", { hasText: /^BB$/ })).toHaveCount(0);
+});
+
+test("table action callouts render readable action text", async ({ page }) => {
+  await dealIntoRealisticPreflop(page);
+
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 80));
+  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Bet 80$/ })).toHaveCount(1);
+});
+
+test("open versus big blind 3-bet selector stays IP and deals hero facing the 3-bet", async ({ page }) => {
+  await page.goto(REALISTIC_APP_URL);
+
+  await page.locator('[data-config-group="position"][data-config-value="OOP"]').click();
+  await page.locator('[data-config-group="spotType"][data-config-value="OPENBB3B"]').click();
+
+  await expect(page.locator('[data-config-group="position"][data-config-value="IP"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-config-group="position"][data-config-value="OOP"]')).toHaveAttribute("aria-pressed", "false");
+
+  await page.locator("nav#controls button.primary").click();
+  await expect(page.locator("#status")).toContainText("Preflop | Hero BTN Hero");
+  await page.locator("nav#controls button", { hasText: /^Raise To 40$/ }).click();
+  await expect(page.locator("nav#controls button", { hasText: /^Call 60$/ })).toHaveCount(1);
 });

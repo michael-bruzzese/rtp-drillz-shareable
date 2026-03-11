@@ -13,11 +13,15 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
   - fixed hero seat with dealer-button-driven position mapping
   - configurable blinds via `SB` / `BB` inputs
   - effective-stack presets plus per-seat stack editing before the hand
+  - fresh-predeal reset behavior for `New Hand`, blind changes, and effective-stack changes
+  - selector-driven predeal seat/button/blind preview before `Deal`
+  - predeal/preflop `SB` / `BB` seat badges on the seat HUDs
   - pot, stack, and legal-action tracking across streets
   - visible six-seat table HUD with button / acting-player / stack state
+  - lightweight per-seat action callouts (`Check`, `Call`, `Bet 80`, `Raise 160`, `Fold`, etc.)
   - hero decision controls: `Fold`, `Check`, `Call`, `Bet To`, `Raise To`, `All-in`
   - bet sizing via slider + numeric input (whole-BB increments)
-  - deterministic preflop scenario scripting for `SRP`, `3BP`, and `4BP`
+  - deterministic preflop scenario scripting for `SRP`, `3BP`, `4BP`, and `Open / BB 3B`
   - `Play Pre` and `Skip To Flop` setup for live mode
   - street snapshots so `New Flop`, `New Turn`, and `New River` rewind pot/stacks to street start before redealing
 - Current phase is still heads-up after the configured line resolves; multiway remains future work.
@@ -39,7 +43,7 @@ Shareable coaching version of RTP Drillz with in-browser recording and review wo
   - flop -> hand
   - hand -> start
 - Table context selectors:
-  - Left: `SRP/3BP/4BP`, `IP/OOP`, `Play Pre/Skip To Flop`
+  - Left: `SRP/3BP/4BP/Open / BB 3B`, `IP/OOP`, `Play Pre/Skip To Flop`
   - Right: blind inputs plus `Effective Stacks` presets and per-seat stack editor
 - Under-board status line now shows live table-state accounting instead of only static tags.
 - Tag selections persist until user changes them; `Start Over` clears all.
@@ -95,4 +99,5 @@ git push
    - `Ctrl+Alt+Shift+D` or `?devtools=1`
 4. Run tests:
    - `npm run test:e2e`
-5. Implement next UX/range iteration, rebuild embedded output, commit/push.
+5. Current suite status: `22` Playwright tests passing.
+6. Implement the next UX/range iteration, rebuild embedded output, commit/push.
