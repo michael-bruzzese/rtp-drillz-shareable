@@ -106,6 +106,48 @@ test("table action callouts render readable action text", async ({ page }) => {
   await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Bet 80$/ })).toHaveCount(1);
 });
 
+test("hero still gets raise controls when facing a postflop raise", async ({ page }) => {
+  await dealIntoRealisticPreflop(page);
+
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await page.evaluate(() => window.__rtpTestHooks.actSeat("BTN", "bet", 80));
+  await page.evaluate(() => window.__rtpTestHooks.actSeat("BB", "raise", 160));
+
+  await expect(page.locator("nav#controls button", { hasText: /^Fold$/ })).toHaveCount(1);
+  await expect(page.locator("nav#controls button", { hasText: /^Call 80$/ })).toHaveCount(1);
+  await expect(page.locator("nav#controls button", { hasText: /^Raise To 240$/ })).toHaveCount(1);
+});
+
+test("live mode villain only checks and calls on flop turn and river", async ({ page }) => {
+  await dealIntoRealisticPreflop(page);
+
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 80));
+  await expect(page.locator("#status")).toContainText("Turn | Hero");
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 160));
+  await expect(page.locator("#status")).toContainText("River | Hero");
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 320));
+  await expect(page.locator("#status")).toContainText("Done");
+
+  const state = await snapshot(page);
+  const villainSeat = state.players.find((player) => player.seat !== state.heroSeat && player.status !== "folded").seat;
+  const villainPostflopActions = state.actionLog.filter(
+    (entry) => entry.seat === villainSeat && entry.street !== "preflop"
+  );
+
+  expect(villainPostflopActions.map((entry) => entry.action)).toEqual([
+    "check",
+    "call",
+    "check",
+    "call",
+    "check",
+    "call"
+  ]);
+});
+
 test("open versus big blind 3-bet selector stays IP and deals hero facing the 3-bet", async ({ page }) => {
   await page.goto(REALISTIC_APP_URL);
 

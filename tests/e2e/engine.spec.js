@@ -6,6 +6,37 @@ async function snapshot(page) {
   return page.evaluate(() => window.__rtpTestHooks.snapshot());
 }
 
+function assertLegalSurfaceFollowsHoldemRules(legal) {
+  expect(typeof legal.fold).toBe("boolean");
+  expect(typeof legal.check).toBe("boolean");
+  expect(typeof legal.call).toBe("boolean");
+  expect(typeof legal.bet).toBe("boolean");
+  expect(typeof legal.raise).toBe("boolean");
+  expect(typeof legal.allIn).toBe("boolean");
+  expect(Number.isFinite(legal.toCall)).toBe(true);
+  expect(Number.isFinite(legal.minRaiseTo)).toBe(true);
+  expect(Number.isFinite(legal.maxCommit)).toBe(true);
+
+  if (legal.toCall === 0) {
+    expect(legal.check).toBe(true);
+    expect(legal.call).toBe(false);
+    expect(legal.bet).toBe(true);
+    expect(legal.raise).toBe(false);
+  } else {
+    expect(legal.check).toBe(false);
+    expect(legal.bet).toBe(false);
+    expect(legal.call).toBe(true);
+  }
+
+  if (legal.raise) {
+    expect(legal.toCall).toBeGreaterThan(0);
+    expect(legal.minRaiseTo).toBeGreaterThan(legal.toCall);
+    expect(legal.maxCommit).toBeGreaterThanOrEqual(legal.minRaiseTo);
+  }
+
+  expect(legal.allIn).toBe(true);
+}
+
 test("engine tracks configured blinds and single-raised pot accounting", async ({ page }) => {
   await page.goto(APP_URL);
 
@@ -296,4 +327,52 @@ test("ip lines auto-check through flop turn and river when villain is first to a
   expect(
     state.actionLog.filter((entry) => entry.seat === state.heroSeat && entry.action === "check" && entry.street !== "preflop")
   ).toHaveLength(3);
+});
+
+test("legal hero actions remain consistent after facing a postflop raise", async ({ page }) => {
+  await page.goto(APP_URL);
+
+  await page.evaluate(() =>
+    window.__rtpTestHooks.configure({
+      spotType: "SRP",
+      position: "IP",
+      stacks: "100BB",
+      preflopFlow: "play",
+      smallBlind: 5,
+      bigBlind: 10
+    })
+  );
+
+  await page.evaluate(() => window.__rtpTestHooks.dealHand());
+  let state = await snapshot(page);
+  assertLegalSurfaceFollowsHoldemRules(state.legalHero);
+
+  await page.evaluate(() => window.__rtpTestHooks.actHero("call"));
+
+  state = await snapshot(page);
+  expect(state.stage).toBe("flop");
+  assertLegalSurfaceFollowsHoldemRules(state.legalHero);
+  expect(state.legalHero.check).toBe(true);
+  expect(state.legalHero.call).toBe(false);
+  expect(state.legalHero.bet).toBe(true);
+  expect(state.legalHero.raise).toBe(false);
+
+  await page.evaluate(() => window.__rtpTestHooks.actSeat("BTN", "bet", 80));
+  const villainLegal = await page.evaluate(() => window.__rtpTestHooks.legalForSeat("BB"));
+  assertLegalSurfaceFollowsHoldemRules(villainLegal);
+  state = await snapshot(page);
+  expect(state.tableState.actionSeat).toBe(state.players.find((player) => player.position === "BB").seat);
+
+  await page.evaluate(() => window.__rtpTestHooks.actSeat("BB", "raise", 160));
+  state = await snapshot(page);
+
+  expect(state.tableState.actionSeat).toBe(state.heroSeat);
+  assertLegalSurfaceFollowsHoldemRules(state.legalHero);
+  expect(state.legalHero.toCall).toBe(80);
+  expect(state.legalHero.check).toBe(false);
+  expect(state.legalHero.call).toBe(true);
+  expect(state.legalHero.bet).toBe(false);
+  expect(state.legalHero.raise).toBe(true);
+  expect(state.legalHero.minRaiseTo).toBe(240);
+  expect(state.legalHero.maxCommit).toBe(990);
 });

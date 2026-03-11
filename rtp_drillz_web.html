@@ -4550,6 +4550,12 @@
     }
 
     function registerInternalTestApi() {
+      const resolveSeatTestHook = (seatOrPosition) => {
+        if (Number.isInteger(seatOrPosition)) return seatOrPosition;
+        if (typeof seatOrPosition === "string") return findSeatByPosition(seatOrPosition.toUpperCase());
+        const numeric = Number(seatOrPosition);
+        return Number.isInteger(numeric) ? numeric : -1;
+      };
       window.__rtpTestHooks = {
         configure: (nextConfig = {}) => {
           Object.assign(state.config, nextConfig || {});
@@ -4581,6 +4587,18 @@
         actHero: (action, sizeChips) => {
           applyHeroRealisticAction(action, Number.isFinite(Number(sizeChips)) ? Number(sizeChips) : null);
           return true;
+        },
+        actSeat: (seatOrPosition, action, sizeChips) => {
+          const seat = resolveSeatTestHook(seatOrPosition);
+          if (seat < 0) return false;
+          const ok = applyPlayerAction(seat, action, Number.isFinite(Number(sizeChips)) ? Number(sizeChips) : 0);
+          refreshScene();
+          return ok;
+        },
+        legalForSeat: (seatOrPosition) => {
+          const seat = resolveSeatTestHook(seatOrPosition);
+          if (seat < 0) return null;
+          return clonePlainObject(getLegalActions(seat));
         },
         runTable: () => {
           runRealisticFlowUntilHeroTurn();
@@ -5367,52 +5385,23 @@
       return true;
     }
 
-    function isAggressiveProfile(profile) {
-      const key = profileKey(profile);
-      return key === "Aggressive Fish" || key === "Reg" || key === "Pro" || key === "Whale";
-    }
-
-    function shouldAutoCheckOopToHero(seat, legal) {
-      if (!legal.check) return false;
-      if (!["flop", "turn", "river"].includes(state.tableState.street)) return false;
-      if (!state.tableState.headsUpLocked) return false;
-      if (seat === state.tableState.heroSeat) return false;
-      return firstActionSeatForStreet(state.tableState.street) === seat;
-    }
-
     function chooseAutoActionForSeat(seat) {
       const player = getPlayerBySeat(seat);
       const legal = getLegalActions(seat);
       if (!player) return { action: "check", sizeChips: 0 };
 
-      if (legal.toCall > 0) {
-        if (
-          legal.raise &&
-          isAggressiveProfile(player.profile) &&
-          legal.minRaiseTo <= legal.maxCommit &&
-          legal.toCall <= bigBlindChips() * 6
-        ) {
-          return { action: "raise", sizeChips: legal.minRaiseTo };
+      if (state.tableState.street !== "preflop") {
+        if (legal.toCall > 0) {
+          if (legal.call) return { action: "call", sizeChips: legal.toCall };
+          return { action: "fold", sizeChips: 0 };
         }
-
-        if (legal.call) {
-          const maxConservativeCall = Math.max(bigBlindChips() * 4, Math.floor(player.stack * 0.25));
-          if (legal.toCall <= maxConservativeCall || player.stack <= bigBlindChips() * 2) {
-            return { action: "call", sizeChips: legal.toCall };
-          }
-        }
-
+        if (legal.check) return { action: "check", sizeChips: 0 };
         return { action: "fold", sizeChips: 0 };
       }
 
-      if (shouldAutoCheckOopToHero(seat, legal)) {
-        return { action: "check", sizeChips: 0 };
-      }
-
-      if (legal.bet && isAggressiveProfile(player.profile) && ["flop", "turn", "river"].includes(state.tableState.street)) {
-        const halfPot = Math.max(bigBlindChips(), roundToWholeBb(state.tableState.pot / 2));
-        const target = Math.max(bigBlindChips(), Math.min(legal.maxCommit, halfPot));
-        return { action: "bet", sizeChips: target };
+      if (legal.toCall > 0) {
+        if (legal.call) return { action: "call", sizeChips: legal.toCall };
+        return { action: "fold", sizeChips: 0 };
       }
 
       if (legal.check) return { action: "check", sizeChips: 0 };
@@ -7401,14 +7390,11 @@
 
     function buildRealisticActionButtons(legal) {
       const buttons = [];
-      const heroAlreadyAggressedPostflop =
-        state.tableState.street !== "preflop" &&
-        state.actionLog.some(
-          (entry) =>
-            entry.street === state.tableState.street &&
-            entry.seat === state.tableState.heroSeat &&
-            (entry.action === "bet" || entry.action === "raise" || entry.action === "all-in")
-        );
+      let actionTarget = state.tableState.betInputTo;
+      if (legal.bet || legal.raise) {
+        actionTarget = coerceActionTarget(state.tableState.betInputTo, legal).targetTo;
+        state.tableState.betInputTo = actionTarget;
+      }
       if (legal.toCall > 0) {
         buttons.push({ text: "Fold", primary: false, onClick: () => applyHeroRealisticAction("fold"), actionId: "fold" });
       }
@@ -7423,23 +7409,23 @@
           actionId: "call"
         });
       }
-      if (legal.bet && !heroAlreadyAggressedPostflop) {
+      if (legal.bet) {
         buttons.push({
-          text: `Bet To ${state.tableState.betInputTo}`,
+          text: `Bet To ${actionTarget}`,
           primary: false,
           onClick: () => applyHeroRealisticAction("bet"),
           actionId: "bet"
         });
       }
-      if (legal.raise && !heroAlreadyAggressedPostflop) {
+      if (legal.raise) {
         buttons.push({
-          text: `Raise To ${state.tableState.betInputTo}`,
+          text: `Raise To ${actionTarget}`,
           primary: false,
           onClick: () => applyHeroRealisticAction("raise"),
           actionId: "raise"
         });
       }
-      if (legal.allIn && !heroAlreadyAggressedPostflop) {
+      if (legal.allIn) {
         buttons.push({
           text: `All-in ${legal.maxCommit}`,
           primary: false,

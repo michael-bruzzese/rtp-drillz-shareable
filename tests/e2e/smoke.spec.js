@@ -58,7 +58,7 @@ test("replay mode card builder updates manual summary and deals hand", async ({ 
   await expect(page.locator("#boardCards .card-shell")).toHaveCount(3);
 });
 
-test("postflop hero raise does not immediately offer another raise option", async ({ page }) => {
+test("postflop villain defaults to call hero aggression", async ({ page }) => {
   await page.goto(APP_URL);
   await setMode(page, "replay");
 
@@ -71,9 +71,8 @@ test("postflop hero raise does not immediately offer another raise option", asyn
   await expect(page.locator("#status")).toContainText("Flop | Hero");
   await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 320));
 
-  await expect(page.locator("#status")).toContainText("Done");
-  await expect(page.locator("nav#controls button", { hasText: /^Raise To \d+$/ })).toHaveCount(0);
-  await expect(page.locator("nav#controls button.primary")).toHaveText("Deal");
+  await expect(page.locator("#status")).toContainText("Turn | Hero");
+  await expect(page.locator("nav#controls button", { hasText: /^Check$/ })).toHaveCount(1);
 });
 
 test("session queue supports naming, export/import, and next-hand progression", async ({ page }) => {
