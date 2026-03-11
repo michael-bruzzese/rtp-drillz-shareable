@@ -3928,6 +3928,12 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
     function renderSeatMap() {
       if (!els.seatMap) return;
+      const existingCallouts = new Map();
+      Array.from(els.seatMap.querySelectorAll(".seat-action-callout")).forEach((node) => {
+        const seat = Number(node.dataset.seat);
+        if (!Number.isFinite(seat)) return;
+        existingCallouts.set(seat, node);
+      });
       els.seatMap.innerHTML = "";
       state.players.forEach((player) => {
         const chip = document.createElement("div");
@@ -3994,14 +4000,20 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
 
         const actionFeedback = state.actionFeedbacks.find((entry) => entry.seat === player.seat);
         if (actionFeedback) {
-          const callout = document.createElement("div");
-          callout.className = `seat-action-callout ${actionFeedback.tone}`;
-          callout.textContent = actionFeedback.text;
-          const elapsedMs = Math.max(
-            0,
-            Math.min(ACTION_FEEDBACK_DURATION_MS, Date.now() - Number(actionFeedback.startedAtMs || 0))
-          );
-          callout.style.animationDelay = `-${elapsedMs}ms`;
+          const existingCallout = existingCallouts.get(player.seat);
+          const reuseCallout = existingCallout && existingCallout.dataset.feedbackId === String(actionFeedback.id);
+          const callout = reuseCallout ? existingCallout : document.createElement("div");
+          if (!reuseCallout) {
+            callout.className = `seat-action-callout ${actionFeedback.tone}`;
+            callout.textContent = actionFeedback.text;
+            const elapsedMs = Math.max(
+              0,
+              Math.min(ACTION_FEEDBACK_DURATION_MS, Date.now() - Number(actionFeedback.startedAtMs || 0))
+            );
+            callout.style.animationDelay = `-${elapsedMs}ms`;
+          }
+          callout.dataset.seat = String(player.seat);
+          callout.dataset.feedbackId = String(actionFeedback.id);
           chip.appendChild(callout);
         }
 

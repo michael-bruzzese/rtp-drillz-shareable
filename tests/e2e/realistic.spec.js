@@ -116,8 +116,16 @@ test("live mode shows villain call before the next street and check after it arr
 
   await expect(page.locator("#status")).toContainText("Flop |");
   await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+  await page.evaluate(() => {
+    window.__rtpTestCalloutRef = document.querySelector("#seatMap .seat-action-callout");
+  });
 
   await expect(page.locator("#status")).toContainText("Turn | Hero");
+  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+  const preservedCallout = await page.evaluate(
+    () => document.querySelector("#seatMap .seat-action-callout") === window.__rtpTestCalloutRef
+  );
+  expect(preservedCallout).toBe(true);
   await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Check$/ })).toHaveCount(1);
 });
 
