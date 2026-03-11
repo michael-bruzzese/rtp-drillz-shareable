@@ -100,10 +100,10 @@ test("table action callouts render readable action text", async ({ page }) => {
   await dealIntoRealisticPreflop(page);
 
   await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
-  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+  await expect(page.locator("#actionFeedbackLayer .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
 
   await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 80));
-  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Bet 80$/ })).toHaveCount(1);
+  await expect(page.locator("#actionFeedbackLayer .seat-action-callout", { hasText: /^Bet 80$/ })).toHaveCount(1);
 });
 
 test("live mode shows villain call before the next street and check after it arrives", async ({ page }) => {
@@ -115,18 +115,18 @@ test("live mode shows villain call before the next street and check after it arr
   await page.locator("nav#controls button", { hasText: /^Bet To 80$/ }).click();
 
   await expect(page.locator("#status")).toContainText("Flop |");
-  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+  await expect(page.locator("#actionFeedbackLayer .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
   await page.evaluate(() => {
-    window.__rtpTestCalloutRef = document.querySelector("#seatMap .seat-action-callout");
+    window.__rtpTestCalloutRef = document.querySelector("#actionFeedbackLayer .seat-action-callout");
   });
 
   await expect(page.locator("#status")).toContainText("Turn | Hero");
-  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+  await expect(page.locator("#actionFeedbackLayer .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
   const preservedCallout = await page.evaluate(
-    () => document.querySelector("#seatMap .seat-action-callout") === window.__rtpTestCalloutRef
+    () => document.querySelector("#actionFeedbackLayer .seat-action-callout") === window.__rtpTestCalloutRef
   );
   expect(preservedCallout).toBe(true);
-  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Check$/ })).toHaveCount(1);
+  await expect(page.locator("#actionFeedbackLayer .seat-action-callout", { hasText: /^Check$/ })).toHaveCount(1);
 });
 
 test("hero still gets raise controls when facing a postflop raise", async ({ page }) => {

@@ -1118,6 +1118,13 @@
       pointer-events: none;
     }
 
+    .seat-action-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 6;
+    }
+
     .seat-chip {
       position: absolute;
       width: 132px;
@@ -1273,8 +1280,6 @@
 
     .seat-action-callout {
       position: absolute;
-      left: 50%;
-      top: -12px;
       transform: translate(-50%, -100%);
       border-radius: 999px;
       padding: 6px 12px;
@@ -1290,6 +1295,13 @@
       z-index: 5;
       animation: actionCalloutFade 1.65s ease-out forwards;
     }
+
+    .seat-action-callout.top-left { top: 16%; left: 18%; }
+    .seat-action-callout.top-center { top: 6%; left: 51%; }
+    .seat-action-callout.top-right { top: 16%; left: 84%; }
+    .seat-action-callout.bottom-left { top: 61%; left: 14%; }
+    .seat-action-callout.bottom-right { top: 61%; left: 88%; }
+    .seat-action-callout.bottom-center { top: 76%; left: 51%; }
 
     .seat-action-callout.aggressive {
       background: rgba(99, 39, 4, 0.96);
@@ -2196,6 +2208,10 @@
         gap: 8px;
       }
 
+      .seat-action-layer {
+        display: none;
+      }
+
       .seat-chip {
         position: static;
         transform: none;
@@ -2335,6 +2351,7 @@
           <div class="table-shell">
             <div id="timeOverlay" class="time-overlay">TIME!</div>
             <div id="seatMap" class="seat-map"></div>
+            <div id="actionFeedbackLayer" class="seat-action-layer"></div>
             <div class="table-center">
               <h2 id="startSplash" class="start-splash">RTP Drillz</h2>
               <h3 class="board-title">Board</h3>
@@ -2952,6 +2969,7 @@
       boardCards: document.getElementById("boardCards"),
       potDisplay: document.getElementById("potDisplay"),
       seatMap: document.getElementById("seatMap"),
+      actionFeedbackLayer: document.getElementById("actionFeedbackLayer"),
       handCards: document.getElementById("handCards"),
       controls: document.getElementById("controls"),
       heroUtilityControls: document.getElementById("heroUtilityControls"),
@@ -3854,6 +3872,9 @@
         actionFeedbackTimers.clear();
       }
       state.actionFeedbacks = [];
+      if (els.actionFeedbackLayer) {
+        els.actionFeedbackLayer.innerHTML = "";
+      }
     }
 
     function clearScheduledRealisticFlow() {
@@ -3879,6 +3900,25 @@
       return "";
     }
 
+    function removeActionFeedbackBubble(id) {
+      if (!els.actionFeedbackLayer) return;
+      const node = els.actionFeedbackLayer.querySelector(`[data-feedback-id="${id}"]`);
+      if (node) node.remove();
+    }
+
+    function upsertActionFeedbackBubble(feedback) {
+      if (!els.actionFeedbackLayer || !feedback) return;
+      const seatClass = SEAT_VISUAL_CLASS[feedback.seat] || "top-center";
+      let node = els.actionFeedbackLayer.querySelector(`[data-feedback-id="${feedback.id}"]`);
+      if (!node) {
+        node = document.createElement("div");
+        node.dataset.feedbackId = String(feedback.id);
+        els.actionFeedbackLayer.appendChild(node);
+      }
+      node.className = `seat-action-callout ${feedback.tone} ${seatClass}`;
+      node.textContent = feedback.text;
+    }
+
     function showActionFeedback(seat, action, targetStreetCommit = 0) {
       if (!Number.isInteger(seat) || seat < 0) return;
       const text = formatActionFeedback(action, targetStreetCommit);
@@ -3888,6 +3928,7 @@
       if (existing && actionFeedbackTimers.has(existing.id)) {
         clearTimeout(actionFeedbackTimers.get(existing.id));
         actionFeedbackTimers.delete(existing.id);
+        removeActionFeedbackBubble(existing.id);
       }
 
       const id = actionFeedbackCounter + 1;
@@ -3897,14 +3938,14 @@
         id,
         seat,
         text,
-        tone: actionFeedbackTone(action),
-        startedAtMs: Date.now()
+        tone: actionFeedbackTone(action)
       });
+      upsertActionFeedbackBubble(state.actionFeedbacks[state.actionFeedbacks.length - 1]);
 
       const timerId = setTimeout(() => {
         actionFeedbackTimers.delete(id);
         state.actionFeedbacks = state.actionFeedbacks.filter((entry) => entry.id !== id);
-        renderSeatMap();
+        removeActionFeedbackBubble(id);
       }, ACTION_FEEDBACK_DURATION_MS);
       actionFeedbackTimers.set(id, timerId);
     }
@@ -3925,12 +3966,6 @@
 
     function renderSeatMap() {
       if (!els.seatMap) return;
-      const existingCallouts = new Map();
-      Array.from(els.seatMap.querySelectorAll(".seat-action-callout")).forEach((node) => {
-        const seat = Number(node.dataset.seat);
-        if (!Number.isFinite(seat)) return;
-        existingCallouts.set(seat, node);
-      });
       els.seatMap.innerHTML = "";
       state.players.forEach((player) => {
         const chip = document.createElement("div");
@@ -3993,25 +4028,6 @@
         const replayCards = replayHoleCardsForSeat(player.seat);
         if (state.mode === "replay" && replayCards.length) {
           cards.textContent = isShowdownRevealState() ? replayCards.join(" ") : "Cards locked";
-        }
-
-        const actionFeedback = state.actionFeedbacks.find((entry) => entry.seat === player.seat);
-        if (actionFeedback) {
-          const existingCallout = existingCallouts.get(player.seat);
-          const reuseCallout = existingCallout && existingCallout.dataset.feedbackId === String(actionFeedback.id);
-          const callout = reuseCallout ? existingCallout : document.createElement("div");
-          if (!reuseCallout) {
-            callout.className = `seat-action-callout ${actionFeedback.tone}`;
-            callout.textContent = actionFeedback.text;
-            const elapsedMs = Math.max(
-              0,
-              Math.min(ACTION_FEEDBACK_DURATION_MS, Date.now() - Number(actionFeedback.startedAtMs || 0))
-            );
-            callout.style.animationDelay = `-${elapsedMs}ms`;
-          }
-          callout.dataset.seat = String(player.seat);
-          callout.dataset.feedbackId = String(actionFeedback.id);
-          chip.appendChild(callout);
         }
 
         if (player.status === "active" || player.status === "allin") {
