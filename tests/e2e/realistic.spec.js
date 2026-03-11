@@ -106,6 +106,21 @@ test("table action callouts render readable action text", async ({ page }) => {
   await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Bet 80$/ })).toHaveCount(1);
 });
 
+test("live mode shows villain call before the next street and check after it arrives", async ({ page }) => {
+  await dealIntoRealisticPreflop(page);
+
+  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await page.locator("nav#controls .action-size-wrap input[type='number']").fill("80");
+  await page.locator("nav#controls .action-size-wrap input[type='number']").press("Tab");
+  await page.locator("nav#controls button", { hasText: /^Bet To 80$/ }).click();
+
+  await expect(page.locator("#status")).toContainText("Flop |");
+  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Call$/ })).toHaveCount(1);
+
+  await expect(page.locator("#status")).toContainText("Turn | Hero");
+  await expect(page.locator("#seatMap .seat-action-callout", { hasText: /^Check$/ })).toHaveCount(1);
+});
+
 test("hero still gets raise controls when facing a postflop raise", async ({ page }) => {
   await dealIntoRealisticPreflop(page);
 
@@ -121,7 +136,8 @@ test("hero still gets raise controls when facing a postflop raise", async ({ pag
 test("live mode villain only checks and calls on flop turn and river", async ({ page }) => {
   await dealIntoRealisticPreflop(page);
 
-  await page.locator("nav#controls button", { hasText: /^Call \d+$/ }).first().click();
+  await page.evaluate(() => window.__rtpTestHooks.actHero("call"));
+  await expect(page.locator("#status")).toContainText("Flop | Hero");
 
   await page.evaluate(() => window.__rtpTestHooks.actHero("bet", 80));
   await expect(page.locator("#status")).toContainText("Turn | Hero");
