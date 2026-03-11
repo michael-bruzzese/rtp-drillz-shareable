@@ -3900,7 +3900,8 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
         id,
         seat,
         text,
-        tone: actionFeedbackTone(action)
+        tone: actionFeedbackTone(action),
+        startedAtMs: Date.now()
       });
 
       const timerId = setTimeout(() => {
@@ -3996,6 +3997,11 @@ window.__RTP_EMBEDDED_CARDS__ = {"As":"data:image/png;base64,iVBORw0KGgoAAAANSUh
           const callout = document.createElement("div");
           callout.className = `seat-action-callout ${actionFeedback.tone}`;
           callout.textContent = actionFeedback.text;
+          const elapsedMs = Math.max(
+            0,
+            Math.min(ACTION_FEEDBACK_DURATION_MS, Date.now() - Number(actionFeedback.startedAtMs || 0))
+          );
+          callout.style.animationDelay = `-${elapsedMs}ms`;
           chip.appendChild(callout);
         }
 

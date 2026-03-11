@@ -3897,7 +3897,8 @@
         id,
         seat,
         text,
-        tone: actionFeedbackTone(action)
+        tone: actionFeedbackTone(action),
+        startedAtMs: Date.now()
       });
 
       const timerId = setTimeout(() => {
@@ -3993,6 +3994,11 @@
           const callout = document.createElement("div");
           callout.className = `seat-action-callout ${actionFeedback.tone}`;
           callout.textContent = actionFeedback.text;
+          const elapsedMs = Math.max(
+            0,
+            Math.min(ACTION_FEEDBACK_DURATION_MS, Date.now() - Number(actionFeedback.startedAtMs || 0))
+          );
+          callout.style.animationDelay = `-${elapsedMs}ms`;
           chip.appendChild(callout);
         }
 
